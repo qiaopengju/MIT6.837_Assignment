@@ -40,6 +40,9 @@ void Ifs::render(Image &img){
             }
             trans[k].Transform(rand_point); //transform
         }
-        img.SetPixel(rand_point.x() * img.Width(), rand_point.y()*img.Height(), Vec3f());
+        if (rand_point.x() >=0 && rand_point.x() <= 1 &&
+                rand_point.y() >=0 && rand_point.y() <= 1){
+            img.SetPixel(rand_point.x() * img.Width(), rand_point.y()*img.Height(), Vec3f());
+        }
     }
 }

@@ -43,6 +43,10 @@ T4:
 	./ifs -input src/sierpinski_triangle.txt -points 10000 -iters 4 -size 200 -output sierpinski_triangle_4.tga
 T30:
 	./ifs -input src/sierpinski_triangle.txt -points 10000 -iters 30 -size 200 -output sierpinski_triangle_30.tga
+dragon:
+	./ifs -input src/dragon.txt -points 50000 -iters 30 -size 400 -output dragon.tga
+giant_x:
+	./ifs -input src/giant_x.txt -points 50000 -iters 30 -size 400 -output giant_x.tga
 fern:
 	./ifs -input src/fern.txt -points 50000 -iters 30 -size 400 -output fern.tga
 
