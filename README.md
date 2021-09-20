@@ -15,7 +15,8 @@ for (int k = 0; k < num_trans; k++){
 do_transform[k]_to_Vec();
 ```
 
-* 需要特判仿射变换后点左边是否在图像内
+* 需要特判仿射变换后点坐标是否在图像内
+* int atoi(const char *str); 将字符串数字变为int
 
 #### 结果：
 
