@@ -1,0 +1,9 @@
+Assignment*/.o
+Assignment*/.tga
+Assignment*/.ppm
+*.o
+*.tga
+*.ppm
+.vscode/
+*/.DS_Store
+.DS_Store
