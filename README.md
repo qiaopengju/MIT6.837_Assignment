@@ -75,9 +75,9 @@ if (t >= depth_min && t <= depth_max){
 
   * Ray: direction is an unit vector
 
-$t_p = \vec {R_oO} \bullet \vec{direction}$
+![1_tp](src/1_tp.png)
 
-$d^2 = OR_0^2 - t_p^2$
+![1_d2](src/1_d2.png)
 
   * 如果d比球半径要大，说明Ray与Sphere不相交，反之Ray与Sphere相交
 
@@ -85,10 +85,10 @@ $d^2 = OR_0^2 - t_p^2$
 
     * 射线原点在球内：
 
-$t = t_p+t'$
+![1_t](src/1_t.png)
 * 射线原点在球外：
 
-$t = t_p - t'$
+![1_t2](src/1_t2.png)
 
 * 判断物体射线交点，如果得到t比hit的t小，那么同时更新t和Material
 * 类Group中的ObjectList应该用Object3D**类型，因为ObjectList应当是存Object3D的指针的数组，赋予ObjectList空间：
