@@ -20,19 +20,35 @@ do_transform[k]_to_Vec();
 
 #### Result：
 
-fern:
+* fern:
+
+```shell
+./ifs -input src/fern.txt -points 50000 -iters 30 -size 400 -output fern.tga
+```
 
 ![0_fern](src/0_fern.png)
 
-dragon:
+* dragon:
+
+```shell
+./ifs -input src/dragon.txt -points 50000 -iters 30 -size 400 -output dragon.tga
+```
 
 ![0_dragon](src/0_dragon.png)
 
-giant x:
+* giant X:
+
+```shell
+./ifs -input src/giant_x.txt -points 50000 -iters 30 -size 400 -output giant_x.tga
+```
 
 ![0_dragon](src/0_giant_x.png)
 
-triangle iters 30 times:
+* triangle iters 30 times:
+
+```shell
+./ifs -input src/sierpinski_triangle.txt -points 10000 -iters 30 -size 200 -output sierpinski_triangle_30.tga
+```
 
 ![0_dragon](src/0_sierpinski_triangle_30.png)
 
