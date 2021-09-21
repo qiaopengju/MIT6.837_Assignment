@@ -74,12 +74,21 @@ if (t >= depth_min && t <= depth_max){
   ![1_sphere_intersection](src/1_sphere_intersection.png)
 
   * Ray: direction is an unit vector
-    * $t_p = \vec {R_oO} \bullet \vec{direction}$
-  * $d^2 = OR_0^2 - t_p^2$
+
+$t_p = \vec {R_oO} \bullet \vec{direction}$
+
+$d^2 = OR_0^2 - t_p^2$
+
   * 如果d比球半径要大，说明Ray与Sphere不相交，反之Ray与Sphere相交
+
   * 相交在参数t时刻：
-    * 射线原点在球内：$t = t_p+t'$
-    * 射线原点在球外：$t = t_p - t'$
+
+    * 射线原点在球内：
+
+$t = t_p+t'$
+* 射线原点在球外：
+
+$t = t_p - t'$
 
 * 判断物体射线交点，如果得到t比hit的t小，那么同时更新t和Material
 * 类Group中的ObjectList应该用Object3D**类型，因为ObjectList应当是存Object3D的指针的数组，赋予ObjectList空间：
