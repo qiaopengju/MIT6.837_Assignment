@@ -36,3 +36,10 @@ triangle iters 30 times:
 
 ![0_dragon](src/0_sierpinski_triangle_30.png)
 
+### Assignment1:
+
+Tasks:
+
+* [ ] Derive `Sphere`, a subclass of `Object3D`, that additionally stores a center point and a radius. The `Sphere` constructor will be given the center, radius, and pointer to a `Material` instance. The `Sphere` class implements the virtual `intersect` method mentioned above (but without the '`= 0;`'):
+* [ ] 
+
