@@ -52,6 +52,8 @@ do_transform[k]_to_Vec();
 
 ![0_dragon](src/0_sierpinski_triangle_30.png)
 
+---
+
 ### Assignment1:
 
 #### Hint:
@@ -79,25 +81,53 @@ if (t >= depth_min && t <= depth_max){
 
 ![1_d2](src/1_d2.png)
 
-  * 如果d比球半径要大，说明Ray与Sphere不相交，反之Ray与Sphere相交
+如果d比球半径要大，说明Ray与Sphere不相交，反之Ray与Sphere相交
 
-  * 相交在参数t时刻：
-
-    * 射线原点在球内：
+相交在参数t时刻,射线原点在球内：
 
 ![1_t](src/1_t.png)
-* 射线原点在球外：
+
+射线原点在球外：
 
 ![1_t2](src/1_t2.png)
 
-* 判断物体射线交点，如果得到t比hit的t小，那么同时更新t和Material
-* 类Group中的ObjectList应该用Object3D**类型，因为ObjectList应当是存Object3D的指针的数组，赋予ObjectList空间：
+判断物体射线交点，如果得到t比hit的t小，那么同时更新t和Material
+
+```c++
+bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
+    Vec3f o2c = center - r.getOrigin();     //射线原点指向球心向量
+    float tp = o2c.Dot3(r.getDirection());
+    float o2c2 = o2c.Dot3(o2c);             //ray, sphere中心距离的平方
+    float d2 = o2c2 - tp*tp;
+    if (d2 > radius*radius) return false;   //不相交
+    float t = sqrt(radius*radius - d2);
+    
+    if (tp - t < tmin){
+        if (tp + t > tmin){ //射线在球内部，且相交
+            h.set(tp + t, material, r);
+            return true;
+        } else return false;//不相交
+
+    } else {								//射线在球外部，且相交
+        h.set(tp - t, material, r);
+        return true;
+    }
+}
+```
+
+---
+
+* 类Group中的ObjectList应该用Object3D**类型，因为ObjectList应当是存Object3D的指针的数组，赋予ObjectList内存空间：
 
 ```c++
 ObjectList = new Object3D*[n];	//Group中有n个Objects
 ```
 
-
+* std::numeric_limits<float>::max 返回float最大值
+* 三个向量定义相机：Up, Right, LookAt，当Up和LookAt不垂直时要修正Up:
+  * Right = LookAt x Up: 通过叉乘得到Right向量
+  * Up = Right x LookAt: 通过上一步得到的Right向量和LookAt向量，修正Up向量
+  * 相机的三个向量需要标准化
 
 #### Result:
 
