@@ -54,6 +54,11 @@ int main(int argc, char *argv[]){
             if (group->intersect(r, h, camera->getTMin())){
                 assert(h.getMaterial() != NULL);
                 image.SetPixel(i, j, h.getMaterial()->getDiffuseColor());
+                float t = h.getT();
+                if (t >= depth_min && t <= depth_max){
+                    t = 1 - (t - depth_min) / (depth_max - depth_min);
+                    image_depth.SetPixel(i, j, Vec3f(t, t, t));
+                }
                 //image_depth.SetPixel(i, j, )
             }
         }
