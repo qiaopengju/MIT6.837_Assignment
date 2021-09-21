@@ -7,10 +7,9 @@ SRCS 	 	= main.C \
 		  ../matrix.C \
 		  ../image.C \
 		  scene_parser.C \
-		  sphere.C \
-		  raytracer.C \
-		  camera.C \
-		  group.C
+		  ../sphere.C \
+		  ../camera.C \
+		  ../group.C
 
 # ===============================================================
 

@@ -56,6 +56,8 @@ do_transform[k]_to_Vec();
 
 ### Assignment1:
 
+原理：相机从每个像素发出射线，显示最早击中物体的贴图
+
 #### Hint:
 
 * 在坐标运算时，最好在[0,1]标准化空间坐标进行，在遇到实际的屏幕时，可以用$x = x' * widht;\quad y = y' * height$来换算
