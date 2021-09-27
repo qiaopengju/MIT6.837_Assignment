@@ -31,4 +31,22 @@ private:
     Vec3f center, direction, up, horizontal;
     float size;
 };
+
+class PerspectiveCamera : public Camera{
+public:
+    //CONSTRUCTOR:
+    //The constructor takes as input the center of the image, 
+    //the direction vector, an up vector, and the image size
+    PerspectiveCamera(Vec3f _center, Vec3f _direction, Vec3f _up, float angle_randians);
+    ~PerspectiveCamera() {}
+
+    //generate rays for each screen-space coordinate
+    Ray generateRay(Vec2f point);
+    //will be useful when tracing rays through the scene
+    float getTMin() const;
+
+private:
+    Vec3f center, direction, up, horizontal;
+    float angle_randians;
+};
 #endif
