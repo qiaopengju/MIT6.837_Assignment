@@ -13,7 +13,7 @@ SRCS 	 	= main.C \
 
 # ===============================================================
 
-INCLUDE 	= -I../ -std=c++11
+FLAG 	= -I../ -std=c++11
 CC		= clang++
 EXE	  	= raytracer
 OBJS =  $(SRCS:.C=.o)
@@ -26,7 +26,7 @@ OBJS =  $(SRCS:.C=.o)
 all: depend $(EXE)
 
 depend:
-	$(CC) -E -M $(SRCS) $(INCLUDE)> Makefile.depend
+	$(CC) -E -M $(SRCS) $(FLAG)> Makefile.depend
 
 clean: 
 	-rm -f *~ *bak *.o  ../*.o *.tga *.ppm core.* Makefile.depend $(EXE) 
@@ -38,10 +38,10 @@ $(EXE): $(OBJS)
 	$(CC) -o $@ $(OBJS) 
 
 .C.o:
-	$(CC) $< -c -o $@ $(INCLUDE)
+	$(CC) $< -c -o $@ $(FLAG)
 
 .cpp.o:
-	$(CC) $< -c -o $@ $(INCLUDE)
+	$(CC) $< -c -o $@ $(FLAG)
 
 # ===============================================================
 # EXE
