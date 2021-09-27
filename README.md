@@ -125,7 +125,7 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
 ObjectList = new Object3D*[n];	//Group中有n个Objects
 ```
 
-* std::numeric_limits<float>::max 返回float最大值
+* std::numeric_limits\<float\>::max 返回float最大值
 * 三个向量定义相机：Up, Right, LookAt，当Up和LookAt不垂直时要修正Up:
   * Right = LookAt x Up: 通过叉乘得到Right向量
   * Up = Right x LookAt: 通过上一步得到的Right向量和LookAt向量，修正Up向量
