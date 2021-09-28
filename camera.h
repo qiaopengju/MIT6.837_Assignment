@@ -48,5 +48,6 @@ public:
 private:
     Vec3f center, direction, up, horizontal;
     float angle_randians;
+    float near_size;    //近平面大小
 };
 #endif
