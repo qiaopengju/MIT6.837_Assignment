@@ -5,8 +5,10 @@
 
 class Triangle : public Object3D{
 public:
-    Triangle(Vec3f &a, Vec3f &b, Vec3f &c, Material *m){};
+    Triangle(Vec3f &a, Vec3f &b, Vec3f &c, Material *m);
     bool intersect(const Ray &r, Hit &h, float tmin);
     ~Triangle();
+private:
+    Vec3f a, b, c;
 };
 #endif

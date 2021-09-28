@@ -6,7 +6,7 @@
 
 class Transform : public Object3D{
 public:
-    Transform(Matrix &m, Object3D *o) {};
+    Transform(Matrix &m, Object3D *o);
     bool intersect(const Ray &r, Hit &h, float tmin);
 };
 #endif
