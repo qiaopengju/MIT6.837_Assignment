@@ -8,4 +8,5 @@ Assignment*/.ppm
 */.DS_Store
 .DS_Store
 Assignment0/ifs
-Assignment1/raytracer
+*/raytracer
+*/Makefile.depend
