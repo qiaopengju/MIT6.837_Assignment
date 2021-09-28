@@ -10,12 +10,16 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
     //射线原点在球外部
     if (tp - t < tmin){
         if (tp + t > tmin){ //射线在球内部
-            h.set(tp + t, material, r);
+            Vec3f normal = r.pointAtParameter(tp + t) - center;
+            normal.Normalize();
+            h.set(tp + t, material, normal, r);
             return true;
         } else return false;
 
     } else {
-        h.set(tp - t, material, r);
+        Vec3f normal = r.pointAtParameter(tp - t) - center;
+        normal.Normalize();
+        h.set(tp - t, material, normal, r);
         return true;
     }
 }
