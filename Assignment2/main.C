@@ -57,16 +57,41 @@ int main(int argc, char *argv[]){
         image_depth = new Image(width, height);
         image_depth->SetAllPixels(sceneParser.getBackgroundColor());
     }
+    if (normal_file != NULL){
+        image_normal = new Image(width, height);
+        image_depth->SetAllPixels(sceneParser.getBackgroundColor());
+    }
 
+    //get light
+    int num_light = sceneParser.getNumLights();
+    Vec3f *light_dir = new Vec3f[num_light];
+    Vec3f *light_color = new Vec3f[num_light];
     //render
     //generate ray
     for (int i = 0; i < width; i++){
         for (int j = 0; j < height; j++){
             Ray r = camera->generateRay(Vec2f((float)i/width, (float)j/height));
             Hit h;
-            if (group->intersect(r, h, camera->getTMin())){
+            if (group->intersect(r, h, camera->getTMin())){             //光线与物体相交
                 assert(h.getMaterial() != NULL);
-                image->SetPixel(i, j, h.getMaterial()->getDiffuseColor());
+                Vec3f ambient_color = sceneParser.getAmbientLight();    //读取环境光
+                //caculate diffuse color
+                Vec3f diffuse_color;                                    //(0, 0, 0)
+                Vec3f hit_pos = r.pointAtParameter(h.getT());
+                //diffuse shading
+                for (int i = 0; i < num_light; i++){                    //读取光线数据
+                    sceneParser.getLight(i)->getIllumination(hit_pos, light_dir[i], light_color[i]);
+                    float diffuse = light_dir[i].Dot3(h.getNormal());
+                    if (diffuse < 0){ //点积为负，光在物体背面
+                        if (shade_back) diffuse = -diffuse;             //渲染背面
+                        else diffuse = 0;                               //不渲染背面，diffuse为0
+                    }
+                    diffuse_color += diffuse * light_color[i];
+                }
+                //pixel color = diffuse + ambient + specular
+                Vec3f pixel_color = (diffuse_color + ambient_color) * h.getMaterial()->getDiffuseColor();
+                image->SetPixel(i, j, pixel_color);
+
                 if (depth_file != NULL){ //render depth
                     float t = h.getT();
                     if (t >= depth_min && t <= depth_max){
@@ -75,21 +100,28 @@ int main(int argc, char *argv[]){
                     }
                 }
                 if (normal_file != NULL){ //render normal
+                    Vec3f normal = h.getNormal();
+                    float r = abs(normal.r()); 
+                    float g = abs(normal.g()); 
+                    float b = abs(normal.b()); 
+                    image_normal->SetPixel(i, j, Vec3f(r, g, b));
                 }
             }
         }
     }
+    printf("output\n");
 
     //output image to file
     char *ext = &output_file[strlen(output_file) - 4];
-    char *ext_depth = &depth_file[strlen(depth_file) - 4];
     if (!strcmp(ext, ".ppm")) image->SavePPM(output_file);
-    else if (!strcmp(ext, ".tga")) image->SaveTGA(output_file);
-    else {
+    else if (!strcmp(ext, ".tga")) {
+        image->SaveTGA(output_file);
+    } else {
         printf("error output image format\n");
         assert(0);
     }
     if (depth_file != NULL){
+        char *ext_depth = &depth_file[strlen(depth_file) - 4];
         if (!strcmp(ext_depth, ".ppm")) image_depth->SavePPM(depth_file);
         else if (!strcmp(ext_depth, ".tga")) image_depth->SaveTGA(depth_file);
         else {
@@ -97,6 +129,19 @@ int main(int argc, char *argv[]){
             assert(0);
         }
     }
+    if (normal_file != NULL){
+        char *ext_normal = &normal_file[strlen(normal_file) - 4];
+        if (!strcmp(ext_normal, ".ppm")) image_normal->SavePPM(normal_file);
+        else if (!strcmp(ext_normal, ".tga")) image_normal->SaveTGA(normal_file);
+        else {
+            printf("error normal image format\n");
+            assert(0);
+        }
+    }
+    printf("output done!\n");
+
+    delete [] light_dir;
+    delete [] light_color;
 
     return 0;
 }
