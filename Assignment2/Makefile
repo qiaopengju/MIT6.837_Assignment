@@ -60,6 +60,8 @@ scene5:
 	./raytracer -input src/scene2_05_inside_sphere.txt -size 200 200 -output output2_05_no_back.tga
 scene5_shade_back:
 	./raytracer -input src/scene2_05_inside_sphere.txt -size 200 200 -output output2_05.tga -depth 9 11 depth2_05.tga -normals normals2_05.tga -shade_back
+scene6:
+	./raytracer -input src/scene2_06_plane.txt -size 200 200 -output output2_06.tga -depth 8 20 depth2_06.tga -normals normals2_06.tga
 
 # ===============================================================
 

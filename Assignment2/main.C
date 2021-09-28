@@ -109,7 +109,6 @@ int main(int argc, char *argv[]){
             }
         }
     }
-    printf("output\n");
 
     //output image to file
     char *ext = &output_file[strlen(output_file) - 4];
