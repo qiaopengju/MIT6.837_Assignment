@@ -28,10 +28,10 @@ Group {
     numObjects 1
     MaterialIndex 0
     Transform {
-        UniformScale  5
+       	UniformScale  5
 	Translate  0.03 -0.0666 0 	
         TriangleMesh {
-            obj_file bunny_1k.obj
+            obj_file src/bunny_1k.obj
         }
     }
 }
