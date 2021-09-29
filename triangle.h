@@ -10,5 +10,6 @@ public:
     ~Triangle();
 private:
     Vec3f a, b, c;
+    Vec3f normal;
 };
 #endif
