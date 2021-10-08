@@ -9,6 +9,7 @@ Transform::Transform(Matrix &m, Object3D *o){
 }
 
 bool Transform::intersect(const Ray &r, Hit &h, float tmin){
+    //transform ray from word space to object space
     Vec3f dir_transform = r.getDirection();
     Vec3f ori_transform = r.getOrigin();
     m_inverse.Transform(dir_transform);
