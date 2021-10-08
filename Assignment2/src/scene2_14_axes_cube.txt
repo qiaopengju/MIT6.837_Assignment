@@ -60,7 +60,7 @@ Group {
     Transform {
         Translate  4 3 1 
         XRotate  10 
-	YRotate  20 
+        YRotate  20 
         ZRotate  30 
         Scale  2 0.5 3 
         TriangleMesh {
