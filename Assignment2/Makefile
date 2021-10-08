@@ -83,7 +83,8 @@ scene14:
 scene15:
 	./raytracer -input src/scene2_15_crazy_transforms.txt -size 200 200 -output output2_15.tga
 scene16:
-	./raytracer -input src/scene2_16_t_scale.txt -size 200 200 -output output2_16.tga
+	./raytracer -input src/scene2_16_t_scale.txt -size 200 200 -output output2_16.tga -depth 2 7 depth2_16.tga
+
 
 # ===============================================================
 
