@@ -366,6 +366,7 @@ public:
   float g() const { return data[1]; }
   float b() const { return data[2]; }
   float a() const { return data[3]; }
+  Vec3f xyz(){ return Vec3f(data[0], data[1], data[2]); }
   float Length() const {
     float l = (float)sqrt( data[0] * data[0] +
 		     data[1] * data[1] +
