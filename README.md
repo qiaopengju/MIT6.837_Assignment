@@ -1,3 +1,5 @@
+
+
 # MIT 6.837
 
 ### Assignment0:
@@ -242,9 +244,17 @@ if (group->intersect(r, h, camera->getTMin())){             //光线与物体相
   }
   ```
 
-* 透视投影相机如何打出射线？
+* **透视投影相机如何打出射线？**
 
-
+```c++
+Ray PerspectiveCamera::generateRay(Vec2f point){
+    Vec3f pos = center;
+    Vec3f ray_dir = direction + up * (point.y()-0.5) * tan(angle_randians/2) *2 + 
+    		horizontal * (point.x()-0.5) * tan(angle_randians/2) * 2;
+    ray_dir.Normalize();
+    return Ray(pos, ray_dir);
+}
+```
 
 * [x] Plane
 
@@ -275,6 +285,11 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
 
 * 方法1：利用重心坐标 Barycentric
 
+  * 根据克拉默法则，若|A|=0，则方程无解，Ray不与三角形所在平面相交
+  
+    * 若t<tmin，Ray与三角形不相交
+    * 若方程有解，且t>=tmin，0<α<1, 0<β<1, 0<γ<1，则Ray与三角形相交
+
 ![](src/2_triangle1.png)
 
 ---
@@ -291,9 +306,131 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
 
 * 方法2：先与三角形所在平面求交点，再判断交点是否在三角形内部
 
+  * 如何判断三角形平面上的点是否在三角形内部？
 
+    * 从这一点随机射出射线，与三角形有奇数个交点，则在内部，偶数个交点，在外部
+      * 需要特判顶点
+
+    ![](src/2_intersect.png)
+
+    * 通过重心坐标判断是否在三角形内部
 
 * [x] Derive a subclass `Transform` from `Object3D`
 
+对物体做变换后与Ray求交，可以通过对射线做变换实现
+
+![](src/2_transform1.png)
+
+![](src/2_transform2.png)
+
+是否要标准化变换后的方向向量：
+
+![](src/2_transform3.png)
+
+![](src/2_transform4.png)
+
+纠正变换后物体的法向量：
+
+![](src/2_transform5.png)
+
+---
+
+![](src/2_transform6.png)
+
+---
+
+![](src/2_transform7.png)
+
+---
+
+![](src/2_transform8.png)
+
+纠正变换后的法向量需要用到法矩阵：
+
+![](src/2_normal_matrix.png)
+
 #### Result
 
+* scene 6:
+
+maybe some bugs in normal shader?
+
+```
+	./raytracer -input src/scene2_06_plane.txt -size 200 200 -output output2_06.tga -depth 8 20 depth2_06.tga -normals normals2_06.tga
+```
+
+![](src/2_output2_06.png)
+
+![](src/2_depth2_06.png)
+
+![](src/2_normals2_06.png)
+
+* scene 7 shade back:
+
+```
+./raytracer -input src/scene2_07_sphere_triangles.txt -size 200 200 -output output2_07.tga -depth 9 11 depth2_07.tga -normals normals2_07.tga -shade_back
+```
+
+![](src/2_output2_07.png)
+
+![](src/2_depth2_07.png)
+
+* scene 7 don't shade back:
+
+```
+./raytracer -input src/scene2_07_sphere_triangles.txt -size 200 200 -output output2_07_no_back.tga
+```
+
+![](src/2_output2_07_no_back.png)
+
+* bunny 200 triangles:
+
+```
+./raytracer -input src/scene2_09_bunny_200.txt -size 200 200 -output output2_09.tga
+```
+
+![](src/2_output2_09.png)
+
+* bunny 1k triangles:
+
+```
+./raytracer -input src/scene2_10_bunny_1k.txt -size 200 200 -output output2_10.tga
+```
+
+![](src/2_output2_10.png)
+
+* scene 13:
+
+```
+./raytracer -input src/scene2_13_rotated_squashed_sphere.txt -size 200 200 -output output2_13.tga -normals normals2_13.tga
+```
+
+![](src/2_output2_13.png)
+
+![](src/2_normals2_13.png)
+
+* scene 14:
+
+```
+./raytracer -input src/scene2_14_axes_cube.txt -size 200 200 -output output2_14.tga
+```
+
+![](src/2_output2_14.png)
+
+* scene 15:
+
+```
+./raytracer -input src/scene2_15_crazy_transforms.txt -size 200 200 -output output2_15.tga
+```
+
+![](src/2_output2_15.png)
+
+* scene 16:
+
+some bugs in green sphere and purple sphere?
+
+```
+./raytracer -input src/scene2_16_t_scale.txt -size 200 200 -output output2_16.tga -depth 2 7 depth2_16.tga
+```
+
+![](src/2_output2_16.png)
