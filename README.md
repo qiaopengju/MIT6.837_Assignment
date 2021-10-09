@@ -327,6 +327,8 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
 
 ![](src/2_transform3.png)
 
+---
+
 ![](src/2_transform4.png)
 
 纠正变换后物体的法向量：
