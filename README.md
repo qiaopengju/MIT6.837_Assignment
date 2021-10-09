@@ -311,8 +311,6 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
     * 从这一点随机射出射线，与三角形有奇数个交点，则在内部，偶数个交点，在外部
       * 需要特判顶点
 
-    ![](src/2_intersect.png)
-
     * 通过重心坐标判断是否在三角形内部
 
 * [x] **Derive a subclass `Transform` from `Object3D`**
@@ -327,11 +325,8 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
 
 是否要标准化变换后的方向向量：
 
-![](src/2_transform3.png)
-
----
-
-![](src/2_transform4.png)
+* Normalize: tOS ≠ tWS
+* Don't Normalize: tOS = tWS
 
 纠正变换后物体的法向量：
 
@@ -353,11 +348,69 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
 
 ![](src/2_normal_matrix.png)
 
+#### Hint
+
+MIT提供的Transform相关的代码有点反人类，习惯上对向量做变换用矩阵M左乘向量v：Mv。例如对v先后做变换M1, M2, M3的M矩阵应为：
+
+```
+M = M3 * M2 * M1;
+```
+
+但scene_parser.C中解析变换矩阵时使用如下代码：
+
+```c++
+matrix *= new_transform; //matrix = matrix * new_transform
+```
+
+然后Matrix.C中的Transform(Vec4f)代码如下：
+
+```c++
+void Matrix::Transform(Vec4f &v) const {
+  Vec4f answer;
+  for (int y=0; y<4; y++) {
+    answer.data[y] = 0;
+    for (int i=0; i<4; i++) {
+      answer.data[y] += data[y][i] * v[i];
+    }
+  }
+  v = answer;
+}
+```
+
+相当与Mv，还是左乘，相当于列表中的变换顺序与我们想要的变换顺序是相反的
+
+---
+
+对Ray进行变换时，若单位化了direction向量，则需要改变Object3D的intersect函数，以Plane为例：
+
+```c++
+bool Plane::intersect(const Ray &r, Hit &h, float tmin){
+    //标准化方向向量
+    Vec3f dir_nor = r.getDirection();
+    float dir_len = dir_nor.Length();	//记录变换后的方向向量长度
+    dir_nor.Normalize();	//标准化方向向量
+
+    if (dir_nor.Dot3(normal) == 0) return false; //光线方向与平面平行
+    float t = (d - r.getOrigin().Dot3(normal)) / (dir_nor.Dot3(normal));
+  	t /= dir_len;	/*******得到的t是在单位长度下的t，除以dir_len得到实际的t*******/
+    if (t < 0) return false; //在光线背面
+    //与射线相交
+    if (t < tmin) return false;
+    if (h.getMaterial() != NULL && h.getT() < t) return true;
+    h.set(t, material, normal, r);
+    return true;
+}
+```
+
+---
+
+* **变换到世界坐标的法向量必须标准化**
+
 #### Result
 
 * scene 6:
 
-maybe some bugs in normal shader?
+**maybe some bugs in normal shader?**
 
 ```
 	./raytracer -input src/scene2_06_plane.txt -size 200 200 -output output2_06.tga -depth 8 20 depth2_06.tga -normals normals2_06.tga
@@ -429,9 +482,9 @@ maybe some bugs in normal shader?
 
 ![](src/2_output2_15.png)
 
-* scene 16:
+* **scene 16:**
 
-some bugs in green sphere and purple sphere?
+**some bugs in green sphere and purple sphere?**
 
 ```
 ./raytracer -input src/scene2_16_t_scale.txt -size 200 200 -output output2_16.tga -depth 2 7 depth2_16.tga
