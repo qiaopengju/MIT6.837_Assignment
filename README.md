@@ -224,7 +224,7 @@ if (group->intersect(r, h, camera->getTMin())){             //光线与物体相
 }
 ```
 
-* [x] Perspective Camera
+* [x] **Perspective Camera**
 
 ![](src/2_perspective_camera.png)
 
@@ -315,11 +315,13 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
 
     * 通过重心坐标判断是否在三角形内部
 
-* [x] Derive a subclass `Transform` from `Object3D`
+* [x] **Derive a subclass `Transform` from `Object3D`**
 
 对物体做变换后与Ray求交，可以通过对射线做变换实现
 
 ![](src/2_transform1.png)
+
+---
 
 ![](src/2_transform2.png)
 
