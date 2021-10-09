@@ -206,13 +206,13 @@ if (group->intersect(r, h, camera->getTMin())){             //光线与物体相
 	Vec3f hit_pos = r.pointAtParameter(h.getT());
 	/*diffuse shading*/
 	for (int i = 0; i < num_light; i++){                    //读取光线数据
-    sceneParser.getLight(i)->getIllumination(hit_pos, light_dir[i], light_color[i]);
-    float diffuse = light_dir[i].Dot3(h.getNormal());
-    if (diffuse < 0){ //点积为负，光在物体背面
-        if (shade_back) diffuse = -diffuse;             //渲染背面
-        else diffuse = 0;                               //不渲染背面，diffuse为0
-    }
-    diffuse_color += diffuse * light_color[i];
+  		sceneParser.getLight(i)->getIllumination(hit_pos, light_dir[i], light_color[i]);
+    	float diffuse = light_dir[i].Dot3(h.getNormal());
+    	if (diffuse < 0){ //点积为负，光在物体背面
+        	if (shade_back) diffuse = -diffuse;             //渲染背面
+        	else diffuse = 0;                               //不渲染背面，diffuse为0
+    	}
+    	diffuse_color += diffuse * light_color[i];
 	}
 	/*pixel color = diffuse + ambient + specular*/
 	Vec3f pixel_color = (diffuse_color + ambient_color) * h.getMaterial()->getDiffuseColor();
