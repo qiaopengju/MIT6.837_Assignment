@@ -10,10 +10,16 @@ Triangle::Triangle(Vec3f &a, Vec3f &b, Vec3f &c, Material *m){
 }
 
 bool Triangle::intersect(const Ray &r, Hit &h, float tmin){
+    //标准化方向向量
+    Vec3f dir_nor = r.getDirection();
+    float dir_len = dir_nor.Length();
+    dir_nor.Normalize();
+
     //判断是否与三角形所在平面相交
     float d = b.Dot3(normal);
-    if (r.getDirection().Dot3(normal) == 0) return false; //光线方向与平面平行
-    float t = (d - r.getOrigin().Dot3(normal)) / (r.getDirection().Dot3(normal));
+    if (dir_nor.Dot3(normal) == 0) return false; //光线方向与平面平行
+    float t = (d - r.getOrigin().Dot3(normal)) / (dir_nor.Dot3(normal));
+    t /= dir_len;
     if (t < 0) return false; //在光线背面
     if (t < tmin) return false;
     Vec3f hit_pos = r.pointAtParameter(t);
