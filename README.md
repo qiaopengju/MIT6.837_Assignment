@@ -64,7 +64,7 @@ do_transform[k]_to_Vec();
 
 ![](src/1_orthographic_camera.png)
 
-* 在坐标运算时，最好在[0,1]标准化空间坐标进行，在遇到实际的屏幕时，可以用$x = x' * widht;\quad y = y' * height$来换算
+* 在坐标运算时，最好在[0,1]标准化空间坐标进行，在遇到实际的屏幕时，可以用x = x' * widht;  y = y' * height来换算
 * Image类中颜色坐标范围是[0,1]
   * 输出t在[depth_min, depth_max]之间的灰度，要在Clamp之后，作如下变换：
 
