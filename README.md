@@ -106,12 +106,16 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
     
     if (tp - t < tmin){
         if (tp + t > tmin){ //射线在球内部，且相交
-            h.set(tp + t, material, r);
+            if (h.getMaterial() == NULL || h.getT() > tp+t){ //如果t比h中的t小，则更新h
+          		h.set(tp + t, material, r);
+            }
             return true;
         } else return false;//不相交
 
     } else {								//射线在球外部，且相交
-        h.set(tp - t, material, r);
+        if (h.getMaterial() == NULL || h.getT() > tp+t){		//如果t比h中的t小，则更新h
+      		h.set(tp - t, material, r);
+        }
         return true;
     }
 }
