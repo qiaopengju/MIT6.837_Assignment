@@ -2,18 +2,20 @@
 # for g++ on linux platforms
 
 # ===============================================================
+OBJ_DIR = ../obj
+RAY_TRACER_DIR = ../raytracer
 
 SRCS 	 	= main.C \
 		  ../matrix.C \
 		  ../image.C \
 		  scene_parser.C \
-		  ../sphere.C \
-		  ../camera.C \
-		  ../group.C
+		  $(OBJ_DIR)/sphere.C \
+		  $(RAY_TRACER_DIR)/camera.C \
+		  $(OBJ_DIR)/group.C
 
 # ===============================================================
 
-FLAG 	= -I../ -std=c++11
+FLAG 	= -I../ -I../obj/ -I../raytracer/ -std=c++11
 CC		= clang++
 EXE	  	= raytracer
 OBJS =  $(SRCS:.C=.o)
@@ -27,9 +29,8 @@ all: depend $(EXE)
 
 depend:
 	$(CC) -E -M $(SRCS) $(FLAG)> Makefile.depend
-
 clean: 
-	-rm -f *~ *bak *.o  ../*.o *.tga *.ppm core.* Makefile.depend $(EXE) 
+	-rm -f *~ *bak *.o  ../*.o *.tga *.ppm core.* Makefile.depend $(EXE) $(RAY_TRACER_DIR)/*.o $(OBJ_DIR)/*.o
 
 # ===============================================================
 # compilation rules
@@ -39,7 +40,6 @@ $(EXE): $(OBJS)
 
 .C.o:
 	$(CC) $< -c -o $@ $(FLAG)
-
 .cpp.o:
 	$(CC) $< -c -o $@ $(FLAG)
 

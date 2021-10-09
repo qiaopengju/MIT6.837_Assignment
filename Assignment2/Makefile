@@ -2,21 +2,23 @@
 # for g++ on linux platforms
 
 # ===============================================================
+OBJ_DIR = ../obj
+RAY_TRACER_DIR = ../raytracer
 
 SRCS 	 	= main.C \
 		  ../matrix.C \
 		  ../image.C \
 		  scene_parser.C \
-		  ../sphere.C \
-		  ../camera.C \
-		  ../group.C \
-		  ../plane.C \
-		  ../triangle.C \
-		  ../transform.C
+		  $(OBJ_DIR)/sphere.C \
+		  $(OBJ_DIR)/group.C \
+		  $(OBJ_DIR)/plane.C \
+		  $(OBJ_DIR)/triangle.C \
+		  $(OBJ_DIR)/transform.C \
+		  $(RAY_TRACER_DIR)/camera.C
 
 # ===============================================================
 
-FLAG 	= -I../ -std=c++11
+FLAG 	= -I../ -I$(RAY_TRACER_DIR) -I$(OBJ_DIR) -std=c++11
 CC		= clang++
 EXE	  	= raytracer
 OBJS =  $(SRCS:.C=.o)
@@ -24,7 +26,7 @@ OBJS =  $(SRCS:.C=.o)
 # ===============================================================
 # targets
 
-.PHONY: all depend clean
+.PHONY: all depend clean clean_img
 
 all: depend $(EXE)
 
@@ -32,7 +34,9 @@ depend:
 	$(CC) -E -M $(SRCS) $(FLAG)> Makefile.depend
 
 clean: 
-	-rm -f *~ *bak *.o  ../*.o *.tga *.ppm core.* Makefile.depend $(EXE) 
+	-rm -f *~ *bak *.o  ../*.o $(RAY_TRACER_DIR)/*.o $(OBJ_DIR)/*.o core.* Makefile.depend $(EXE)
+clean_img:
+	-rm -f *.tga *.ppm
 
 # ===============================================================
 # compilation rules
