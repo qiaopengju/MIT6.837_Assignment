@@ -167,11 +167,13 @@ ObjectList = new Object3D*[n];	//Group中有n个Objects
 
 ---
 
-### Assignment2
+### Assignment2 Transformations & Additional Primitives
 
 #### Task
 
 * [x] Implement the new rendering mode, normal visualization:
+
+![](src/2_normal.png)
 
 读取射线击中点的法向量，取法向量分量的绝对值作为rgb分量的值
 
@@ -224,15 +226,74 @@ if (group->intersect(r, h, camera->getTMin())){             //光线与物体相
 
 ![](src/2_perspective_camera.png)
 
+* 通过up, direction, center三个向量可以确定一个透视投影相机
+
+  * 三个向量必须标准化
+  * up可能不与direction垂直，要利用horizontal向量使up和direction垂直
+
+  ```c++
+  PerspectiveCamera::PerspectiveCamera(Vec3f _center, Vec3f _direction, Vec3f _up, float _angle_radius):
+          center(_center), direction(_direction), up(_up), angle_randians(_angle_radius){
+      direction.Normalize();	//标准化方向向量
+      Vec3f::Cross3(horizontal, direction, up);	//通过叉乘direction, up向量得horizontal向量
+      Vec3f::Cross3(up, horizontal, direction);	//通过叉乘horizontal, direction向量使up与direction向量垂直
+      up.Normalize();	//标准化up向量
+      horizontal.Normalize();	//标准化horizontal向量
+  }
+  ```
+
+* 透视投影相机如何打出射线？
+
 
 
 * [x] Plane
+
+通过平面一点和平面法向量可以确定平面方程，我们可以这样定义平面：P dot n = d，故通过normal和d可以唯一确定一个平面
+
+* 射线相交判断：
+  * 射线方向向量与平面法向量垂直：射线与平面平行，不相交
+  * 将Ray的方程带入平面，得到t
+    * t >= tmin，相交;
+    * t < tmin，不相交;
+
+```c++
+bool Plane::intersect(const Ray &r, Hit &h, float tmin){
+    if (dir_nor.Dot3(normal) == 0) return false; //光线方向与平面平行
+    float t = (d - r.getOrigin().Dot3(normal)) / (dir_nor.Dot3(normal));
+    if (t < 0) return false; //在光线背面
+    //与射线相交
+    if (t < tmin) return false;
+    if (h.getMaterial() != NULL && h.getT() < t) return true;
+    h.set(t, material, normal, r);
+    return true;
+}
+```
+
 * [x] Triangle
+
+射线与三角形求交判断：
+
+* 方法1：利用重心坐标 Barycentric
+
+![](src/2_triangle1.png)
+
+---
+
+![](src/2_triangle2.png)
+
+---
+
+![](src/2_triangle3.png)
+
+---
+
+![](src/2_triangle4.png)
+
+* 方法2：先与三角形所在平面求交点，再判断交点是否在三角形内部
+
+
+
 * [x] Derive a subclass `Transform` from `Object3D`
-
-#### Hint
-
-
 
 #### Result
 
