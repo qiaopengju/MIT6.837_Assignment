@@ -29,7 +29,6 @@ PerspectiveCamera::PerspectiveCamera(Vec3f _center, Vec3f _direction, Vec3f _up,
     Vec3f::Cross3(up, horizontal, direction);
     up.Normalize();
     horizontal.Normalize();
-    near_size = abs(center.z()) * tanf(angle_randians/2) * 2;   //虚拟屏幕大小
 }
 
 Ray PerspectiveCamera::generateRay(Vec2f point){
