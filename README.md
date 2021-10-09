@@ -106,14 +106,14 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
     
     if (tp - t < tmin){
         if (tp + t > tmin){ //射线在球内部，且相交
-            if (h.getMaterial() == NULL || h.getT() > tp+t){ //如果t比h中的t小，则更新h
+            if (h.getMaterial() == NULL || h.getT() > tp+t){ //如果t比hit中的t小，则更新h
           		h.set(tp + t, material, r);
             }
             return true;
         } else return false;//不相交
 
     } else {								//射线在球外部，且相交
-        if (h.getMaterial() == NULL || h.getT() > tp+t){		//如果t比h中的t小，则更新h
+        if (h.getMaterial() == NULL || h.getT() > tp+t){		//如果t比hit中的t小，则更新h
       		h.set(tp - t, material, r);
         }
         return true;
@@ -160,4 +160,41 @@ ObjectList = new Object3D*[n];	//Group中有n个Objects
 ![1_output1_07](src/1_output1_07.png)
 
 ![1_depth1_07](src/1_depth1_07.png)
+
+---
+
+### Assignment2
+
+#### Task
+
+* [x] Implement the new rendering mode, normal visualization:
+
+```c++
+```
+
+* [x] Add diffuse shading
+
+
+
+* [x] Perspective Camera
+
+
+
+* [x] Plane
+
+
+
+* [x] Triangle
+
+
+
+* [x] Derive a subclass `Transform` from `Object3D`
+
+
+
+#### Hint
+
+
+
+#### Result
 
