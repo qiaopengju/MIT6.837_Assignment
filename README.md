@@ -60,6 +60,10 @@ do_transform[k]_to_Vec();
 
 #### Hint:
 
+* Orthographic Camera：
+
+![](src/1_orthographic_camera.png)
+
 * 在坐标运算时，最好在[0,1]标准化空间坐标进行，在遇到实际的屏幕时，可以用$x = x' * widht;\quad y = y' * height$来换算
 * Image类中颜色坐标范围是[0,1]
   * 输出t在[depth_min, depth_max]之间的灰度，要在Clamp之后，作如下变换：
@@ -169,28 +173,62 @@ ObjectList = new Object3D*[n];	//Group中有n个Objects
 
 * [x] Implement the new rendering mode, normal visualization:
 
+读取射线击中点的法向量，取法向量分量的绝对值作为rgb分量的值
+
 ```c++
+Vec3f normal = h.getNormal();
+float r = abs(normal.r()); 
+float g = abs(normal.g()); 
+float b = abs(normal.b()); 
+image_normal->SetPixel(i, j, Vec3f(r, g, b));
 ```
 
 * [x] Add diffuse shading
 
+任务要求加入diffuse(依赖光线与法线向量)与ambient，物体在该点最终的颜色为diffuse color + ambient color:
 
+* 漫反射颜色计算:
+
+  ![diffuse](src/2_diffuse_color.png)
+
+  * 光线在物体背面时n dot I 为负，这时我们diffuse设为0
+  * 作业要求加入shade back选项，故当光线在物体背面，并要求shade back时，diffuse = - n dot I
+  * 多束光线作用物体，diffuse为这些作用的总和
+
+* 环境光计算：ambient color = ambient coefficient * material
+
+```c++
+if (group->intersect(r, h, camera->getTMin())){             //光线与物体相交
+	assert(h.getMaterial() != NULL);
+	Vec3f ambient_color = sceneParser.getAmbientLight();    //读取环境光
+	/*caculate diffuse color*/
+	Vec3f diffuse_color;                                    //(0, 0, 0)
+	Vec3f hit_pos = r.pointAtParameter(h.getT());
+	/*diffuse shading*/
+	for (int i = 0; i < num_light; i++){                    //读取光线数据
+    sceneParser.getLight(i)->getIllumination(hit_pos, light_dir[i], light_color[i]);
+    float diffuse = light_dir[i].Dot3(h.getNormal());
+    if (diffuse < 0){ //点积为负，光在物体背面
+        if (shade_back) diffuse = -diffuse;             //渲染背面
+        else diffuse = 0;                               //不渲染背面，diffuse为0
+    }
+    diffuse_color += diffuse * light_color[i];
+	}
+	/*pixel color = diffuse + ambient + specular*/
+	Vec3f pixel_color = (diffuse_color + ambient_color) * h.getMaterial()->getDiffuseColor();
+	image->SetPixel(i, j, pixel_color);
+}
+```
 
 * [x] Perspective Camera
+
+![](src/2_perspective_camera.png)
 
 
 
 * [x] Plane
-
-
-
 * [x] Triangle
-
-
-
 * [x] Derive a subclass `Transform` from `Object3D`
-
-
 
 #### Hint
 
