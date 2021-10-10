@@ -8,6 +8,7 @@ SRCS 	 	= main.C \
 		../matrix.C \
 		../image.C \
 		../scene_parser.C \
+		../GL/obj/group.C \
 		../GL/obj/sphere.C \
 		../GL/obj/triangle.C \
 		../GL/obj/plane.C \
@@ -53,4 +54,9 @@ $(EXE): $(OBJS)
 # ===============================================================
 
 -include Makefile.depend
+
+# ===============================================================
+# run
+scene1:
+	./raytracer -input src/scene3_01_cube_orthographic.txt -size 200 200 -output output3_01.tga -gui
 
