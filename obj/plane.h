@@ -8,8 +8,9 @@
 class Plane : public Object3D{
 public:
     Plane(Vec3f &_noraml, float _d, Material *_m);
-    bool intersect(const Ray &r, Hit &h, float tmin);
     ~Plane();
+    bool intersect(const Ray &r, Hit &h, float tmin);
+    void paint();
 private:
     Vec3f normal;
     //d is the offset from the origin, meaning that the plane equation is P.n = d

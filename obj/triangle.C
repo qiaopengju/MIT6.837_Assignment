@@ -1,3 +1,4 @@
+#include <GL/glut.h>
 #include "triangle.h"
 
 Triangle::Triangle(Vec3f &a, Vec3f &b, Vec3f &c, Material *m){
@@ -48,4 +49,14 @@ bool Triangle::intersect(const Ray &r, Hit &h, float tmin){
     if (h.getMaterial() != NULL && t > h.getT()) return true;
     h.set(t, material, normal, r);
     return true;
+}
+
+void Triangle::paint(){
+    material->glSetMaterial();
+    glBegin(GL_TRIANGLES);
+        glVertex3f(a.x(), a.y(), a.z());
+        glVertex3f(b.x(), b.y(), b.z());
+        glVertex3f(c.x(), c.y(), c.z());
+        glNormal3f(normal.x(), normal.y(), normal.z());
+    glEnd();
 }

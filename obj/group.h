@@ -14,6 +14,7 @@ public:
 
     void addObject(int index, Object3D *obj);
     bool intersect(const Ray &r, Hit &h, float tmin);
+    void paint();
 private:
     Object3D **objList;
     int numObjects;
