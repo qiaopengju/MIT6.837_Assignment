@@ -8,13 +8,13 @@ SRCS 	 	= main.C \
 		../matrix.C \
 		../image.C \
 		../scene_parser.C \
-		../obj/sphere.C \
-		../obj/triangle.C \
-		../obj/plane.C \
-		../obj/transform.C \
-		../raytracer/material.C \
-		../raytracer/light.C \
-		../raytracer/camera.C \
+		../GL/obj/sphere.C \
+		../GL/obj/triangle.C \
+		../GL/obj/plane.C \
+		../GL/obj/transform.C \
+		../GL/raytracer/material.C \
+		../GL/raytracer/light.C \
+		../GL/raytracer/camera.C \
 		../GL/glCanvas.C
 
 # ===============================================================
@@ -26,7 +26,7 @@ INCLUDE = -I/mit/mesa_v501/Mesa-5.0.1/include/
 CC = clang++
 EXE = raytracer
 OBJS =  $(SRCS:.C=.o)
-FLAG = -I../GL -I../obj/ -I../raytracer/ -I../ -std=c++11
+FLAG = -I../GL -I../GL/obj/ -I../GL/raytracer/ -I../ -std=c++11
 
 # ===============================================================
 # targets
@@ -39,7 +39,7 @@ depend:
 	$(CC) $(INCLUDE) $(FLAG) -E -M $(SRCS) > Makefile.depend
 
 clean: 
-	-rm -f *~ *bak *.o ../*.o ../GL/*.o ../obj/*.o ../raytracer/*.o core.* Makefile.depend $(EXE) 
+	-rm -f *~ *bak *.o ../*.o ../GL/*.o ../GL/obj/*.o ../GL/raytracer/*.o core.* Makefile.depend $(EXE) 
 
 # ===============================================================
 # compilation rules
