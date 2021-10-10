@@ -31,6 +31,6 @@ Group {
 
     MaterialIndex 0
     TriangleMesh {
-        obj_file cube.obj
+        obj_file ../src/model/cube.obj
     }
 }
