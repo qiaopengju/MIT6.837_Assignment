@@ -1,3 +1,4 @@
+#include <GL/glut.h>
 #include "sphere.h"
 
 bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
@@ -28,4 +29,8 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
         if (h.getMaterial() == NULL || h.getT() > (tp - t)/dir_len) h.set((tp - t)/dir_len, material, normal, r);
         return true;
     }
+}
+
+void Sphere::paint(){
+    material->glSetMaterial();
 }

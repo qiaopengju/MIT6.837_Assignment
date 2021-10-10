@@ -12,3 +12,9 @@ bool Group::intersect(const Ray &r, Hit &h, float tmin){
     //printf("Hit at %f\n", h.getT());
     return flag;
 }
+
+void Group::paint(){
+    for (int i = 0; i < numObjects; i++){
+        objList[i]->paint();
+    }
+}
