@@ -1,6 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include <GL/glut.h>
 #include "ray.h"
 #include "vectors.h"
 
@@ -12,6 +13,19 @@ public:
 
     virtual Ray generateRay(Vec2f point) = 0;
     virtual float getTMin() const = 0;
+
+    //===========================================================
+    // Here are the prototypes for five pure virtual functions for
+    // initializing, placing, dollying, trucking, and rotating an
+    // OpenGL camera.
+    virtual void glInit(int w, int h) = 0;
+    virtual void glPlaceCamera(void) = 0;
+    // dollyCamera: Move camera along the direction vector
+    virtual void dollyCamera(float dist) = 0;
+    // truckCamera: Translate camera perpendicular to the direction vector
+    virtual void truckCamera(float dx, float dy) = 0;
+    // rotateCamera: Rotate around the up and horizontal vectors
+    virtual void rotateCamera(float rx, float ry) = 0;
 };
 
 class OrthographicCamera : public Camera{
@@ -26,6 +40,18 @@ public:
     Ray generateRay(Vec2f point);
     //will be useful when tracing rays through the scene
     float getTMin() const;
+
+    // ===========================================
+    // GLUT
+    // ===========================================
+    // Create an orthographic camera with the appropriate dimensions that
+    // crops the screen in the narrowest dimension.
+    void glInit(int w, int h);
+    // Place an orthographic camera within an OpenGL scene
+    void glPlaceCamera();
+    void dollyCamera(float dist);
+    void truckCamera(float dx, float dy);
+    void rotateCamera(float rx, float ry);
 
 private:
     Vec3f center, direction, up, horizontal;
@@ -45,6 +71,14 @@ public:
     //will be useful when tracing rays through the scene
     float getTMin() const;
 
+    // ===========================================
+    // GLUT
+    // ===========================================
+    void glInit(int w, int h);
+    void glPlaceCamera();
+    void dollyCamera(float dist);
+    void truckCamera(float dx, float dy);
+    void rotateCamera(float rx, float ry);
 private:
     Vec3f center, direction, up, horizontal;
     float angle_randians;
