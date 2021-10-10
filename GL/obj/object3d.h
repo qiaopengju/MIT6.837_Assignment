@@ -1,3 +1,5 @@
+#define GL_SILENCE_DEPRECATION
+
 #ifndef OBJECT3D_H
 #define OBJECT3D_H
 
@@ -5,6 +7,7 @@
 #include "ray.h"
 #include "hit.h"
 #include "material.h"
+
 
 class Object3D{
 public:
