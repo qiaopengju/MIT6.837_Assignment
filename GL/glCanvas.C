@@ -5,7 +5,6 @@
 #include "group.h"
 
 // Included files for OpenGL Rendering
-#include <GL/gl.h>
 #include <GL/glut.h>
 
 // ========================================================
@@ -240,8 +239,13 @@ void GLCanvas::keyboard(unsigned char key, int x, int y) {
 // This function will not return but can be terminated
 // by calling 'exit(0)'
 // ========================================================
-
 void GLCanvas::initialize(SceneParser *_scene, void (*_renderFunction)(void)) {
+  // OPTIONAL: If you'd like to set the window size from 
+  // the command line, do that here
+  glutInitWindowSize(400,400);
+  glutInitWindowPosition(100,100);
+  glutCreateWindow("OpenGL Viewer");
+
   scene = _scene;
   renderFunction = _renderFunction;
 
@@ -253,11 +257,6 @@ void GLCanvas::initialize(SceneParser *_scene, void (*_renderFunction)(void)) {
   // Set window parameters
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB);
   glEnable(GL_DEPTH_TEST);
-  // OPTIONAL: If you'd like to set the window size from 
-  // the command line, do that here
-  glutInitWindowSize(400,400);
-  glutInitWindowPosition(100,100);
-  glutCreateWindow("OpenGL Viewer");
 
   glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
   glEnable(GL_NORMALIZE);
@@ -270,9 +269,9 @@ void GLCanvas::initialize(SceneParser *_scene, void (*_renderFunction)(void)) {
   // Initialize callback functions
   glutMouseFunc(mouse);
   glutMotionFunc(motion);
-  glutDisplayFunc(display);
   glutReshapeFunc(reshape);
   glutKeyboardFunc(keyboard);
+  glutDisplayFunc(display);
 
   // Enter the main rendering loop
   glutMainLoop();
