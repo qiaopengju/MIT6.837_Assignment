@@ -117,6 +117,12 @@ void OrthographicCamera::rotateCamera(float rx, float ry)
   // ===========================================
   // ASSIGNMENT 3: Fix any other affected values
   // ===========================================
+  rotMat.TransformDirection(up);
+  rotMat.TransformDirection(horizontal);
+
+  direction.Normalize();
+  up.Normalize();
+  horizontal.Normalize();
 }
 
 PerspectiveCamera::PerspectiveCamera(Vec3f _center, Vec3f _direction, Vec3f _up, float _angle_radius):
@@ -230,4 +236,10 @@ void PerspectiveCamera::rotateCamera(float rx, float ry)
   // ===========================================
   // ASSIGNMENT 3: Fix any other affected values
   // ===========================================
+  rotMat.TransformDirection(up);
+  rotMat.TransformDirection(horizontal);
+
+  direction.Normalize();
+  up.Normalize();
+  horizontal.Normalize();
 }
