@@ -14,6 +14,7 @@
 #include "glCanvas.h"
 
 GLCanvas glCanvas;
+SceneParser *sceneParser;
 
 void render();
 
@@ -58,9 +59,8 @@ int main(int argc, char *argv[]){
         }
     }
     if (gl_preview){
-        SceneParser *sceneParser = new SceneParser(input_file);
+        sceneParser = new SceneParser(input_file);
         glCanvas.initialize(sceneParser, render);
-        delete sceneParser;
     } else {
         render();
     }
