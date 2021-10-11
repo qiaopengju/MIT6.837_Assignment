@@ -491,3 +491,29 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
 ```
 
 ![](src/2_output2_16.png)
+
+---
+
+### Assignment 3
+
+* 所有GLUT call都应该放在create window之后，不然会segmentation fault
+* GLUT应该先初始化
+
+```c++
+glutInit(&argc, argv);
+```
+
+* 绘制时，normal设置应该放在最前面
+
+```c++
+void Triangle::paint(){
+    material->glSetMaterial();
+    glBegin(GL_TRIANGLES);
+        glNormal3f(normal.x(), normal.y(), normal.z()); //应当放在前面，设置之后绘制点的法向量
+        glVertex3f(a.x(), a.y(), a.z());
+        glVertex3f(b.x(), b.y(), b.z());
+        glVertex3f(c.x(), c.y(), c.z());
+    glEnd();
+}
+```
+
