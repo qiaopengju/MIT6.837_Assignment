@@ -83,7 +83,7 @@ scene12:
 scene13:
 	./raytracer -input src/scene2_13_rotated_squashed_sphere.txt -size 200 200 -output output2_13.tga -normals normals2_13.tga
 scene14:
-	./raytracer -input src/scene2_14_axes_cube.txt -size 200 200 -output output2_14.tga
+	./raytracer -input src/scene2_14_axes_cube.txt -size 200 200 -output output2_14.tga -normals normals2_14.tga
 scene15:
 	./raytracer -input src/scene2_15_crazy_transforms.txt -size 200 200 -output output2_15.tga
 scene16:
