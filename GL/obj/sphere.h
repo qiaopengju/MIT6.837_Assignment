@@ -18,5 +18,6 @@ private:
     Vec3f center;
     float radius;
     static int phi, theta;
+    void renderVertexGourad(Vec3f v);
 };
 #endif

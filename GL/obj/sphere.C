@@ -1,5 +1,6 @@
 #include <GL/glut.h>
 #include "sphere.h"
+#include "raytracer.h"
 
 int Sphere::theta, Sphere::phi;
 
@@ -25,12 +26,12 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
             return true;
         } else return false;
 
-    } else {
+    } else if ((tp - t)/dir_len >= tmin){
         Vec3f normal = r.pointAtParameter((tp - t)/dir_len) - center;
         normal.Normalize();
         if (h.getMaterial() == NULL || h.getT() > (tp - t)/dir_len) h.set((tp - t)/dir_len, material, normal, r);
         return true;
-    }
+    } else return false;
 }
 
 void Sphere::gl_set_theta_phi(const int &_theta, const int &_phi){
@@ -47,6 +48,14 @@ Vec3f Sphere::getPoint(float _theta, float _phi){
     return Vec3f(x, y, z);
 }
 
+void Sphere::renderVertexGourad(Vec3f v){
+    //Vec3f quad_normal = v - center;
+    Vec3f quad_normal = center - v; //wrong! but result is right. but why ? ***************************
+    quad_normal.Normalize();
+    glNormal3f(quad_normal.x(), quad_normal.y(), quad_normal.z());
+    glVertex3f(v.x(), v.y(), v.z());
+}
+
 void Sphere::paint(){
     material->glSetMaterial();
     float delta_theta = 360.f / theta;
@@ -61,12 +70,21 @@ void Sphere::paint(){
                 x2 = getPoint(iTheta + delta_theta, iPhi);
                 x3 = getPoint(iTheta + delta_theta, iPhi + delta_phi);
                 x4 = getPoint(iTheta, iPhi + delta_phi);
-                Vec3f::Cross3(quad_normal, x2 - x1, x3 - x2);
+                if (!gouraud){
+                    Vec3f::Cross3(quad_normal, x2 - x1, x3 - x2);
+                    if (quad_normal.Length() == 0) Vec3f::Cross3(quad_normal, x3 - x2, x4 - x3); //?****
                     glNormal3f(quad_normal.x(), quad_normal.y(), quad_normal.z());
                     glVertex3f(x1.x(), x1.y(), x1.z());
                     glVertex3f(x2.x(), x2.y(), x2.z());
                     glVertex3f(x3.x(), x3.y(), x3.z());
                     glVertex3f(x4.x(), x4.y(), x4.z());
+                } else{
+                    renderVertexGourad(x1);
+                    renderVertexGourad(x2);
+                    renderVertexGourad(x3);
+                    renderVertexGourad(x4);
+                }
+                //GL
             }
         }
     glEnd();
