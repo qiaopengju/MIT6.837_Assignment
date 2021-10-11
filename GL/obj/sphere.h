@@ -11,9 +11,12 @@ public:
         center(_center), radius(_radius){ material = _material; }
 
     bool intersect(const Ray &r, Hit &h, float tmin);
+    static void gl_set_theta_phi(const int &theta, const int &phi);
     void paint();
+    Vec3f getPoint(float _theta, float _phi);
 private:
     Vec3f center;
     float radius;
+    static int phi, theta;
 };
 #endif

@@ -1,6 +1,8 @@
 #include <GL/glut.h>
 #include "sphere.h"
 
+int Sphere::theta, Sphere::phi;
+
 bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
     //标准化方向向量
     Vec3f dir_nor = r.getDirection();
@@ -31,6 +33,41 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
     }
 }
 
+void Sphere::gl_set_theta_phi(const int &_theta, const int &_phi){
+    theta = _theta;
+    phi = _phi;
+}
+
+Vec3f Sphere::getPoint(float _theta, float _phi){
+    _phi = _phi * M_PI / 180.f;
+    _theta = _theta * M_PI / 180.f;
+    float x = center.x() + radius * sin(_phi) * cos(_theta);
+    float y = center.y() + radius * sin(_phi) * sin(_theta);
+    float z = center.z() + radius * cos(_phi);
+    return Vec3f(x, y, z);
+}
+
 void Sphere::paint(){
     material->glSetMaterial();
+    float delta_theta = 360.f / theta;
+    float delta_phi = 180.f / phi;
+
+    //从底部开始渲染
+    Vec3f x1, x2, x3, x4, quad_normal;
+    glBegin(GL_QUADS);
+        for (float iPhi = 0; iPhi <= 180; iPhi += delta_phi) {
+            for (float iTheta = 0; iTheta <= 360; iTheta += delta_theta){
+                x1 = getPoint(iTheta, iPhi);
+                x2 = getPoint(iTheta + delta_theta, iPhi);
+                x3 = getPoint(iTheta + delta_theta, iPhi + delta_phi);
+                x4 = getPoint(iTheta, iPhi + delta_phi);
+                Vec3f::Cross3(quad_normal, x2 - x1, x3 - x2);
+                    glNormal3f(quad_normal.x(), quad_normal.y(), quad_normal.z());
+                    glVertex3f(x1.x(), x1.y(), x1.z());
+                    glVertex3f(x2.x(), x2.y(), x2.z());
+                    glVertex3f(x3.x(), x3.y(), x3.z());
+                    glVertex3f(x4.x(), x4.y(), x4.z());
+            }
+        }
+    glEnd();
 }
