@@ -9,7 +9,6 @@ public:
     ~Triangle();
 
     bool intersect(const Ray &r, Hit &h, float tmin);
-    void paint();
 private:
     Vec3f a, b, c;
     Vec3f normal;

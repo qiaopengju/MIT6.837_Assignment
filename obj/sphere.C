@@ -30,7 +30,3 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
         return true;
     }
 }
-
-void Sphere::paint(){
-    material->glSetMaterial();
-}

@@ -11,7 +11,6 @@ public:
         center(_center), radius(_radius){ material = _material; }
 
     bool intersect(const Ray &r, Hit &h, float tmin);
-    void paint();
 private:
     Vec3f center;
     float radius;
