@@ -3,20 +3,21 @@
 
 # ===============================================================
 # update this list as you add new C++ source files
-
+OBJ_DIR = ../GL/obj
+RAY_TRACER_DIR = ../GL/ray_tracer
 SRCS 	 	= main.C \
 		../matrix.C \
 		../image.C \
 		../scene_parser.C \
-		../GL/obj/group.C \
-		../GL/obj/sphere.C \
-		../GL/obj/triangle.C \
-		../GL/obj/plane.C \
-		../GL/obj/transform.C \
-		../GL/ray_tracer/raytracer.C \
-		../GL/ray_tracer/material.C \
-		../GL/ray_tracer/light.C \
-		../GL/ray_tracer/camera.C \
+		$(OBJ_DIR)/group.C \
+		$(OBJ_DIR)/sphere.C \
+		$(OBJ_DIR)/triangle.C \
+		$(OBJ_DIR)/plane.C \
+		$(OBJ_DIR)/transform.C \
+		$(RAY_TRACER_DIR)/raytracer.C \
+		$(RAY_TRACER_DIR)/material.C \
+		$(RAY_TRACER_DIR)/light.C \
+		$(RAY_TRACER_DIR)/camera.C \
 		../GL/glCanvas.C \
 
 # ===============================================================
@@ -28,7 +29,7 @@ INCLUDE = -I/mit/mesa_v501/Mesa-5.0.1/include/
 CC = clang++
 EXE = raytracer
 OBJS =  $(SRCS:.C=.o)
-FLAG = -I../GL -I../GL/obj/ -I../GL/ray_tracer/ -I../ -std=c++11
+FLAG = -I../GL -I$(OBJ_DIR) -I$(RAY_TRACER_DIR) -I../ -std=c++11
 
 # ===============================================================
 # targets
@@ -41,7 +42,7 @@ depend:
 	$(CC) $(INCLUDE) $(FLAG) -E -M $(SRCS) > Makefile.depend
 
 clean: 
-	-rm -f *~ *bak *.o ../*.o ../GL/*.o ../GL/obj/*.o ../GL/ray_tracer/*.o core.* Makefile.depend $(EXE) 
+	-rm -f *~ *bak *.o ../*.o ../GL/*.o $(OBJ_DIR)/*.o $(RAY_TRACER_DIR)/*.o core.* Makefile.depend $(EXE) 
 
 # ===============================================================
 # compilation rules
