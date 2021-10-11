@@ -240,6 +240,9 @@ void GLCanvas::keyboard(unsigned char key, int x, int y) {
 // by calling 'exit(0)'
 // ========================================================
 void GLCanvas::initialize(SceneParser *_scene, void (*_renderFunction)(void)) {
+  int argc = 1;
+  char *argv[] = {"main"};
+  glutInit(&argc, argv);
   // OPTIONAL: If you'd like to set the window size from 
   // the command line, do that here
   glutInitWindowSize(400,400);
