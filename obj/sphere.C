@@ -23,10 +23,10 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
             return true;
         } else return false;
 
-    } else {
+    } else if ((tp - t)/dir_len >= tmin){
         Vec3f normal = r.pointAtParameter((tp - t)/dir_len) - center;
         normal.Normalize();
         if (h.getMaterial() == NULL || h.getT() > (tp - t)/dir_len) h.set((tp - t)/dir_len, material, normal, r);
         return true;
-    }
+    } else return false;
 }
