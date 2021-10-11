@@ -60,7 +60,7 @@ $(EXE): $(OBJS)
 # ===============================================================
 # run
 scene1:
-	./raytracer -input src/scene3_01_cube_orthographic.txt -size 200 200 -output output3_01.tga -gui
+	./raytracer -input src/scene3_01_cube_orthographic.txt -size 200 200 -output output3_01.tga -gui 
 scene2:
 	./raytracer -input src/scene3_02_cube_perspective.txt -size 200 200 -output output3_02.tga -gui
 scene3:
@@ -73,6 +73,14 @@ scene6:
 	./raytracer -input src/scene3_06_crazy_transforms.txt -size 200 200 -output output3_06.tga -gui
 scene7:
 	./raytracer -input src/scene3_07_plane.txt -size 200 200 -output output3_07.tga -gui -tessellation 10 5
+scene81:
+	./raytracer -input src/scene3_08_sphere.txt -size 200 200 -output output3_08.tga -gui -tessellation 10 5
+scene82:
+	./raytracer -input src/scene3_08_sphere.txt -size 200 200 -output output3_08.tga -gui -tessellation 20 10
+scene83:
+	./raytracer -input src/scene3_08_sphere.txt -size 200 200 -output output3_08.tga -gui -tessellation 10 5 -gouraud
+scene84:
+	./raytracer -input src/scene3_08_sphere.txt -size 200 200 -output output3_08.tga -gui -tessellation 20 10 -gouraud
 scene9:
 	./raytracer -input src/scene3_09_exponent_variations.txt -size 300 300 -output output3_09.tga -gui -tessellation 100 50 -gouraud
 scene10:
@@ -81,3 +89,7 @@ scene11:
 	./raytracer -input src/scene3_11_weird_lighting_diffuse.txt -size 200 200 -output output3_11.tga -gui -tessellation 100 50 -gouraud
 scene12:
 	./raytracer -input src/scene3_12_weird_lighting_specular.txt -size 200 200 -output output3_12.tga -gui -tessellation 100 50 -gouraud
+scene13:
+	./raytracer -input src/scene3_13_rotated_squashed_sphere.txt -size 200 200 -output output3_13.tga -gui -tessellation 100 50 -gouraud
+scene14:
+	./raytracer -input src/scene3_14_t_scale.txt -size 200 200 -output output3_14.tga -gui -tessellation 100 50 -gouraud
