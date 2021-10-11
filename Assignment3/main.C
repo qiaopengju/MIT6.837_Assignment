@@ -14,7 +14,6 @@
 GLCanvas glCanvas;
 int width(100), height(100);
 char *input_file(NULL), *output_file(NULL), *depth_file(NULL), *normal_file(NULL);
-Image *image, *image_depth, *image_normal;
 bool shade_back(false), gl_preview(false);
 float depth_min(0), depth_max(1);
 
@@ -68,6 +67,7 @@ void render(){
     SceneParser sceneParser(input_file);
     Camera* camera = sceneParser.getCamera();
     Group* group = sceneParser.getGroup();
+    Image *image, *image_depth, *image_normal;
     if (output_file != NULL) {
         image = new Image(width, height);
         image->SetAllPixels(sceneParser.getBackgroundColor());
