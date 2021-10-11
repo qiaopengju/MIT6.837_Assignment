@@ -245,7 +245,7 @@ void GLCanvas::initialize(SceneParser *_scene, void (*_renderFunction)(void)) {
   glutInit(&argc, argv);
   // OPTIONAL: If you'd like to set the window size from 
   // the command line, do that here
-  glutInitWindowSize(400,400);
+  glutInitWindowSize(800,800);
   glutInitWindowPosition(100,100);
   glutCreateWindow("OpenGL Viewer");
 
