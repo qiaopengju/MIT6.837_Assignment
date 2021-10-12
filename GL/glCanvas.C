@@ -226,6 +226,7 @@ void GLCanvas::keyboard(unsigned char key, int x, int y) {
     printf("done.\n");
     break;
   case 'q':  case 'Q':
+    delete scene;
     exit(0);
     break;
   default:
