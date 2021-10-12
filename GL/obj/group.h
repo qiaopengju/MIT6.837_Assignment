@@ -12,8 +12,10 @@ public:
     //DESTRUCTOR
     ~Group() {}
 
+    int getNumObjects() const { return numObjects; }
     void addObject(int index, Object3D *obj);
     bool intersect(const Ray &r, Hit &h, float tmin);
+    bool shadowIntersect(const Ray &r, Hit &h, float tmin);
     void paint();
 private:
     Object3D **objList;
