@@ -84,7 +84,7 @@ scene84:
 scene9:
 	./raytracer -input src/scene3_09_exponent_variations.txt -size 300 300 -output output3_09.tga -gui -tessellation 100 50 -gouraud
 scene10:
-	./raytracer -input src/scene3_10_exponent_variations_back.txt -size 300 300 -output output3_10.tga -gui -tessellation 100 50 -gouraud 
+	./raytracer -input src/scene3_10_exponent_variations_back.txt -size 300 300 -output output3_10.tga -gui -tessellation 100 50 -gouraud
 scene11:
 	./raytracer -input src/scene3_11_weird_lighting_diffuse.txt -size 200 200 -output output3_11.tga -gui -tessellation 100 50 -gouraud
 scene12:
