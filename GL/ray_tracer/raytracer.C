@@ -74,8 +74,10 @@ void render(){
         else if (!strcmp(ext_depth, ".tga")) image_depth->SaveTGA(depth_file);
         else {
             printf("error depth image format\n");
+            delete depth_file;
             assert(0);
         }
+        delete depth_file;
     }
     if (normal_file != NULL){
         char *ext_normal = &normal_file[strlen(normal_file) - 4];
@@ -83,10 +85,13 @@ void render(){
         else if (!strcmp(ext_normal, ".tga")) image_normal->SaveTGA(normal_file);
         else {
             printf("error normal image format\n");
+            delete normal_file;
             assert(0);
         }
+        delete normal_file;
     }
     printf("output done!\n");
+    delete image;
 }
 
 RayTracer::RayTracer(SceneParser *scene, int max_bounces, float cutoff_weight, bool shadows){
@@ -94,15 +99,11 @@ RayTracer::RayTracer(SceneParser *scene, int max_bounces, float cutoff_weight, b
     this->max_bounces = max_bounces;
     this->cutoff_weight = cutoff_weight;
     this->shadows = shadows;
-    epsilon = 0;
+    epsilon = 0.05;
 
     int num_light = scene->getNumLights();
     light_dir = new Vec3f[num_light];
     light_color = new Vec3f[num_light];
-    Vec3f hit_pos;
-    for (int i = 0; i < num_light; i++){
-        scene->getLight(i)->getIllumination(hit_pos, light_dir[i], light_color[i]);
-    }
 }
 
 RayTracer::~RayTracer(){
@@ -122,18 +123,23 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight,
     }
     assert(hit.getMaterial() != NULL);
     Vec3f result = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor();
+    Vec3f hit_pos = ray.pointAtParameter(hit.getT());
     //=====================
     //cast shadow ray
     //=====================
     for (int i = 0; i < scene->getNumLights(); i++){ //for every light
-        Vec3f hitPoint{ray.pointAtParameter(hit.getT())};
-        Vec3f directionToLight{light_dir[i]}; 
-        directionToLight.Negate(); 
-        directionToLight.Normalize();
+        float distace2Light = scene->getLight(i)->distace2Light(hit_pos);
+        scene->getLight(i)->getIllumination(hit_pos, light_dir[i], light_color[i], distace2Light);
+        Vec3f directionToLight; 
+        if (distace2Light == INFINITY){ //direction light
+            directionToLight = light_dir[i];
+            directionToLight.Normalize();
+        } else { //point light
+        }
 
-        Ray ray2(hitPoint, directionToLight);
-        Hit hit2;
-        if (!shadows || !group->shadowIntersect(ray2, hit2, epsilon)){ //如果不用显示shadow或者物体在改光线下没有被遮挡
+        Ray ray2(hit_pos, directionToLight);
+        Hit hit2(distace2Light, NULL);
+        if (!shadows || !group->intersectShadowRay(ray2, hit2, epsilon)){ //如果不用显示shadow或者物体在改光线下没有被遮挡
             result += hit.getMaterial()->Shade(ray, hit, light_dir[i], light_color[i]);
         }
     }
