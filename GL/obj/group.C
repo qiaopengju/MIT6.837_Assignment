@@ -13,7 +13,7 @@ bool Group::intersect(const Ray &r, Hit &h, float tmin){
     return flag;
 }
 
-bool Group::shadowIntersect(const Ray &r, Hit &h, float tmin){
+bool Group::intersectShadowRay(const Ray &r, Hit &h, float tmin){
     for (int i = 0; i < numObjects; i++){
         if (objList[i]->intersect(r, h, tmin)) return true;
     }
