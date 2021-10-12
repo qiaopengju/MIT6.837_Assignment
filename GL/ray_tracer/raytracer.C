@@ -103,5 +103,4 @@ void render(){
         }
     }
     printf("output done!\n");
-
 }
