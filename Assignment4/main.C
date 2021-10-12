@@ -52,7 +52,10 @@ int main(int argc, char *argv[]){
             Sphere::gl_set_theta_phi(theta, phi);
         } else if (!strcmp(argv[i], "-gouraud")){
             gouraud = true;
-        } else {
+        } else if (!strcmp(argv[i], "-shadows")){
+            shadow = true;
+        }
+        else {
             printf ("whoops error with command line argument %d: '%s'\n",i,argv[i]);
             assert(0);
         }
