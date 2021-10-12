@@ -11,10 +11,10 @@
 #include "glCanvas.h"
 
 
-int width(100), height(100);
+int width(100), height(100), max_bounces;
 char *input_file(NULL), *output_file(NULL), *depth_file(NULL), *normal_file(NULL);
-bool shade_back(false), gl_preview(false), gouraud(false);
-float depth_min(0), depth_max(1);
+bool shade_back(false), gl_preview(false), gouraud(false), shadow(false);
+float depth_min(0), depth_max(1), cutoff_weight;
 
 void render(){
     Camera* camera = GLCanvas::scene->getCamera();
@@ -103,4 +103,70 @@ void render(){
         }
     }
     printf("output done!\n");
+}
+
+RayTracer::RayTracer(SceneParser *scene, int max_bounces, float cutoff_weight, bool shadows){
+    this->scene = scene;
+    this->max_bounces = max_bounces;
+    this->cutoff_weight = cutoff_weight;
+    this->shadows = shadows;
+    epsilon = 0;
+
+    int num_light = GLCanvas::scene->getNumLights();
+    Vec3f *light_dir = new Vec3f[num_light];
+    Vec3f *light_color = new Vec3f[num_light];
+}
+
+RayTracer::~RayTracer(){
+    delete [] light_dir;
+    delete [] light_color;
+}
+
+Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight,
+        float indexOfRefraction, Hit &hit) const{
+    Camera* camera = GLCanvas::scene->getCamera();
+    Group* group = GLCanvas::scene->getGroup();
+    int num_light = scene->getNumLights();
+    Vec3f *light_dir = new Vec3f[num_light];
+    Vec3f *light_color = new Vec3f[num_light];
+
+    //=====================
+    //intersect all objects
+    if (!group->intersect(ray, hit, camera->getTMin())){ //光线与物体未相交 
+    }
+    assert(hit.getMaterial() != NULL);
+    Vec3f result = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor();
+    //=====================
+    //cast shadow ray
+    //=====================
+    for (int i = 0; i < scene->getNumLights(); i++){ //for every light
+        Vec3f hitPoint{ray.pointAtParameter(hit.getT())};
+        Vec3f directionToLight{light_dir[i]}; 
+        directionToLight.Negate(); 
+        directionToLight.Normalize();
+
+        Ray ray2(hitPoint, directionToLight);
+        Hit hit2;
+        if (!shadows || !group->shadowIntersect(ray2, hit2, epsilon)){ //如果不用显示shadow或者物体在改光线下没有被遮挡
+            result += hit.getMaterial()->Shade(ray, hit, directionToLight, light_color[i]);
+        }
+    }
+    //=====================
+    //mirror
+    //=====================
+    if (hit.getMaterial()->getReflectiveColor() != Vec3f(0,0,0)){
+    }
+    //=====================
+    //transparent
+    //=====================
+    if (hit.getMaterial()->getTransparentColor() != Vec3f(0,0,0)){
+    }
+    return result;
+}
+
+Vec3f RayTracer::mirrorDirection(const Vec3f &normal, const Vec3f &incoming){
+}
+
+bool RayTracer::transmittedDirection(const Vec3f &normal, const Vec3f &incoming,
+    float index_i, float index_t, Vec3f &transmitted){
 }
