@@ -17,6 +17,7 @@ bool shade_back(false), gl_preview(false), gouraud(false), shadow(false);
 float depth_min(0), depth_max(1), cutoff_weight;
 
 void render(){
+    RayTracer raytracer(GLCanvas::scene, 0, 0, shadow);
     Camera* camera = GLCanvas::scene->getCamera();
     Group* group = GLCanvas::scene->getGroup();
     Image *image, *image_depth, *image_normal;
@@ -32,29 +33,14 @@ void render(){
         image_normal = new Image(width, height);
         image_depth->SetAllPixels(GLCanvas::scene->getBackgroundColor());
     }
-    //get light
-    int num_light = GLCanvas::scene->getNumLights();
-    Vec3f *light_dir = new Vec3f[num_light];
-    Vec3f *light_color = new Vec3f[num_light];
     //render
     //generate ray
     for (int i = 0; i < width; i++){
         for (int j = 0; j < height; j++){
             Ray r = camera->generateRay(Vec2f((float)i/width, (float)j/height));
             Hit h;
-            if (group->intersect(r, h, camera->getTMin())){             //光线与物体相交
-                assert(h.getMaterial() != NULL);
-                Vec3f hit_pos = r.pointAtParameter(h.getT());
-                Vec3f pixel_color;
-                //diffuse shading
-                for (int i = 0; i < num_light; i++){                    //读取光线数据
-                    GLCanvas::scene->getLight(i)->getIllumination(hit_pos, light_dir[i], light_color[i]);
-                    pixel_color += h.getMaterial()->Shade(r, h, light_dir[i], light_color[i]);
-                }
-                //pixel color = diffuse + ambient + specular
-                pixel_color += GLCanvas::scene->getAmbientLight() * h.getMaterial()->getDiffuseColor();
-                image->SetPixel(i, j, pixel_color);
-
+            image->SetPixel(i, j, raytracer.traceRay(r, camera->getTMin(), 0, 0, 0, h));
+            if (h.getMaterial() != NULL){             //光线与物体相交
                 if (depth_file != NULL){ //render depth
                     float t = h.getT();
                     if (t >= depth_min && t <= depth_max){
@@ -72,8 +58,6 @@ void render(){
             }
         }
     }
-    delete [] light_dir;
-    delete [] light_color;
 
     //output image to file
     char *ext = &output_file[strlen(output_file) - 4];
@@ -112,9 +96,13 @@ RayTracer::RayTracer(SceneParser *scene, int max_bounces, float cutoff_weight, b
     this->shadows = shadows;
     epsilon = 0;
 
-    int num_light = GLCanvas::scene->getNumLights();
-    Vec3f *light_dir = new Vec3f[num_light];
-    Vec3f *light_color = new Vec3f[num_light];
+    int num_light = scene->getNumLights();
+    light_dir = new Vec3f[num_light];
+    light_color = new Vec3f[num_light];
+    Vec3f hit_pos;
+    for (int i = 0; i < num_light; i++){
+        scene->getLight(i)->getIllumination(hit_pos, light_dir[i], light_color[i]);
+    }
 }
 
 RayTracer::~RayTracer(){
@@ -124,15 +112,13 @@ RayTracer::~RayTracer(){
 
 Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight,
         float indexOfRefraction, Hit &hit) const{
-    Camera* camera = GLCanvas::scene->getCamera();
-    Group* group = GLCanvas::scene->getGroup();
-    int num_light = scene->getNumLights();
-    Vec3f *light_dir = new Vec3f[num_light];
-    Vec3f *light_color = new Vec3f[num_light];
+    Camera* camera = scene->getCamera();
+    Group* group = scene->getGroup();
 
     //=====================
     //intersect all objects
     if (!group->intersect(ray, hit, camera->getTMin())){ //光线与物体未相交 
+        return scene->getBackgroundColor();
     }
     assert(hit.getMaterial() != NULL);
     Vec3f result = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor();
@@ -148,7 +134,7 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight,
         Ray ray2(hitPoint, directionToLight);
         Hit hit2;
         if (!shadows || !group->shadowIntersect(ray2, hit2, epsilon)){ //如果不用显示shadow或者物体在改光线下没有被遮挡
-            result += hit.getMaterial()->Shade(ray, hit, directionToLight, light_color[i]);
+            result += hit.getMaterial()->Shade(ray, hit, light_dir[i], light_color[i]);
         }
     }
     //=====================
