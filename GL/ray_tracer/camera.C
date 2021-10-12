@@ -96,9 +96,9 @@ void OrthographicCamera::truckCamera(float dx, float dy)
 // ====================================================================
 void OrthographicCamera::rotateCamera(float rx, float ry)
 {
-  Vec3f horizontal;
-  Vec3f::Cross3(horizontal, direction, up);
-  horizontal.Normalize();
+  //Vec3f horizontal;
+  //Vec3f::Cross3(horizontal, direction, up);
+  //horizontal.Normalize();
 
   // Don't let the model flip upside-down (There is a singularity
   // at the poles when 'up' and 'direction' are aligned)
@@ -214,9 +214,9 @@ void PerspectiveCamera::truckCamera(float dx, float dy)
 // ====================================================================
 void PerspectiveCamera::rotateCamera(float rx, float ry)
 {
-  Vec3f horizontal;
-  Vec3f::Cross3(horizontal, direction, up);
-  horizontal.Normalize();
+  //Vec3f horizontal;
+  //Vec3f::Cross3(horizontal, direction, up);
+  //horizontal.Normalize();
 
   // Don't let the model flip upside-down (There is a singularity
   // at the poles when 'up' and 'direction' are aligned)
