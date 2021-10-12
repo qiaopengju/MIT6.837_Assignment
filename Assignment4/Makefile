@@ -59,3 +59,7 @@ $(EXE): $(OBJS)
 
 # ===============================================================
 # run
+scene1:
+	./raytracer -input src/scene4_01_sphere_shadow.txt -size 200 200 -output output4_01.tga #-shadows 
+test:
+	./raytracer -input ../Assignment3/src/scene3_07_plane.txt -size 200 200 -output output3_07.tga -gui -tessellation 10 5 -shadows -gouraud
