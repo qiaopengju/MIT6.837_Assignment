@@ -3,10 +3,23 @@
 #include "glCanvas.h"  
 
 PhongMaterial::PhongMaterial(const Vec3f &diffuseColor, 
-        const Vec3f &specularColor, float exponent){
-    this->diffuseColor = diffuseColor;
-    this->specularColor = specularColor;
-    this->exponent = exponent;
+    const Vec3f &specularColor, float exponent){
+  this->diffuseColor = diffuseColor;
+  this->specularColor = specularColor;
+  this->exponent = exponent;
+  reflectiveColor = Vec3f(0,0,0);
+  transparentColor = Vec3f(0,0,0);
+}
+
+PhongMaterial::PhongMaterial(const Vec3f &diffuseColor, 
+    const Vec3f &specularColor, float exponent, 
+    const Vec3f &reflectiveColor, const Vec3f &transparentColor, float indexOfRefraction){
+  this->diffuseColor = diffuseColor;
+  this->specularColor = specularColor;
+  this->exponent = exponent;
+  this->reflectiveColor = reflectiveColor;
+  this->transparentColor = transparentColor;
+  this->indexOfRefraction = indexOfRefraction;
 }
 
 void PhongMaterial::glSetMaterial() const {
