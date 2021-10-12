@@ -517,3 +517,6 @@ void Triangle::paint(){
 }
 ```
 
+### Assignment4
+
+* Light 返回的light direction是与光线方向相反的
