@@ -8,6 +8,7 @@
 #include "group.h"
 #include "sphere.h"
 #include "light.h"
+#include "glCanvas.h"
 
 
 int width(100), height(100);
@@ -16,23 +17,23 @@ bool shade_back(false), gl_preview(false), gouraud(false);
 float depth_min(0), depth_max(1);
 
 void render(){
-    Camera* camera = sceneParser->getCamera();
-    Group* group = sceneParser->getGroup();
+    Camera* camera = GLCanvas::scene->getCamera();
+    Group* group = GLCanvas::scene->getGroup();
     Image *image, *image_depth, *image_normal;
     if (output_file != NULL) {
         image = new Image(width, height);
-        image->SetAllPixels(sceneParser->getBackgroundColor());
+        image->SetAllPixels(GLCanvas::scene->getBackgroundColor());
     }
     if (depth_file != NULL) {
         image_depth = new Image(width, height);
-        image_depth->SetAllPixels(sceneParser->getBackgroundColor());
+        image_depth->SetAllPixels(GLCanvas::scene->getBackgroundColor());
     }
     if (normal_file != NULL){
         image_normal = new Image(width, height);
-        image_depth->SetAllPixels(sceneParser->getBackgroundColor());
+        image_depth->SetAllPixels(GLCanvas::scene->getBackgroundColor());
     }
     //get light
-    int num_light = sceneParser->getNumLights();
+    int num_light = GLCanvas::scene->getNumLights();
     Vec3f *light_dir = new Vec3f[num_light];
     Vec3f *light_color = new Vec3f[num_light];
     //render
@@ -47,11 +48,11 @@ void render(){
                 Vec3f pixel_color;
                 //diffuse shading
                 for (int i = 0; i < num_light; i++){                    //读取光线数据
-                    sceneParser->getLight(i)->getIllumination(hit_pos, light_dir[i], light_color[i]);
+                    GLCanvas::scene->getLight(i)->getIllumination(hit_pos, light_dir[i], light_color[i]);
                     pixel_color += h.getMaterial()->Shade(r, h, light_dir[i], light_color[i]);
                 }
                 //pixel color = diffuse + ambient + specular
-                pixel_color += sceneParser->getAmbientLight() * h.getMaterial()->getDiffuseColor();
+                pixel_color += GLCanvas::scene->getAmbientLight() * h.getMaterial()->getDiffuseColor();
                 image->SetPixel(i, j, pixel_color);
 
                 if (depth_file != NULL){ //render depth
