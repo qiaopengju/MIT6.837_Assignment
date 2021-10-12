@@ -32,9 +32,6 @@ private:
   // This gets called from the 'keyboard' rotine
   static void (*renderFunction)(void);
 
-  // A pointer to the global SceneParser
-  static SceneParser *scene;
-
   // State of the mouse cursor
   static int mouseButton;
   static int mouseX;
@@ -55,6 +52,9 @@ public:
   GLCanvas(void) {
     renderFunction = NULL;}
  ~GLCanvas(void) { }
+
+  // A pointer to the global SceneParser
+  static SceneParser *scene;
 
   // Set up the canvas and enter the rendering loop
   // Note that this function will not return but can be
