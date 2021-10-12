@@ -65,19 +65,21 @@ void PhongMaterial::glSetMaterial() const {
 Vec3f PhongMaterial::Shade (const Ray &ray, const Hit &hit, 
     const Vec3f &_dirToLight, const Vec3f &lightColor) const{
   Vec3f dirToLight = _dirToLight;
+  Vec3f norNormal = hit.getNormal();
   dirToLight.Normalize();
+  norNormal.Normalize();
 
   //caculate diffuse color
-  float diffuse = dirToLight.Dot3(hit.getNormal());
+  float diffuse = dirToLight.Dot3(norNormal);
   if (diffuse < 0) diffuse = 0; //点积为负，光在物体背面
   Vec3f diffuse_color = diffuse * getDiffuseColor() * lightColor;
   
   //caculate specular color
   Vec3f half_v = dirToLight - ray.getDirection(); //半程向量
   half_v.Normalize(); //一定要标准化半程向量
-  float specular = half_v.Dot3(hit.getNormal());
+  float specular = half_v.Dot3(norNormal);
   if (specular < 0) specular = 0;
-  specular = pow(specular, exponent);
+  specular = pow(specular, (float)exponent);
   Vec3f specular_color = specular * getSpecularColor() * lightColor;
 
   return diffuse_color + specular_color;
