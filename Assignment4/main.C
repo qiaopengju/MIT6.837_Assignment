@@ -71,7 +71,10 @@ int main(int argc, char *argv[]){
     if (gl_preview){
         glCanvas.initialize(GLCanvas::scene, render, traceRayFunc);
     } else {
-        render();
+        printf("Rendering scene...\t");
+        fflush(stdout);
+        if (render) render();
+        printf("output done!\n");
     }
 
 
