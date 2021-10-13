@@ -9,15 +9,15 @@
 #include "sphere.h"
 #include "light.h"
 #include "glCanvas.h"
+#include "rayTree.h"
 
-
-int width(100), height(100), max_bounces;
+int width(100), height(100), max_bounces(0);
 char *input_file(NULL), *output_file(NULL), *depth_file(NULL), *normal_file(NULL);
 bool shade_back(false), gl_preview(false), gouraud(false), shadow(false);
-float depth_min(0), depth_max(1), cutoff_weight;
+float depth_min(0), depth_max(1), cutoff_weight(0);
 
 void render(){
-    RayTracer raytracer(GLCanvas::scene, 0, 0, shadow);
+    RayTracer raytracer(GLCanvas::scene, max_bounces, cutoff_weight, shadow);
     Camera* camera = GLCanvas::scene->getCamera();
     Group* group = GLCanvas::scene->getGroup();
     Image *image, *image_depth, *image_normal;
@@ -38,8 +38,8 @@ void render(){
     for (int i = 0; i < width; i++){
         for (int j = 0; j < height; j++){
             Ray r = camera->generateRay(Vec2f((float)i/width, (float)j/height));
-            Hit h;
-            image->SetPixel(i, j, raytracer.traceRay(r, camera->getTMin(), 0, 0, 0, h));
+            Hit h(INFINITY, NULL);
+            image->SetPixel(i, j, raytracer.traceRay(r, raytracer.getEpsilon(), 0, 1, 0, h));
             if (h.getMaterial() != NULL){             //光线与物体相交
                 if (depth_file != NULL){ //render depth
                     float t = h.getT();
@@ -99,7 +99,7 @@ RayTracer::RayTracer(SceneParser *scene, int max_bounces, float cutoff_weight, b
     this->max_bounces = max_bounces;
     this->cutoff_weight = cutoff_weight;
     this->shadows = shadows;
-    epsilon = 0.05;
+    epsilon = 0.1;
 
     int num_light = scene->getNumLights();
     light_dir = new Vec3f[num_light];
@@ -111,8 +111,11 @@ RayTracer::~RayTracer(){
     delete [] light_color;
 }
 
-Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight,
+//bounce from 0 - max_bounce
+Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
         float indexOfRefraction, Hit &hit) const{
+    if (bounces > max_bounces) return Vec3f(0, 0, 0);
+
     Camera* camera = scene->getCamera();
     Group* group = scene->getGroup();
 
@@ -124,6 +127,9 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight,
     assert(hit.getMaterial() != NULL);
     Vec3f result = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor();
     Vec3f hit_pos = ray.pointAtParameter(hit.getT());
+    //=====================
+    // RayTree: main segment
+    RayTree::SetMainSegment(ray, 0, hit.getT());
     //=====================
     //cast shadow ray
     //=====================
@@ -139,26 +145,42 @@ Vec3f RayTracer::traceRay(Ray &ray, float tmin, int bounces, float weight,
 
         Ray ray2(hit_pos, directionToLight);
         Hit hit2(distace2Light, NULL);
-        if (!shadows || !group->intersectShadowRay(ray2, hit2, epsilon)){ //如果不用显示shadow或者物体在改光线下没有被遮挡
-            result += hit.getMaterial()->Shade(ray, hit, light_dir[i], light_color[i]);
+        if (!shadows || !group->intersectShadowRay(ray2, hit2, tmin)){ //如果不用显示shadow或者物体在改光线下没有被遮挡
+            result += hit.getMaterial()->Shade(ray, hit, light_dir[i], light_color[i] * weight); //光线颜色乘以权重
         }
     }
     //=====================
     //mirror
     //=====================
     if (hit.getMaterial()->getReflectiveColor() != Vec3f(0,0,0)){
+        Vec3f reflect = mirrorDirection(hit.getNormal(), ray.getDirection());
+        Ray rR(hit_pos, reflect);
+        Hit hR(INFINITY, NULL);
+        result += (traceRay(rR, tmin, bounces+1, weight*(1-cutoff_weight), indexOfRefraction, hR) * hit.getMaterial()->getReflectiveColor());
     }
     //=====================
     //transparent
     //=====================
     if (hit.getMaterial()->getTransparentColor() != Vec3f(0,0,0)){
+        Vec3f refract;
+        transmittedDirection(hit.getNormal(), ray.getDirection(), indexOfRefraction, hit.getMaterial()->getIndexOfRefraction(), refract);
+        Ray rR(hit_pos, refract);
+        Hit hR(INFINITY, NULL);
+        result += (traceRay(rR, tmin, bounces+1, weight*(1-cutoff_weight), hit.getMaterial()->getIndexOfRefraction(), hR) * hit.getMaterial()->getTransparentColor());
     }
     return result;
 }
 
-Vec3f RayTracer::mirrorDirection(const Vec3f &normal, const Vec3f &incoming){
+Vec3f RayTracer::mirrorDirection(const Vec3f &normal, const Vec3f &incoming) const{
+    Vec3f norNormal = normal; norNormal.Normalize();
+    Vec3f norIncoming = incoming; norIncoming.Normalize();
+    Vec3f reflect = norIncoming - 2 * norIncoming.Dot3(norNormal) * norNormal;
+    reflect.Normalize();
+    return reflect;
 }
 
 bool RayTracer::transmittedDirection(const Vec3f &normal, const Vec3f &incoming,
-    float index_i, float index_t, Vec3f &transmitted){
+        float index_i, float index_t, Vec3f &transmitted) const{
+    Vec3f norNormal = normal; norNormal.Normalize();
+    Vec3f norIncoming = incoming; norIncoming.Normalize();
 }

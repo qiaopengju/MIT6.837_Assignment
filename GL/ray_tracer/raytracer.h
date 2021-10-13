@@ -15,12 +15,13 @@ public:
     RayTracer(SceneParser *scene, int max_bounces, float cutoff_weight, bool shadows); 
     ~RayTracer();
 
-    Vec3f traceRay(Ray &ray, float tmin, int bounces, float weight,
+    Vec3f traceRay(const Ray &ray, float tmin, int bounces, float weight,
         float indexOfRefraction, Hit &hit) const; 
-    Vec3f mirrorDirection(const Vec3f &normal, const Vec3f &incoming);
+    Vec3f mirrorDirection(const Vec3f &normal, const Vec3f &incoming) const;
     bool transmittedDirection(const Vec3f &normal, const Vec3f &incoming,
-        float index_i, float index_t, Vec3f &transmitted);
-    //保存光线数据
+        float index_i, float index_t, Vec3f &transmitted) const;
+    //ACCESSOR
+    float getEpsilon() const { return epsilon; }
 private:
     SceneParser *scene;
     int max_bounces;
