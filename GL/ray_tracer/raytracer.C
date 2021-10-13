@@ -90,7 +90,6 @@ void render(){
         }
         delete normal_file;
     }
-    printf("output done!\n");
     delete image;
 }
 
@@ -106,7 +105,7 @@ RayTracer::RayTracer(SceneParser *scene, int max_bounces, float cutoff_weight, b
     this->max_bounces = max_bounces;
     this->cutoff_weight = cutoff_weight;
     this->shadows = shadows;
-    epsilon = 0.1;
+    epsilon = 0.001;
 
     int num_light = scene->getNumLights();
     light_dir = new Vec3f[num_light];
@@ -121,16 +120,18 @@ RayTracer::~RayTracer(){
 //bounce from 0 - max_bounce
 Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
         float indexOfRefraction, Hit &hit) const{
+    //=====================
+    //return if max bounce
     if (bounces > max_bounces) return Vec3f(0, 0, 0);
 
     Camera* camera = scene->getCamera();
     Group* group = scene->getGroup();
-
     //=====================
     //intersect all objects
     if (!group->intersect(ray, hit, camera->getTMin())){ //光线与物体未相交 
         return scene->getBackgroundColor();
     }
+
     assert(hit.getMaterial() != NULL);
     Vec3f result = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor();
     Vec3f hit_pos = ray.pointAtParameter(hit.getT());
@@ -160,6 +161,7 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
         // RayTree: shadow ray 
         RayTree::AddShadowSegment(ray2, 0, hit2.getT());
     }
+
     //=====================
     //mirror
     //=====================
@@ -193,8 +195,8 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
             //=====================
             // RayTree: refract ray 
             RayTree::AddTransmittedSegment(rR, 0, hR.getT());
-        } else{ //全反射
-            Vec3f reflect = mirrorDirection(hit.getNormal(), ray.getDirection());
+        } else{ //inner reflect 内全反射
+            Vec3f reflect = mirrorDirection(-1*hit.getNormal(), ray.getDirection());
             Ray rR(hit_pos, reflect);
             result += (traceRay(rR, tmin, bounces+1, weight*(1-cutoff_weight), indexOfRefraction, hR) * hit.getMaterial()->getReflectiveColor());
             //=====================
@@ -223,7 +225,8 @@ bool RayTracer::transmittedDirection(const Vec3f &normal, const Vec3f &incoming,
     float NI = norIncoming.Dot3(norNormal);
     float sq = 1 - ((index * index) * (1 - NI * NI));
     if (sq < 0) return false; //total internal reflection, 全反射
-    transmitted = ((index * NI - sqrt(sq)) * norNormal) - (index * norIncoming);
+    if (NI > 0) transmitted = ((index * NI - sqrt(sq)) * norNormal) - (index * norIncoming);
+    else transmitted = (index * NI + sqrt(sq)) * norNormal - (index * norIncoming);
     transmitted.Normalize();
     return true;
 }
