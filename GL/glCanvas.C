@@ -3,6 +3,7 @@
 #include "light.h"
 #include "camera.h"
 #include "group.h"
+#include "rayTree.h"
 
 // Included files for OpenGL Rendering
 #include <GL/glut.h>
@@ -14,6 +15,7 @@
 // A reference to the function that performs the raytracing
 // This function will get called from the 'keyboard' routine
 void (*GLCanvas::renderFunction)(void);
+void (*GLCanvas::traceRayFunction)(float, float);
 
 // A pointer to the global SceneParser
 SceneParser *GLCanvas::scene;
@@ -151,6 +153,11 @@ void GLCanvas::display(void)
 
 #endif
 
+  // Draw the ray tree
+  glDisable(GL_LIGHTING);
+  RayTree::paint();
+  glEnable(GL_LIGHTING);
+
   // Swap the back buffer with the front buffer to display the scene
   glutSwapBuffers();
 }
@@ -216,8 +223,7 @@ void GLCanvas::motion(int x, int y) {
 // ========================================================
 // Callback function for keyboard events
 // ========================================================
-
-void GLCanvas::keyboard(unsigned char key, int x, int y) {
+void GLCanvas::keyboard(unsigned char key, int i, int j) {
   switch (key) {
   case 'r':  case 'R':
     printf("Rendering scene... "); 
@@ -225,8 +231,24 @@ void GLCanvas::keyboard(unsigned char key, int x, int y) {
     if (renderFunction) renderFunction();
     printf("done.\n");
     break;
+  case 't':  case 'T': {
+    // visualize the ray tree for the pixel at the current mouse position
+    int width = glutGet(GLUT_WINDOW_WIDTH);
+    int height = glutGet(GLUT_WINDOW_HEIGHT);
+    // flip up & down
+    j = height-j; 
+    int max = (width > height) ? width : height;
+    // map the pixel coordinates: (0,0) -> (width-1,height-1);
+    //      to screenspace: (0.0,0.0) -> (1.0,1.0);
+    float x = ((i + 0.5) -  width/2.0) / float(max) + 0.5;
+    float y = ((j + 0.5) - height/2.0) / float(max) + 0.5;
+    RayTree::Activate();
+    if (traceRayFunction) traceRayFunction(x,y);
+    RayTree::Deactivate();
+    // redraw
+    display();
+    break; }
   case 'q':  case 'Q':
-    delete scene;
     exit(0);
     break;
   default:
@@ -240,7 +262,7 @@ void GLCanvas::keyboard(unsigned char key, int x, int y) {
 // This function will not return but can be terminated
 // by calling 'exit(0)'
 // ========================================================
-void GLCanvas::initialize(SceneParser *_scene, void (*_renderFunction)(void)) {
+void GLCanvas::initialize(SceneParser *_scene, void (*_renderFunction)(void), void (*_traceRayFunction)(float, float)){
   int argc = 1;
   char *argv[] = {"main"};
   glutInit(&argc, argv);
@@ -252,6 +274,7 @@ void GLCanvas::initialize(SceneParser *_scene, void (*_renderFunction)(void)) {
 
   scene = _scene;
   renderFunction = _renderFunction;
+  traceRayFunction = _traceRayFunction;
 
   // Set global lighting parameters
   glEnable(GL_LIGHTING);

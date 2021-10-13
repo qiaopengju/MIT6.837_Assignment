@@ -31,7 +31,7 @@ private:
   // A reference to the function that performs the raytracing
   // This gets called from the 'keyboard' rotine
   static void (*renderFunction)(void);
-  //static void (*traceRayFunction)(float, float);
+  static void (*traceRayFunction)(float, float);
 
   // State of the mouse cursor
   static int mouseButton;
@@ -52,7 +52,7 @@ public:
   // Constructor and destructor
   GLCanvas(void) {
     renderFunction = NULL;
-    //traceRayFunction = NULL; 
+    traceRayFunction = NULL; 
   }
  ~GLCanvas(void) { }
 
@@ -62,7 +62,7 @@ public:
   // Set up the canvas and enter the rendering loop
   // Note that this function will not return but can be
   // terminated by calling 'exit(0)'
-  void initialize(SceneParser *_scene, void (*_renderFunction)(void));
+  void initialize(SceneParser *_scene, void (*_renderFunction)(void), void (*_traceRayFunction)(float, float)=NULL);
 };
 
 // ====================================================================
