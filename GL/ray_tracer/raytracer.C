@@ -139,9 +139,10 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
         Vec3f directionToLight; 
         if (distace2Light == INFINITY){ //direction light
             directionToLight = light_dir[i];
-            directionToLight.Normalize();
         } else { //point light
+            directionToLight = scene->getLight(i)->getLightPos() - hit_pos;
         }
+        directionToLight.Normalize();
 
         Ray ray2(hit_pos, directionToLight);
         Hit hit2(distace2Light, NULL);
