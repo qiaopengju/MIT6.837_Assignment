@@ -18,6 +18,7 @@ GLCanvas glCanvas;
 void render();
 
 int main(int argc, char *argv[]){
+    int theta(50), phi(25);
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i],"-input")) {
             i++; assert(i < argc); 
@@ -46,22 +47,27 @@ int main(int argc, char *argv[]){
             gl_preview = true;
         } else if (!strcmp(argv[i], "-tessellation")){
             i++; assert(i < argc);
-            int theta = atoi(argv[i]);
+            theta = atoi(argv[i]);
             i++; assert(i < argc);
-            int phi = atoi(argv[i]);
-            Sphere::gl_set_theta_phi(theta, phi);
+            phi = atoi(argv[i]);
         } else if (!strcmp(argv[i], "-gouraud")){
             gouraud = true;
         } else if (!strcmp(argv[i], "-shadows")){
             shadow = true;
-        }
-        else {
+        } else if (!strcmp(argv[i], "-bounces")){
+            i++; assert(i < argc);
+            max_bounces = atoi(argv[i]);
+        } else if (!strcmp(argv[i], "-weight")){
+            i++; assert(i < argc);
+            cutoff_weight = atof(argv[i]);
+        } else {
             printf ("whoops error with command line argument %d: '%s'\n",i,argv[i]);
             assert(0);
         }
     }
+    Sphere::gl_set_theta_phi(theta, phi);
+    GLCanvas::scene = new SceneParser(input_file);
     if (gl_preview){
-        GLCanvas::scene = new SceneParser(input_file);
         glCanvas.initialize(GLCanvas::scene, render);
     } else {
         render();
