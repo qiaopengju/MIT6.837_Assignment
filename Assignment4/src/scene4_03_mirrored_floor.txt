@@ -65,7 +65,7 @@ Group {
 	YRotate  45 
         Translate  0 1 0 
         TriangleMesh {
-       	    obj_file cube.obj
+       	    obj_file ../src/model/cube.obj
 	}
     }
 
@@ -75,7 +75,7 @@ Group {
 	Scale  1.6 0.3 0.1 
         Translate  0 1 0 
         TriangleMesh {
-       	    obj_file cube.obj
+       	    obj_file ../src/model/cube.obj
 	}
     }
 
@@ -86,7 +86,7 @@ Group {
 	YRotate  45 
         Translate  0 1 0 
         TriangleMesh {
-       	    obj_file cube.obj
+       	    obj_file ../src/model/cube.obj
 	}
     }
 

@@ -52,7 +52,7 @@ Group {
     Transform {
         Translate  0 0 -3 
         TriangleMesh {
-       	    obj_file cube.obj
+       	    obj_file ../src/model/cube.obj
 	}
     }
 
@@ -69,7 +69,7 @@ Group {
         YRotate  60 
         Translate  0 0 -3 
         TriangleMesh {
-       	    obj_file cube.obj
+       	    obj_file ../src/model/cube.obj
 	}
     }
 
@@ -88,7 +88,7 @@ Group {
         YRotate  -60 
         Translate  0 0 -3 
         TriangleMesh {
-       	    obj_file cube.obj
+       	    obj_file ../src/model/cube.obj
 	}
     }
 

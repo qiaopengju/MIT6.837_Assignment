@@ -46,7 +46,7 @@ Group {
     Transform {
         Scale  2.2 0.35 0.5 
         TriangleMesh {
-            obj_file cube.obj
+            obj_file ../src/model/cube.obj
         }
     }
 }

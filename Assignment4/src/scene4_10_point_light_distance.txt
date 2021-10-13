@@ -58,7 +58,7 @@ Group {
 	YRotate  45 
 	Scale  4 0.5 1 
         TriangleMesh {
-       	    obj_file cube.obj
+       	    obj_file ../src/model/cube.obj
 	}
     }
 
@@ -68,7 +68,7 @@ Group {
 	YRotate  -45 
 	Scale  4 0.5 1 
         TriangleMesh {
-       	    obj_file cube.obj
+       	    obj_file ../src/model/cube.obj
 	}
     }
 
