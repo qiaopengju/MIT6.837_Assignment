@@ -163,10 +163,16 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
     //=====================
     if (hit.getMaterial()->getTransparentColor() != Vec3f(0,0,0)){
         Vec3f refract;
-        transmittedDirection(hit.getNormal(), ray.getDirection(), indexOfRefraction, hit.getMaterial()->getIndexOfRefraction(), refract);
-        Ray rR(hit_pos, refract);
+        bool shouldTransparent = transmittedDirection(hit.getNormal(), ray.getDirection(), indexOfRefraction, hit.getMaterial()->getIndexOfRefraction(), refract);
         Hit hR(INFINITY, NULL);
-        result += (traceRay(rR, tmin, bounces+1, weight*(1-cutoff_weight), hit.getMaterial()->getIndexOfRefraction(), hR) * hit.getMaterial()->getTransparentColor());
+        if (shouldTransparent){ //应该折射
+            Ray rR(hit_pos, refract);
+            result += (traceRay(rR, tmin, bounces+1, weight*(1-cutoff_weight), hit.getMaterial()->getIndexOfRefraction(), hR) * hit.getMaterial()->getTransparentColor());
+        } else{ //全反射
+            Vec3f reflect = mirrorDirection(hit.getNormal(), ray.getDirection());
+            Ray rR(hit_pos, reflect);
+            result += (traceRay(rR, tmin, bounces+1, weight*(1-cutoff_weight), indexOfRefraction, hR) * hit.getMaterial()->getReflectiveColor());
+        }
     }
     return result;
 }
@@ -182,5 +188,13 @@ Vec3f RayTracer::mirrorDirection(const Vec3f &normal, const Vec3f &incoming) con
 bool RayTracer::transmittedDirection(const Vec3f &normal, const Vec3f &incoming,
         float index_i, float index_t, Vec3f &transmitted) const{
     Vec3f norNormal = normal; norNormal.Normalize();
-    Vec3f norIncoming = incoming; norIncoming.Normalize();
+    Vec3f norIncoming = incoming; norIncoming.Negate(); norIncoming.Normalize();
+    assert(index_t != 0); //分母不为0
+    float index = index_i / index_t; //折射率
+    float NI = norIncoming.Dot3(norNormal);
+    float sq = 1 - (index * index) * (NI * NI);
+    if (sq < 0) return false; //total internal reflection, 全反射
+    transmitted = ((index * NI - sqrt(sq)) * norNormal) - (index * norIncoming);
+    transmitted.Normalize();
+    return true;
 }
