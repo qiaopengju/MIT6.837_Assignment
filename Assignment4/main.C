@@ -16,6 +16,7 @@
 GLCanvas glCanvas;
 
 void render();
+void traceRayFunc(float , float);
 
 int main(int argc, char *argv[]){
     int theta(50), phi(25);
@@ -68,7 +69,7 @@ int main(int argc, char *argv[]){
     Sphere::gl_set_theta_phi(theta, phi);
     GLCanvas::scene = new SceneParser(input_file);
     if (gl_preview){
-        glCanvas.initialize(GLCanvas::scene, render);
+        glCanvas.initialize(GLCanvas::scene, render, traceRayFunc);
     } else {
         render();
     }
