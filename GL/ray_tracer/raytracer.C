@@ -94,6 +94,13 @@ void render(){
     delete image;
 }
 
+void traceRayFunc(float x, float y){
+    RayTracer raytracer(GLCanvas::scene, max_bounces, cutoff_weight, shadow);
+    Hit h(INFINITY, NULL);
+    Ray r = GLCanvas::scene->getCamera()->generateRay(Vec2f(x, y));
+    raytracer.traceRay(r, raytracer.getEpsilon(), 0, 1, 0, h);
+}
+
 RayTracer::RayTracer(SceneParser *scene, int max_bounces, float cutoff_weight, bool shadows){
     this->scene = scene;
     this->max_bounces = max_bounces;
@@ -129,7 +136,7 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
     Vec3f hit_pos = ray.pointAtParameter(hit.getT());
     //=====================
     // RayTree: main segment
-    RayTree::SetMainSegment(ray, 0, hit.getT());
+    if (bounces == 0) RayTree::SetMainSegment(ray, 0, hit.getT());
     //=====================
     //cast shadow ray
     //=====================
@@ -149,6 +156,9 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
         if (!shadows || !group->intersectShadowRay(ray2, hit2, tmin)){ //如果不用显示shadow或者物体在改光线下没有被遮挡
             result += hit.getMaterial()->Shade(ray, hit, light_dir[i], light_color[i] * weight); //光线颜色乘以权重
         }
+        //=====================
+        // RayTree: shadow ray 
+        RayTree::AddShadowSegment(ray2, 0, hit2.getT());
     }
     //=====================
     //mirror
@@ -158,21 +168,38 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
         Ray rR(hit_pos, reflect);
         Hit hR(INFINITY, NULL);
         result += (traceRay(rR, tmin, bounces+1, weight*(1-cutoff_weight), indexOfRefraction, hR) * hit.getMaterial()->getReflectiveColor());
+        //=====================
+        // RayTree: reflect ray 
+        RayTree::AddReflectedSegment(rR, 0, hR.getT());
     }
     //=====================
     //transparent
     //=====================
     if (hit.getMaterial()->getTransparentColor() != Vec3f(0,0,0)){
         Vec3f refract;
-        bool shouldTransparent = transmittedDirection(hit.getNormal(), ray.getDirection(), indexOfRefraction, hit.getMaterial()->getIndexOfRefraction(), refract);
+        float index_i, index_t;
+        if (ray.getDirection().Dot3(hit.getNormal()) < 0){ //光线入射透明材料
+            index_i = 1;
+            index_t = hit.getMaterial()->getIndexOfRefraction();
+        } else { //光线出射透明材料
+            index_i = hit.getMaterial()->getIndexOfRefraction();
+            index_t = 1;
+        }
+        bool shouldTransparent = transmittedDirection(hit.getNormal(), ray.getDirection(), index_i, index_t, refract);
         Hit hR(INFINITY, NULL);
         if (shouldTransparent){ //应该折射
             Ray rR(hit_pos, refract);
             result += (traceRay(rR, tmin, bounces+1, weight*(1-cutoff_weight), hit.getMaterial()->getIndexOfRefraction(), hR) * hit.getMaterial()->getTransparentColor());
+            //=====================
+            // RayTree: refract ray 
+            RayTree::AddTransmittedSegment(rR, 0, hR.getT());
         } else{ //全反射
             Vec3f reflect = mirrorDirection(hit.getNormal(), ray.getDirection());
             Ray rR(hit_pos, reflect);
             result += (traceRay(rR, tmin, bounces+1, weight*(1-cutoff_weight), indexOfRefraction, hR) * hit.getMaterial()->getReflectiveColor());
+            //=====================
+            // RayTree: inner reflect ray 
+            RayTree::AddReflectedSegment(rR, 0, hR.getT());
         }
     }
     return result;
@@ -190,10 +217,11 @@ bool RayTracer::transmittedDirection(const Vec3f &normal, const Vec3f &incoming,
         float index_i, float index_t, Vec3f &transmitted) const{
     Vec3f norNormal = normal; norNormal.Normalize();
     Vec3f norIncoming = incoming; norIncoming.Negate(); norIncoming.Normalize();
-    assert(index_t != 0); //分母不为0
+    //求折射率
+    assert(index_t != 0);   //分母不为零
     float index = index_i / index_t; //折射率
     float NI = norIncoming.Dot3(norNormal);
-    float sq = 1 - (index * index) * (NI * NI);
+    float sq = 1 - ((index * index) * (1 - NI * NI));
     if (sq < 0) return false; //total internal reflection, 全反射
     transmitted = ((index * NI - sqrt(sq)) * norNormal) - (index * norIncoming);
     transmitted.Normalize();

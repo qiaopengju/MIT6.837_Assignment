@@ -8,6 +8,7 @@ extern bool shade_back, gl_preview, gouraud, shadow;
 extern float depth_min, depth_max, cutoff_weight;
 
 extern void render();
+extern void traceRayFunc(float , float);
 
 class RayTracer{
 public:
