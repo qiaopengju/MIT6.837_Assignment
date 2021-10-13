@@ -19,6 +19,7 @@ SRCS 	 	= main.C \
 		$(RAY_TRACER_DIR)/light.C \
 		$(RAY_TRACER_DIR)/camera.C \
 		../GL/glCanvas.C \
+		../GL/rayTree.C \
 
 # ===============================================================
 # NOTE:  On athena, the Mesa GL libraries are currently located in the
