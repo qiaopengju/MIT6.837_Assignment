@@ -163,7 +163,7 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
     //=====================
     //mirror
     //=====================
-    if (hit.getMaterial()->getReflectiveColor() != Vec3f(0,0,0)){
+    if (bounces <= max_bounces && hit.getMaterial()->getReflectiveColor() != Vec3f(0,0,0)){
         Vec3f reflect = mirrorDirection(hit.getNormal(), ray.getDirection());
         Ray rR(hit_pos, reflect);
         Hit hR(INFINITY, NULL);
@@ -175,7 +175,7 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
     //=====================
     //transparent
     //=====================
-    if (hit.getMaterial()->getTransparentColor() != Vec3f(0,0,0)){
+    if (bounces <= max_bounces && hit.getMaterial()->getTransparentColor() != Vec3f(0,0,0)){
         Vec3f refract;
         float index_i, index_t;
         if (ray.getDirection().Dot3(hit.getNormal()) < 0){ //光线入射透明材料
