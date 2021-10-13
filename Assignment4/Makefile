@@ -73,7 +73,7 @@ scene41:
 scene42:
 	./raytracer -input src/scene4_04_reflective_sphere.txt -size 1000 1000 -output output4_04c.tga -shadows -bounces 2 -weight 0.01
 scene43:
-	./raytracer -input src/scene4_04_reflective_sphere.txt -size 1000 1000 -output output4_04d.tga -shadows -bounces 3 -weight 0.01 -gui
+	./raytracer -input src/scene4_04_reflective_sphere.txt -size 1000 1000 -output output4_04d.tga -shadows -bounces 3 -weight 0.01
 scene5:
 	./raytracer -input src/scene4_05_transparent_bar.txt -size 200 200 -output output4_05.tga -shadows -bounces 10 -weight 0.01 -shade_back -gui
 scene60:
