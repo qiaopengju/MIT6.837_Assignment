@@ -57,8 +57,8 @@ int main(int argc, char *argv[]){
             assert(0);
         }
     }
+    GLCanvas::scene = new SceneParser(input_file);
     if (gl_preview){
-        GLCanvas::scene = new SceneParser(input_file);
         glCanvas.initialize(GLCanvas::scene, render);
     } else {
         render();
