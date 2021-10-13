@@ -18,6 +18,7 @@ public:
   // VIRTUAL METHODS
   virtual void getIllumination (const Vec3f &p, Vec3f &dir, Vec3f &col, 
 				float &distanceToLight) const = 0;
+  virtual Vec3f getLightPos() const = 0;
   virtual void glInit(int id) = 0;
   virtual float distace2Light(Vec3f v) = 0;
 };
@@ -39,6 +40,7 @@ public:
   ~DirectionalLight() {}
 
   // VIRTUAL METHOD
+  Vec3f getLightPos() const { return Vec3f(INFINITY, INFINITY, INFINITY); }
   void getIllumination (const Vec3f &p, Vec3f &dir, Vec3f &col, 
 			float &distanceToLight) const {
     // the direction to the light is the opposite of the
@@ -72,6 +74,7 @@ public:
   ~PointLight() {}
 
   // VIRTUAL METHODS
+  Vec3f getLightPos() const { return position; }
   float distace2Light(Vec3f v){ return (v - position).Length(); }
   void getIllumination(const Vec3f &p, Vec3f &dir, Vec3f &col, float &distanceToLight) const {
     dir = position - p;
