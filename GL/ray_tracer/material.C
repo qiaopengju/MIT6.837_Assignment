@@ -1,6 +1,7 @@
 #include <GL/glut.h>
 #include "material.h"
 #include "glCanvas.h"  
+#include "raytracer.h"
 
 PhongMaterial::PhongMaterial(const Vec3f &diffuseColor, 
     const Vec3f &specularColor, float exponent){
@@ -9,6 +10,7 @@ PhongMaterial::PhongMaterial(const Vec3f &diffuseColor,
   this->exponent = exponent;
   reflectiveColor = Vec3f(0,0,0);
   transparentColor = Vec3f(0,0,0);
+  indexOfRefraction = 1; //默认空气折射率1
 }
 
 PhongMaterial::PhongMaterial(const Vec3f &diffuseColor, 
@@ -87,6 +89,7 @@ Vec3f PhongMaterial::Shade (const Ray &ray, const Hit &hit,
 
   //caculate diffuse color
   float diffuse = dirToLight.Dot3(norNormal);
+  if (shade_back) diffuse = abs(diffuse);
   if (diffuse < 0) diffuse = 0; //点积为负，光在物体背面
   Vec3f diffuse_color = diffuse * getDiffuseColor() * lightColor;
   

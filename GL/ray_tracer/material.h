@@ -34,6 +34,7 @@ public:
   virtual Vec3f getSpecularColor() const = 0;
   virtual Vec3f getReflectiveColor() const = 0;
   virtual Vec3f getTransparentColor() const = 0;
+  virtual float getIndexOfRefraction() const = 0;
 
 protected:
 
@@ -57,6 +58,7 @@ public:
   Vec3f getSpecularColor() const { return specularColor; };
   Vec3f getReflectiveColor() const { return reflectiveColor; }
   Vec3f getTransparentColor() const { return transparentColor; }
+  float getIndexOfRefraction() const { return indexOfRefraction; }
 
   void glSetMaterial() const;
   Vec3f Shade (const Ray &ray, const Hit &hit, 
