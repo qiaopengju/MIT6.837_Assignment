@@ -431,3 +431,5 @@ void Triangle::paint(){
 ## Assignment4
 
 * Light 返回的light direction是与光线方向相反的
+* 内全反射要反向法向量
+* 折射入射和出射计算方法不同
