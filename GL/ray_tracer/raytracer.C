@@ -146,22 +146,28 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
         float distace2Light = scene->getLight(i)->distace2Light(hit_pos);
         scene->getLight(i)->getIllumination(hit_pos, light_dir[i], light_color[i], distace2Light);
         Vec3f directionToLight; 
-        if (distace2Light == INFINITY){ //direction light
+        bool isPointLight = distace2Light != INFINITY;
+        if (!isPointLight){ //direction light
             directionToLight = light_dir[i];
         } else { //point light
             directionToLight = scene->getLight(i)->getLightPos() - hit_pos;
         }
         directionToLight.Normalize();
 
-        Ray ray2(hit_pos, directionToLight);
-        Hit hit2(distace2Light, NULL);
-        if (!shadows || !group->intersectShadowRay(ray2, hit2, tmin)){ //如果不用显示shadow或者物体在改光线下没有被遮挡
+        Ray rayShadow(hit_pos, directionToLight);
+        Hit hitShadow(distace2Light, NULL);
+        bool inShadow = group->intersectShadowRay(rayShadow, hitShadow, tmin);
+        if (inShadow && isPointLight){
+            float distance2Shadow = (rayShadow.pointAtParameter(hitShadow.getT()) - hit_pos).Length();
+            if (distance2Shadow > distace2Light) inShadow = false;
+        }
+        if (!shadows || !inShadow){ //如果不用显示shadow或者物体在改光线下没有被遮挡
             result += hit.getMaterial()->Shade(ray, hit, light_dir[i], light_color[i] * weight); //光线颜色乘以权重
         } else if (distace2Light != INFINITY) { //点光源
         }
         //=====================
         // RayTree: shadow ray 
-        RayTree::AddShadowSegment(ray2, 0, hit2.getT());
+        RayTree::AddShadowSegment(rayShadow, 0, hitShadow.getT());
     }
 
     //=====================
