@@ -157,6 +157,7 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
         Hit hit2(distace2Light, NULL);
         if (!shadows || !group->intersectShadowRay(ray2, hit2, tmin)){ //如果不用显示shadow或者物体在改光线下没有被遮挡
             result += hit.getMaterial()->Shade(ray, hit, light_dir[i], light_color[i] * weight); //光线颜色乘以权重
+        } else if (distace2Light != INFINITY) { //点光源
         }
         //=====================
         // RayTree: shadow ray 
