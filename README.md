@@ -2,7 +2,7 @@
 
 # MIT 6.837
 
-### Assignment0:
+## Assignment0:
 
 #### Hint:
 
@@ -32,7 +32,7 @@ do_transform[k]_to_Vec();
 
 ---
 
-### Assignment1:
+## Assignment1:
 
 原理：相机从每个像素发出射线，显示最早击中物体的贴图
 
@@ -129,7 +129,7 @@ ObjectList = new Object3D*[n];	//Group中有n个Objects
 
 
 
-### Assignment2 Transformations & Additional Primitives
+## Assignment2 Transformations & Additional Primitives
 
 #### Task
 
@@ -405,7 +405,7 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
 
 ---
 
-### Assignment 3
+## Assignment 3
 
 * 所有GLUT call都应该放在create window之后，不然会segmentation fault
 * GLUT应该先初始化
@@ -428,6 +428,6 @@ void Triangle::paint(){
 }
 ```
 
-### Assignment4
+## Assignment4
 
 * Light 返回的light direction是与光线方向相反的
