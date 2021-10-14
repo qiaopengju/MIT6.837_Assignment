@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "group.h"
 #include "rayTree.h"
+#include "boundingbox.h"
 
 // Included files for OpenGL Rendering
 #include <GL/glut.h>
@@ -125,6 +126,10 @@ void GLCanvas::display(void)
   // Draw the scene once
   SPECULAR_FIX_WHICH_PASS = 0;
   scene->getGroup()->paint();
+
+  //debug bound box
+  scene->getGroup()->getBoundingBox()->paint();
+  scene->getGroup()->paintAllBBox();
 
 #else
 
