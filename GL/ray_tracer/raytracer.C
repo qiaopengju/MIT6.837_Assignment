@@ -39,7 +39,7 @@ void render(){
         for (int j = 0; j < height; j++){
             Ray r = camera->generateRay(Vec2f((float)i/width, (float)j/height));
             Hit h(INFINITY, NULL);
-            image->SetPixel(i, j, raytracer.traceRay(r, raytracer.getEpsilon(), 0, 1, 0, h));
+            image->SetPixel(i, j, raytracer.traceRay(r, raytracer.getEpsilon(), 0, 1, 1, h));
             if (h.getMaterial() != NULL){             //光线与物体相交
                 if (depth_file != NULL){ //render depth
                     float t = h.getT();
@@ -128,7 +128,8 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
     Group* group = scene->getGroup();
     //=====================
     //intersect all objects
-    if (!group->intersect(ray, hit, camera->getTMin())){ //光线与物体未相交 
+    //if (!group->intersect(ray, hit, camera->getTMin())){ //光线与物体未相交 
+    if (!group->intersect(ray, hit, tmin)){ //光线与物体未相交 
         return scene->getBackgroundColor();
     }
 
