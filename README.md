@@ -30,30 +30,6 @@ do_transform[k]_to_Vec();
 
 ![0_fern](src/0_fern.png)
 
-* dragon:
-
-```shell
-./ifs -input src/dragon.txt -points 50000 -iters 30 -size 400 -output dragon.tga
-```
-
-![0_dragon](src/0_dragon.png)
-
-* giant X:
-
-```shell
-./ifs -input src/giant_x.txt -points 50000 -iters 30 -size 400 -output giant_x.tga
-```
-
-![0_dragon](src/0_giant_x.png)
-
-* triangle iters 30 times:
-
-```shell
-./ifs -input src/sierpinski_triangle.txt -points 10000 -iters 30 -size 200 -output sierpinski_triangle_30.tga
-```
-
-![0_dragon](src/0_sierpinski_triangle_30.png)
-
 ---
 
 ### Assignment1:
@@ -144,14 +120,6 @@ ObjectList = new Object3D*[n];	//Group中有n个Objects
 #### Result:
 
 ```shell
-./raytracer -input src/scene1_01.txt -size 200 200 -output output1_01.tga -depth 9 10 depth1_01.tga
-```
-
-![1_output1_01](src/1_output1_01.png)
-
-![1_depth1_01](src/1_depth1_01.png)
-
-```shell
 ./raytracer -input src/scene1_02.txt -size 200 200 -output output1_02.tga -depth 9 10 depth1_02.tga
 ```
 
@@ -159,15 +127,7 @@ ObjectList = new Object3D*[n];	//Group中有n个Objects
 
 ![1_depth1_02](src/1_depth1_02.png)
 
-```shell
-./raytracer -input src/scene1_07.txt -size 200 200 -output output1_07.tga -depth -2 2 depth1_07.tga
-```
 
-![1_output1_07](src/1_output1_07.png)
-
-![1_depth1_07](src/1_depth1_07.png)
-
----
 
 ### Assignment2 Transformations & Additional Primitives
 
@@ -290,20 +250,6 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
     * 若t<tmin，Ray与三角形不相交
     * 若方程有解，且t>=tmin，0<α<1, 0<β<1, 0<γ<1，则Ray与三角形相交
 
-![](src/2_triangle1.png)
-
----
-
-![](src/2_triangle2.png)
-
----
-
-![](src/2_triangle3.png)
-
----
-
-![](src/2_triangle4.png)
-
 * 方法2：先与三角形所在平面求交点，再判断交点是否在三角形内部
 
   * 如何判断三角形平面上的点是否在三角形内部？
@@ -408,20 +354,6 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
 
 #### Result
 
-* scene 6:
-
-**maybe some bugs in normal shader?**
-
-```
-	./raytracer -input src/scene2_06_plane.txt -size 200 200 -output output2_06.tga -depth 8 20 depth2_06.tga -normals normals2_06.tga
-```
-
-![](src/2_output2_06.png)
-
-![](src/2_depth2_06.png)
-
-![](src/2_normals2_06.png)
-
 * scene 7 shade back:
 
 ```
@@ -440,13 +372,6 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
 
 ![](src/2_output2_07_no_back.png)
 
-* bunny 200 triangles:
-
-```
-./raytracer -input src/scene2_09_bunny_200.txt -size 200 200 -output output2_09.tga
-```
-
-![](src/2_output2_09.png)
 
 * bunny 1k triangles:
 
@@ -465,20 +390,6 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
 ![](src/2_output2_13.png)
 
 ![](src/2_normals2_13.png)
-
-* scene 14:
-
-```
-./raytracer -input src/scene2_14_axes_cube.txt -size 200 200 -output output2_14.tga
-```
-
-![](src/2_output2_14.png)
-
-* scene 15:
-
-```
-./raytracer -input src/scene2_15_crazy_transforms.txt -size 200 200 -output output2_15.tga
-```
 
 ![](src/2_output2_15.png)
 
