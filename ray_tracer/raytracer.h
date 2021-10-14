@@ -1,3 +1,6 @@
+#ifndef _RAYTRACER_H
+#define _RAYTRACER_H
+
 #include "ray.h"
 #include "hit.h"
 #include "scene_parser.h"
@@ -32,3 +35,4 @@ private:
     Vec3f *light_dir;
     Vec3f *light_color;
 };
+#endif
