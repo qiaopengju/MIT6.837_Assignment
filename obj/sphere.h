@@ -10,10 +10,12 @@ public:
     Sphere(Vec3f _center, float _radius, Material *_material);
     ~Sphere();
 
-    bool intersect(const Ray &r, Hit &h, float tmin);
     static void gl_set_theta_phi(const int &theta, const int &phi);
-    void paint();
     Vec3f getPoint(float _theta, float _phi);
+    //virtual
+    bool intersect(const Ray &r, Hit &h, float tmin);
+    void paint();
+    void insertIntoGrid(Grid *g, Matrix *m);
 private:
     Vec3f center;
     float radius;

@@ -1,5 +1,6 @@
 #include <GL/glut.h>
 #include "sphere.h"
+#include "grid.h"
 #include "raytracer.h"
 
 int Sphere::theta, Sphere::phi;
@@ -45,6 +46,9 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
         if (h.getMaterial() == NULL || h.getT() > (tp - t)/dir_len) h.set((tp - t)/dir_len, material, normal, r);
         return true;
     } else return false;
+}
+
+void Sphere::insertIntoGrid(Grid *g, Matrix *m){
 }
 
 void Sphere::gl_set_theta_phi(const int &_theta, const int &_phi){

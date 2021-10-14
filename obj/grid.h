@@ -1,3 +1,6 @@
+#ifndef _GRID_H
+#define _GRID_H
+
 #include "object3d.h"
 
 class Grid : public Object3D{
@@ -14,3 +17,4 @@ private:
     int nx, ny, nz;
     bool *opaque;
 };
+#endif
