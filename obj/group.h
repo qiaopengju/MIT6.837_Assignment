@@ -5,18 +5,16 @@
 
 class Group : public Object3D{
 public:
-    //CONSTRUCTOR
-    Group(int _numObjs) : numObjects(_numObjs) {
-        objList = new Object3D*[numObjects];
-    }
-    //DESTRUCTOR
-    ~Group() {}
+    //CONSTRUCTOR & DESTRUCTOR
+    Group(int _numObjs);
+    ~Group();
 
     int getNumObjects() const { return numObjects; }
     void addObject(int index, Object3D *obj);
     bool intersect(const Ray &r, Hit &h, float tmin);
     bool intersectShadowRay(const Ray &r, Hit &h, float tmin);
     void paint();
+    void paintAllBBox();
 private:
     Object3D **objList;
     int numObjects;
