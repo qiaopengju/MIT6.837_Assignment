@@ -3,8 +3,8 @@
 
 # ===============================================================
 # update this list as you add new C++ source files
-OBJ_DIR = ../GL/obj
-RAY_TRACER_DIR = ../GL/ray_tracer
+OBJ_DIR = ../obj
+RAY_TRACER_DIR = ../ray_tracer
 SRCS 	 	= main.C \
 		../matrix.C \
 		../image.C \
