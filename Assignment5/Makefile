@@ -61,8 +61,10 @@ $(EXE): $(OBJS)
 
 # ===============================================================
 # run
+cube:
+	./raytracer -input ../Assignment2/src/scene2_08_cube.txt -size 200 200 -output output2_08.tga -gui
 test:
-	./raytracer -input ../Assignment2/src/scene2_07_sphere_triangles.txt -size 200 200 -output output2_07.tga -depth 9 11 depth2_07.tga -normals normals2_07.tga -shade_back -gui
+	./raytracer -input ../Assignment2/src/scene2_07_sphere_triangles.txt -size 200 200 -output output2_07.tga -shade_back -gui
 scene2:
 	./raytracer -input ../Assignment4/src/scene4_02_colored_shadows.txt -size 200 200 -output output4_02.tga -shadows -gui -tessellation 50 25 -gouraud
 scene3:
