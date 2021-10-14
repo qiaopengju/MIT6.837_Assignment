@@ -6,6 +6,8 @@
 Plane::Plane(Vec3f &_noraml, float _d, Material *_m) : normal(_noraml), d(_d){
     material = _m;
     normal.Normalize();
+    // plane should not have bounding box
+    boundingBox = NULL; 
 }
 
 bool Plane::intersect(const Ray &r, Hit &h, float tmin){

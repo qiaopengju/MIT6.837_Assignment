@@ -8,7 +8,7 @@
 class Plane : public Object3D{
 public:
     Plane(Vec3f &_noraml, float _d, Material *_m);
-    ~Plane();
+    ~Plane() { };
     bool intersect(const Ray &r, Hit &h, float tmin);
     void paint();
 private:

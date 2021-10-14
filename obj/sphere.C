@@ -4,6 +4,19 @@
 
 int Sphere::theta, Sphere::phi;
 
+Sphere::Sphere(Vec3f _center, float _radius, Material *_material) : 
+        center(_center), radius(_radius){ 
+    material = _material; 
+    //caculate bounding box
+    Vec3f transRadius(radius, radius, radius);
+    boundingBox = new BoundingBox(center - transRadius, center + transRadius);
+    boundingBox->Print();
+}
+
+Sphere::~Sphere(){
+    delete boundingBox;
+}
+
 bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
     //标准化方向向量
     Vec3f dir_nor = r.getDirection();

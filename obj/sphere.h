@@ -7,8 +7,8 @@
 class Sphere : public Object3D{
 public:
     //CONSTRUCTOR
-    Sphere(Vec3f _center, float _radius, Material *_material) : 
-        center(_center), radius(_radius){ material = _material; }
+    Sphere(Vec3f _center, float _radius, Material *_material);
+    ~Sphere();
 
     bool intersect(const Ray &r, Hit &h, float tmin);
     static void gl_set_theta_phi(const int &theta, const int &phi);

@@ -8,6 +8,18 @@ Triangle::Triangle(Vec3f &a, Vec3f &b, Vec3f &c, Material *m){
     material = m;
     Vec3f::Cross3(normal, b-a, c-b); //normal = ab x bc;
     normal.Normalize();
+    //caculate bounding box
+    float max_x = max(max(this->a.x(), this->b.x()), this->c.x());
+    float max_y = max(max(this->a.y(), this->b.y()), this->c.y());
+    float max_z = max(max(this->a.z(), this->b.z()), this->c.z());
+    float min_x = min(min(this->a.x(), this->b.x()), this->c.x());
+    float min_y = min(min(this->a.y(), this->b.y()), this->c.y());
+    float min_z = min(min(this->a.z(), this->b.z()), this->c.z());
+    boundingBox = new BoundingBox(Vec3f(min_x, min_y, min_z), Vec3f(max_x, max_y, max_z));
+}
+
+Triangle::~Triangle(){
+    delete boundingBox;
 }
 
 bool Triangle::intersect(const Ray &r, Hit &h, float tmin){
