@@ -2,8 +2,8 @@
 # for g++ on linux platforms
 
 # ===============================================================
-OBJ_DIR = ../obj
-RAY_TRACER_DIR = ../raytracer
+OBJ_DIR = obj/
+RAY_TRACER_DIR = ray_tracer/
 
 SRCS 	 	= main.C \
 		  ../matrix.C \

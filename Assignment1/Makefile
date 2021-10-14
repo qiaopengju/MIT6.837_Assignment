@@ -2,8 +2,8 @@
 # for g++ on linux platforms
 
 # ===============================================================
-OBJ_DIR = ../obj
-RAY_TRACER_DIR = ../raytracer
+OBJ_DIR = ../Assignment2/obj
+RAY_TRACER_DIR = ../Assignment2/ray_tracer
 
 SRCS 	 	= main.C \
 		  ../matrix.C \
@@ -15,7 +15,7 @@ SRCS 	 	= main.C \
 
 # ===============================================================
 
-FLAG 	= -I../ -I../obj/ -I../raytracer/ -std=c++11
+FLAG 	= -I../ -I$(OBJ_DIR) -I$(RAY_TRACER_DIR) -std=c++11
 CC		= clang++
 EXE	  	= raytracer
 OBJS =  $(SRCS:.C=.o)
