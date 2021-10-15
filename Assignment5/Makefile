@@ -62,57 +62,11 @@ $(EXE): $(OBJS)
 
 # ===============================================================
 # run
-cube:
-	./raytracer -input ../Assignment2/src/scene2_08_cube.txt -size 200 200 -output output2_08.tga -gui
 test:
 	./raytracer -input ../Assignment2/src/scene2_07_sphere_triangles.txt -size 200 200 -output output2_07.tga -shade_back -gui
-scene2:
-	./raytracer -input ../Assignment4/src/scene4_02_colored_shadows.txt -size 200 200 -output output4_02.tga -shadows -gui -tessellation 50 25 -gouraud
-scene3:
-	./raytracer -input ../Assignment4/src/scene4_03_mirrored_floor.txt -size 200 200 -output output4_03.tga -shadows -bounces 1 -weight 0.01 -gui
-scene41:
-	./raytracer -input ../Assignment4/src/scene4_04_reflective_sphere.txt -size 200 200 -output output4_04b.tga -shadows -bounces 1 -weight 0.01 -gui
-scene42:
-	./raytracer -input ../Assignment4/src/scene4_04_reflective_sphere.txt -size 200 200 -output output4_04c.tga -shadows -bounces 2 -weight 0.01 -gui
-scene43:
-	./raytracer -input ../Assignment4/src/scene4_04_reflective_sphere.txt -size 200 200 -output output4_04d.tga -shadows -bounces 3 -weight 0.01 -gui
-scene5:
-	./raytracer -input ../Assignment4/src/scene4_05_transparent_bar.txt -size 200 200 -output output4_05.tga -shadows -bounces 10 -weight 0.01 -shade_back -gui
-scene60:
-	./raytracer -input ../Assignment4/src/scene4_06_transparent_bars.txt -size 200 200 -output output4_06a.tga -shadows -bounces 0 -weight 0.01 -shade_back -gui
-scene61:
-	./raytracer -input ../Assignment4/src/scene4_06_transparent_bars.txt -size 200 200 -output output4_06b.tga -shadows -bounces 1 -weight 0.01 -shade_back -gui
-scene62:
-	./raytracer -input ../Assignment4/src/scene4_06_transparent_bars.txt -size 200 200 -output output4_06c.tga -shadows -bounces 2 -weight 0.01 -shade_back -gui
-scene63:
-	./raytracer -input ../Assignment4/src/scene4_06_transparent_bars.txt -size 200 200 -output output4_06d.tga -shadows -bounces 3 -weight 0.01 -shade_back -gui
-scene64:
-	./raytracer -input ../Assignment4/src/scene4_06_transparent_bars.txt -size 200 200 -output output4_06e.tga -shadows -bounces 4 -weight 0.01 -shade_back -gui
-scene65:
-	./raytracer -input ../Assignment4/src/scene4_06_transparent_bars.txt -size 200 200 -output output4_06f.tga -shadows -bounces 5 -weight 0.01 -shade_back -gui
-scene7:
-	./raytracer -input ../Assignment4/src/scene4_07_transparent_sphere_1.0.txt -size 200 200 -output output4_07.tga -shadows -bounces 5 -weight 0.01 -shade_back -gui -tessellation 30 15
-scene8:
-	./raytracer -input ../Assignment4/src/scene4_08_transparent_sphere_1.1.txt -size 200 200 -output output4_08.tga -shadows -bounces 5 -weight 0.01 -shade_back -gui -tessellation 30 15
-scene9:
-	./raytracer -input ../Assignment4/src/scene4_09_transparent_sphere_2.0.txt -size 200 200 -output output4_09.tga -shadows -bounces 5 -weight 0.01 -shade_back -gui -tessellation 30 15
 scene10:
-	./raytracer -input ../Assignment4/src/scene4_10_point_light_distance.txt -size 200 200 -output output4_10.tga -shadows -gui
+	./raytracer -input src/scene5_01_sphere.txt -size 200 200 -output output5_01a.tga -gui -grid 1 1 1 -visualize_grid
 scene11:
-	./raytracer -input ../Assignment4/src/scene4_11_point_light_circle.txt -size 200 200 -output output4_11.tga -shadows 
+	./raytracer -input src/scene5_01_sphere.txt -size 200 200 -output output5_01b.tga -gui -grid 5 5 5 -visualize_grid
 scene12:
-	./raytracer -input ../Assignment4/src/scene4_12_point_light_circle_d_attenuation.txt -size 200 200 -output output4_12.tga -shadows 
-scene13:
-	./raytracer -input ../Assignment4/src/scene4_13_point_light_circle_d2_attenuation.txt -size 200 200 -output output4_13.tga -shadows 
-scene140:
-	./raytracer -input ../Assignment4/src/scene4_14_faceted_gem.txt -size 200 200 -output output4_14a.tga -shadows -shade_back -bounces 0 -weight 0.01 
-scene141:
-	./raytracer -input ../Assignment4/src/scene4_14_faceted_gem.txt -size 200 200 -output output4_14b.tga -shadows -shade_back -bounces 1 -weight 0.01 -gui
-scene142:
-	./raytracer -input ../Assignment4/src/scene4_14_faceted_gem.txt -size 200 200 -output output4_14c.tga -shadows -shade_back -bounces 2 -weight 0.01 -gui
-scene143:
-	./raytracer -input ../Assignment4/src/scene4_14_faceted_gem.txt -size 200 200 -output output4_14d.tga -shadows -shade_back -bounces 3 -weight 0.01 
-scene144:
-	./raytracer -input ../Assignment4/src/scene4_14_faceted_gem.txt -size 200 200 -output output4_14e.tga -shadows -shade_back -bounces 4 -weight 0.01 
-scene145:
-	./raytracer -input ../Assignment4/src/scene4_14_faceted_gem.txt -size 200 200 -output output4_14f.tga -shadows -shade_back -bounces 5 -weight 0.01
+	./raytracer -input src/scene5_01_sphere.txt -size 200 200 -output output5_01c.tga -gui -grid 15 15 15 -visualize_grid
