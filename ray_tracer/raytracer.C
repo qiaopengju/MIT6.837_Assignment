@@ -11,9 +11,9 @@
 #include "glCanvas.h"
 #include "rayTree.h"
 
-int width(100), height(100), max_bounces(0);
+int width(100), height(100), max_bounces(0), nx(0), ny(0), nz(0);
 char *input_file(NULL), *output_file(NULL), *depth_file(NULL), *normal_file(NULL);
-bool shade_back(false), gl_preview(false), gouraud(false), shadow(false);
+bool shade_back(false), gl_preview(false), gouraud(false), shadow(false), visualize_grid(false);
 float depth_min(0), depth_max(1), cutoff_weight(0);
 
 void render(){

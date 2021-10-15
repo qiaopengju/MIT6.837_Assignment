@@ -4,10 +4,11 @@
 #include "ray.h"
 #include "hit.h"
 #include "scene_parser.h"
+#include "grid.h"
 
-extern int width, height, max_bounces;
+extern int width, height, max_bounces, nx, ny, nz;
 extern char *input_file, *output_file, *depth_file, *normal_file;
-extern bool shade_back, gl_preview, gouraud, shadow;
+extern bool shade_back, gl_preview, gouraud, shadow, visualize_grid;
 extern float depth_min, depth_max, cutoff_weight;
 
 extern void render();
@@ -34,5 +35,6 @@ private:
     bool shadows;
     Vec3f *light_dir;
     Vec3f *light_color;
+    Grid *grid;
 };
 #endif
