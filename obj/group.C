@@ -2,6 +2,7 @@
 
 Group::Group(int _numObjs) : numObjects(_numObjs) {
     objList = new Object3D*[numObjects];
+    boundingBox = NULL;
 }
 
 Group::~Group(){
@@ -29,6 +30,12 @@ bool Group::intersect(const Ray &r, Hit &h, float tmin){
     }
     //printf("Hit at %f\n", h.getT());
     return flag;
+}
+
+void Group::insertIntoGrid(Grid *g, Matrix *m){
+    if (g == NULL) return;
+    for (int i = 0; i < numObjects; i++)
+        objList[i]->insertIntoGrid(g, m);
 }
 
 bool Group::intersectShadowRay(const Ray &r, Hit &h, float tmin){

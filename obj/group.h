@@ -13,6 +13,7 @@ public:
     void addObject(int index, Object3D *obj);
     bool intersect(const Ray &r, Hit &h, float tmin);
     bool intersectShadowRay(const Ray &r, Hit &h, float tmin);
+    void insertIntoGrid(Grid *g, Matrix *m);
     void paint();
     void paintAllBBox();
 private:
