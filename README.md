@@ -433,3 +433,7 @@ void Triangle::paint(){
 * Light 返回的light direction是与光线方向相反的
 * 内全反射要反向法向量
 * 折射入射和出射计算方法不同
+
+## Assignment5
+
+* A\[nx\]\[ny\]\[nz]中，LOC{ A\[i]\[j]\[k] }=A\[i * ny * nz  + j * nz + k]
