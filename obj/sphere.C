@@ -49,6 +49,40 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
 }
 
 void Sphere::insertIntoGrid(Grid *g, Matrix *m){
+    if (g == NULL) return;
+    int nx = g->getNx();
+    int ny = g->getNy();
+    int nz = g->getNz();
+    Vec3f cellPos;
+    Vec3f halfCellSize = g->getCellSize();
+    halfCellSize /= 2;
+    for (int i = 0; i < nx; i++){
+        for (int j  = 0; j < ny; j++){
+            for (int k = 0; k < nz; k++){
+                g->getCellPos(cellPos, i, j, k);
+                //printf("Index:%d %d %d LEN:%f\n", i, j, k, (cellPos-center).Length());
+                Vec3f closeX, closeY, closeZ;
+                Vec3f o2center = center - cellPos;
+                if (abs(o2center.x()) > halfCellSize.x()){
+                    if (o2center.x() < 0) closeX.Set(-halfCellSize.x(), 0, 0);
+                    else closeX.Set(halfCellSize.x(), 0, 0);
+                } else closeX.Set(o2center.x(), 0, 0);
+                if (abs(o2center.y()) > halfCellSize.y()){
+                    if (o2center.y() < 0) closeY.Set(0, -halfCellSize.y(), 0);
+                    else closeY.Set(0, halfCellSize.y(), 0);
+                } else closeY.Set(0, o2center.y(), 0);
+                if (abs(o2center.z()) > halfCellSize.z()){
+                    if (o2center.z() < 0) closeZ.Set(0, 0, -halfCellSize.z());
+                    else closeZ.Set(0, 0, halfCellSize.z());
+                } else closeZ.Set(0, 0, o2center.z());
+                Vec3f closePos = cellPos + closeX + closeY + closeZ;
+
+                if ((closePos - center).Length() < radius) {
+                    g->setCellOpaque(i, j, k);
+                }
+            }
+        }
+    }
 }
 
 void Sphere::gl_set_theta_phi(const int &_theta, const int &_phi){
