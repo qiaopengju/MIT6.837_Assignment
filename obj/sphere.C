@@ -93,9 +93,9 @@ void Sphere::gl_set_theta_phi(const int &_theta, const int &_phi){
 Vec3f Sphere::getPoint(float _theta, float _phi){
     _phi = _phi * M_PI / 180.f;
     _theta = _theta * M_PI / 180.f;
-    float x = center.x() + radius * sin(_phi) * cos(_theta);
+    float x = center.x() + radius * cos(_phi);
     float y = center.y() + radius * sin(_phi) * sin(_theta);
-    float z = center.z() + radius * cos(_phi);
+    float z = center.z() + radius * sin(_phi) * cos(_theta);
     return Vec3f(x, y, z);
 }
 
@@ -118,9 +118,9 @@ void Sphere::paint(){
         for (float iPhi = 0; iPhi <= 180; iPhi += delta_phi) {
             for (float iTheta = 0; iTheta <= 360; iTheta += delta_theta){
                 x1 = getPoint(iTheta, iPhi);
-                x2 = getPoint(iTheta + delta_theta, iPhi);
+                x2 = getPoint(iTheta, iPhi + delta_phi);
                 x3 = getPoint(iTheta + delta_theta, iPhi + delta_phi);
-                x4 = getPoint(iTheta, iPhi + delta_phi);
+                x4 = getPoint(iTheta + delta_theta, iPhi);
                 if (!gouraud){
                     Vec3f::Cross3(quad_normal, x2 - x1, x3 - x2);
                     if (quad_normal.Length() == 0) Vec3f::Cross3(quad_normal, x3 - x2, x4 - x3); //?****
