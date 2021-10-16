@@ -27,6 +27,8 @@ public:
         float index_i, float index_t, Vec3f &transmitted) const;
     //ACCESSOR
     float getEpsilon() const { return epsilon; }
+
+    static Grid *grid;
 private:
     SceneParser *scene;
     int max_bounces;
@@ -35,6 +37,5 @@ private:
     bool shadows;
     Vec3f *light_dir;
     Vec3f *light_color;
-    Grid *grid;
 };
 #endif

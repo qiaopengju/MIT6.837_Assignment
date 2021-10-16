@@ -10,11 +10,14 @@
 #include "light.h"
 #include "glCanvas.h"
 #include "rayTree.h"
+#include "matrix.h"
 
 int width(100), height(100), max_bounces(0), nx(0), ny(0), nz(0);
 char *input_file(NULL), *output_file(NULL), *depth_file(NULL), *normal_file(NULL);
 bool shade_back(false), gl_preview(false), gouraud(false), shadow(false), visualize_grid(false);
 float depth_min(0), depth_max(1), cutoff_weight(0);
+
+Grid* RayTracer::grid;
 
 void render(){
     RayTracer raytracer(GLCanvas::scene, max_bounces, cutoff_weight, shadow);
@@ -110,6 +113,14 @@ RayTracer::RayTracer(SceneParser *scene, int max_bounces, float cutoff_weight, b
     int num_light = scene->getNumLights();
     light_dir = new Vec3f[num_light];
     light_color = new Vec3f[num_light];
+    if (RayTracer::grid == NULL){
+        if (nx == 0 || ny == 0 || nz == 0) {}
+        else {
+            RayTracer::grid = new Grid(scene->getGroup()->getBoundingBox(), nx, ny, nz);
+            Matrix *m = NULL;
+            scene->getGroup()->insertIntoGrid(RayTracer::grid, m);
+        }
+    }
 }
 
 RayTracer::~RayTracer(){
