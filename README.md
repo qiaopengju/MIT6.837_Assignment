@@ -428,6 +428,9 @@ void Triangle::paint(){
 }
 ```
 
+* glBegin(GL_QUADS)：顶点逆时针顺序counter-clockwise
+* OpenGL x z坐标顺序和惯用坐标系相反，利用参数方程计算球坐标也应该交换x z坐标
+
 ## Assignment4
 
 * Light 返回的light direction是与光线方向相反的
