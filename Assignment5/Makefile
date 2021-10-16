@@ -63,7 +63,7 @@ $(EXE): $(OBJS)
 # ===============================================================
 # run
 test:
-	./raytracer -input ../Assignment2/src/scene2_07_sphere_triangles.txt -size 200 200 -output output2_07.tga -shade_back -gui
+	./raytracer -input ../Assignment2/src/scene2_07_sphere_triangles.txt -size 200 200 -output output2_07.tga -shade_back -gui -grid 15 15 15 -visualize_grid
 scene10:
 	./raytracer -input src/scene5_01_sphere.txt -size 200 200 -output output5_01a.tga -gui -grid 1 1 1 -visualize_grid
 scene11:
