@@ -119,6 +119,9 @@ void GLCanvas::display(void)
   //debug bound box
   scene->getGroup()->getBoundingBox()->paint();
   scene->getGroup()->paintAllBBox();
+  if (visualize_grid && RayTracer::grid != NULL){
+    RayTracer::grid->paint();
+  }
 
   // Place each of the lights in the scene
   for (int i=0; i<scene->getNumLights(); i++) {
