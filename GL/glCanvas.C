@@ -6,6 +6,7 @@
 #include "rayTree.h"
 #include "boundingbox.h"
 #include "raytracer.h"
+#include "grid.h"
 
 // Included files for OpenGL Rendering
 #include <GL/glut.h>
@@ -21,6 +22,10 @@ void (*GLCanvas::traceRayFunction)(float, float);
 
 // A pointer to the global SceneParser
 SceneParser *GLCanvas::scene;
+// A pointer to the grid
+Grid *GLCanvas::grid;
+bool GLCanvas::visualize_grid = 0;
+int GLCanvas::visualize_grid_march = 0;
 
 // State of the mouse cursor
 int GLCanvas::mouseButton;
@@ -116,17 +121,22 @@ void GLCanvas::display(void)
   glEnable(GL_LIGHTING);
   glEnable(GL_DEPTH_TEST);
 
-  //debug bound box
-  scene->getGroup()->getBoundingBox()->paint();
-  scene->getGroup()->paintAllBBox();
-  if (visualize_grid && RayTracer::grid != NULL){
-    RayTracer::grid->paint();
-  }
-
   // Place each of the lights in the scene
   for (int i=0; i<scene->getNumLights(); i++) {
     scene->getLight(i)->glInit(i);
   }
+  if (visualize_grid) {
+    if (visualize_grid_march == 0) {
+      grid->paint();
+      grid->getBoundingBox()->paint();
+    } else if (visualize_grid_march == 1) {
+      RayTree::paintHitCells();
+      grid->getBoundingBox()->paint();
+    } else {
+      RayTree::paintEnteredFaces();
+      grid->getBoundingBox()->paint();
+    }
+  } else {
 
 #if !SPECULAR_FIX
 
@@ -161,6 +171,7 @@ void GLCanvas::display(void)
   glDisable(GL_BLEND);
 
 #endif
+  }
 
   // Draw the ray tree
   glDisable(GL_LIGHTING);
@@ -248,12 +259,18 @@ void GLCanvas::keyboard(unsigned char key, int i, int j) {
     j = height-j; 
     int max = (width > height) ? width : height;
     // map the pixel coordinates: (0,0) -> (width-1,height-1);
-    //      to screenspace: (0.0,0.0) -> (1.0,1.0);
+    // to screenspace: (0.0,0.0) -> (1.0,1.0);
     float x = ((i + 0.5) -  width/2.0) / float(max) + 0.5;
     float y = ((j + 0.5) - height/2.0) / float(max) + 0.5;
     RayTree::Activate();
     if (traceRayFunction) traceRayFunction(x,y);
     RayTree::Deactivate();
+    // redraw
+    display();
+    break; }
+  case 'g':  case 'G': {
+    // toggle ray-grid march visualization
+    visualize_grid_march = (visualize_grid_march+1)%3;
     // redraw
     display();
     break; }
@@ -264,14 +281,14 @@ void GLCanvas::keyboard(unsigned char key, int i, int j) {
     printf("UNKNOWN KEYBOARD INPUT  '%c'\n", key);
   }
 }
-
 // ========================================================
 // Initialize all appropriate OpenGL variables, set
 // callback functions, and start the main event loop.
 // This function will not return but can be terminated
 // by calling 'exit(0)'
 // ========================================================
-void GLCanvas::initialize(SceneParser *_scene, void (*_renderFunction)(void), void (*_traceRayFunction)(float, float)){
+void GLCanvas::initialize(SceneParser *_scene, void (*_renderFunction)(void), 
+		  void (*_traceRayFunction)(float, float), Grid *_grid, bool _visualize_grid){
   int argc = 1;
   char *argv[] = {"main"};
   glutInit(&argc, argv);
@@ -284,6 +301,8 @@ void GLCanvas::initialize(SceneParser *_scene, void (*_renderFunction)(void), vo
   scene = _scene;
   renderFunction = _renderFunction;
   traceRayFunction = _traceRayFunction;
+  grid = _grid;
+  visualize_grid = _visualize_grid;
 
   // Set global lighting parameters
   glEnable(GL_LIGHTING);

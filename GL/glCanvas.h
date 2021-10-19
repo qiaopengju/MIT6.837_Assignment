@@ -14,6 +14,7 @@
 #include <stdlib.h>
 
 class SceneParser;
+class Grid;
 
 // ====================================================================
 // OPTIONAL: 3 pass rendering to fix the specular highlight 
@@ -29,17 +30,22 @@ class GLCanvas {
 
 private:
   // A reference to the function that performs the raytracing
-  // This gets called from the 'keyboard' rotine
+  // This gets called from the 'keyboard' routine
   static void (*renderFunction)(void);
-  static void (*traceRayFunction)(float, float);
 
+  // A reference to the function that traces the ray tree for a single pixel
+  // This gets called from the 'keyboard' routine
+  static void (*traceRayFunction)(float,float);
+
+  // Helper function for the display routine
+  static void drawAxes(void);
+
+  static bool visualize_grid;
+  static int visualize_grid_march;
   // State of the mouse cursor
   static int mouseButton;
   static int mouseX;
   static int mouseY;
-
-  // Helper function for the display routine
-  static void drawAxes(void);
 
   // Callback functions for mouse and keyboard events
   static void display(void);
@@ -52,17 +58,22 @@ public:
   // Constructor and destructor
   GLCanvas(void) {
     renderFunction = NULL;
-    traceRayFunction = NULL; 
-  }
+    traceRayFunction = NULL; }
  ~GLCanvas(void) { }
 
   // A pointer to the global SceneParser
   static SceneParser *scene;
+  // A pointer to the grid
+  static Grid *grid;
 
   // Set up the canvas and enter the rendering loop
   // Note that this function will not return but can be
   // terminated by calling 'exit(0)'
-  void initialize(SceneParser *_scene, void (*_renderFunction)(void), void (*_traceRayFunction)(float, float)=NULL);
+
+  void initialize(SceneParser *_scene, 
+		  void (*_renderFunction)(void), 
+		  void (*_traceRayFunction)(float, float),
+		  Grid *_grid, bool _visualize_grid);
 };
 
 // ====================================================================
