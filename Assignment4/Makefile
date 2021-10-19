@@ -115,4 +115,3 @@ scene143:
 scene144:
 	./raytracer -input src/scene4_14_faceted_gem.txt -size 200 200 -output output4_14e.tga -shadows -shade_back -bounces 4 -weight 0.01 
 scene145:
-	./raytracer -input src/scene4_14_faceted_gem.txt -size 200 200 -output output4_14f.tga -shadows -shade_back -bounces 5 -weight 0.01
