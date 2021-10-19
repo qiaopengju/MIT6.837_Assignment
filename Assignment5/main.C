@@ -20,6 +20,7 @@ void traceRayFunc(float , float);
 
 int main(int argc, char *argv[]){
     int theta(50), phi(25);
+    bool useGrid = false;
     for (int i = 1; i < argc; i++) {
         if (!strcmp(argv[i],"-input")) {
             i++; assert(i < argc); 
@@ -62,6 +63,7 @@ int main(int argc, char *argv[]){
             i++; assert(i < argc);
             cutoff_weight = atof(argv[i]);
         } else if (!strcmp(argv[i], "-grid")){
+            useGrid = true;
             i++; assert(i < argc);
             nx = atoi(argv[i]);
             i++; assert(i < argc);
@@ -77,8 +79,13 @@ int main(int argc, char *argv[]){
     }
     Sphere::gl_set_theta_phi(theta, phi);
     GLCanvas::scene = new SceneParser(input_file);
+    if (useGrid){
+        RayTracer::grid = new Grid(GLCanvas::scene->getGroup()->getBoundingBox(), nx, ny, nz);
+        Matrix *m = NULL;
+        GLCanvas::scene->getGroup()->insertIntoGrid(RayTracer::grid, m);
+    }
     if (gl_preview){
-        glCanvas.initialize(GLCanvas::scene, render, traceRayFunc);
+        glCanvas.initialize(GLCanvas::scene, render, traceRayFunc, RayTracer::grid, visualize_grid);
     } else {
         printf("Rendering scene...\t");
         fflush(stdout);

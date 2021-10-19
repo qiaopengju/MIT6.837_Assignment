@@ -116,14 +116,6 @@ RayTracer::RayTracer(SceneParser *scene, int max_bounces, float cutoff_weight, b
     int num_light = scene->getNumLights();
     light_dir = new Vec3f[num_light];
     light_color = new Vec3f[num_light];
-    if (RayTracer::grid == NULL){
-        if (nx == 0 || ny == 0 || nz == 0) {}
-        else {
-            RayTracer::grid = new Grid(scene->getGroup()->getBoundingBox(), nx, ny, nz);
-            Matrix *m = NULL;
-            scene->getGroup()->insertIntoGrid(RayTracer::grid, m);
-        }
-    }
 }
 
 RayTracer::~RayTracer(){
