@@ -1,9 +1,11 @@
 #include "grid.h"
+#include "marchingInfo.h"
 
 Grid::Grid(BoundingBox *bb, int nx, int ny, int nz){
     this->nx = nx;
     this->ny = ny;
     this->nz = nz;
+    boundingBox = bb;
     opaque = new bool[nx * ny * nz];
     fill(opaque, opaque + nx*ny*nz, false); //初始都透明
     material = new PhongMaterial(Vec3f(1,1,1), Vec3f(0,0,0), 0);
@@ -20,6 +22,7 @@ Grid::~Grid(){
     delete opaque;
 }
 
+//intersect grid boudingbox and ray
 bool Grid::intersect(const Ray &r, Hit &h, float tmin){
 }
 
@@ -29,6 +32,42 @@ void Grid::getCellPos(Vec3f &pos, const Vec3f &index){
     float y = min.y() + index.y() * lenCellY + lenCellY / 2;
     float z = min.z() + index.z() * lenCellZ + lenCellZ / 2;
     pos = Vec3f(x, y, z);
+}
+
+void Grid::getCellIndex(Vec3f &index, const Vec3f &pos){
+    float off_x = pos.x() - min.x();
+    float off_y = pos.y() - min.y();
+    float off_z = pos.z() - min.z();
+    float i = off_x / lenCellX;
+    float j = off_y / lenCellX;
+    float k = off_z / lenCellX;
+    index.Set(i, j, k);
+}
+
+//computes the marching increments and the information for the first cell traversed by the ray
+void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) {
+    //init marching information
+    mi.setGridSize(nx, ny, nz);
+    Vec3f rDir = r.getDirection();
+    mi.d_tx = lenCellX / rDir.x();
+    mi.d_ty = lenCellY / rDir.y();
+    mi.d_tz = lenCellZ / rDir.z();
+    mi.sign_x = rDir.x() > 0 ? Sign::positive : Sign::negative;
+    mi.sign_y = rDir.y() > 0 ? Sign::positive : Sign::negative;
+    mi.sign_z = rDir.z() > 0 ? Sign::positive : Sign::negative;
+    //mi.tmin = tmin;
+    //ray - bounding box collision detection
+    //init first cell
+    Vec3f offset = r.getOrigin() - min;
+    mi.indexI = abs(offset.x() / lenCellX);
+    mi.indexJ = abs(offset.y() / lenCellY);
+    mi.indexK = abs(offset.z() / lenCellZ);
+    float d_nextX = mi.sign_x == Sign::positive ? ceil(offset.x()/lenCellX) : floor(offset.x()/lenCellX);
+    float d_nextY = mi.sign_y == Sign::positive ? ceil(offset.y()/lenCellY) : floor(offset.y()/lenCellY);
+    float d_nextZ = mi.sign_z == Sign::positive ? ceil(offset.z()/lenCellZ) : floor(offset.z()/lenCellZ);
+    mi.t_nextX = abs((d_nextX * lenCellX - offset.x()) / rDir.x());
+    mi.t_nextY = abs((d_nextY * lenCellY - offset.y()) / rDir.y());
+    mi.t_nextZ = abs((d_nextZ * lenCellZ - offset.z()) / rDir.z());
 }
 
 // The paint routine is responsible for

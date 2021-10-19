@@ -2,6 +2,7 @@
 #define _GRID_H
 
 #include "object3d.h"
+#include "marchingInfo.h"
 
 class Grid : public Object3D{
 public:
@@ -15,11 +16,16 @@ public:
         getCellPos(pos, index);
     }
     void getCellPos(Vec3f &pos, const Vec3f &index);
+    void getCellIndex(Vec3f &index, const Vec3f &pos);
     void setCellOpaque(int i, int j, int k) { opaque[i*ny*nz + j*nz +k] = true; }
     int getNx() const { return nx; }
     int getNy() const { return ny; }
     int getNz() const { return nz; }
+    BoundingBox* getBoundingBox() const { return boundingBox; }
     Vec3f getCellSize() const { return Vec3f(lenCellX, lenCellY, lenCellZ); }
+    //computes the marching increments and the information for the first cell traversed by the ray
+    void initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin);
+    bool rayAABBcollision(const Ray &r, const Vec3f min, const Vec3f max, Vec3f &index);
     // The paint routine is responsible for
     // making the OpenGL calls to draw the object to the screen.
     void paint(void);
@@ -28,5 +34,6 @@ private:
     bool *opaque;
     float lenCellX, lenCellY, lenCellZ;
     Vec3f min; //存min方便计算位置
+    BoundingBox *boundingBox;
 };
 #endif
