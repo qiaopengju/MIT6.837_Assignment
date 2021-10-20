@@ -32,7 +32,7 @@ INCLUDE = -I/mit/mesa_v501/Mesa-5.0.1/include/
 CC = clang++
 EXE = raytracer
 OBJS =  $(SRCS:.C=.o)
-FLAG = -I../GL -I$(OBJ_DIR) -I$(RAY_TRACER_DIR) -I../ -std=c++11
+FLAG = -O2 -I../GL -I$(OBJ_DIR) -I$(RAY_TRACER_DIR) -I../ -std=c++11
 
 # ===============================================================
 # targets
