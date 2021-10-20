@@ -151,7 +151,8 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
     Vec3f hit_pos = ray.pointAtParameter(hit.getT());
     //=====================
     // RayTree: main segment
-    if (bounces == 0) RayTree::SetMainSegment(ray, 0, hit.getT());
+    //if (bounces == 0) RayTree::SetMainSegment(ray, 0, hit.getT());
+    if (bounces == 0) RayTree::SetMainSegment(ray, 0, INFINITY);
     //=====================
     //cast shadow ray
     //=====================
