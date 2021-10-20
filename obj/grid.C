@@ -10,6 +10,7 @@ Grid::Grid(BoundingBox *bb, int nx, int ny, int nz){
     this->nz = nz;
     boundingBox = bb;
     opaque = new bool[nx * ny * nz];
+    objOvelapList = new Object3DVector[nx * ny * nz];
     fill(opaque, opaque + nx*ny*nz, false); //初始都透明
     material = new PhongMaterial(Vec3f(1,1,1), Vec3f(0,0,0), 0);
     //bounding Box
@@ -33,45 +34,19 @@ Grid::Grid(BoundingBox *bb, int nx, int ny, int nz){
 }
 
 Grid::~Grid(){
-    delete opaque;
+    delete [] opaque;
+    delete [] objOvelapList;
 }
 
 //intersect grid boudingbox and ray
 //hit.T is tmin, not hit point's T
 bool Grid::intersect(const Ray &r, Hit &h, float tmin){
-    Vec3f max = boundingBox->getMax();
-    Vec3f origin = r.getOrigin();
-    Vec3f norDir = r.getDirection(); norDir.Normalize();
-    float tx1 = norDir.x() > 0 ? (min.x()-origin.x()) / norDir.x() : (max.x()-origin.x()) / norDir.x();
-    float tx2 = norDir.x() > 0 ? (max.x()-origin.x()) / norDir.x() : (min.x()-origin.x()) / norDir.x();
-    float ty1 = norDir.y() > 0 ? (min.y()-origin.y()) / norDir.y() : (max.y()-origin.y()) / norDir.y();
-    float ty2 = norDir.y() > 0 ? (max.y()-origin.y()) / norDir.y() : (min.y()-origin.y()) / norDir.y();
-    float tz1 = norDir.z() > 0 ? (min.z()-origin.z()) / norDir.z() : (max.z()-origin.z()) / norDir.z();
-    float tz2 = norDir.z() > 0 ? (max.z()-origin.z()) / norDir.z() : (min.z()-origin.z()) / norDir.z();
-    float tEnter = max2(max2(tx1, ty1), tz1);
-    float tExit = min2(min2(tx2, ty2), tz2);
-#ifdef DEBUG
-    printf("MIN: (%.3f, %.3f, %.3f)\n", min.x(), min.y(), min.z());
-    printf("MAX: (%.3f, %.3f, %.3f)\n", max.x(), max.y(), max.z());
-    printf("tEnter: %.3f\n", tEnter);
-    printf("tExit: %.3f\n", tExit);
-#endif
-    if (tEnter < tExit && tExit >= 0){ //hit!
-#ifdef DEBUG
-        printf("HIT!\n");
-#endif
-        if (tEnter < 0) { //ray origin is inside the box
-            if (tExit >= tmin) h.set(tmin, material, r); 
-            else h.set(INFINITY, NULL, r);
-        } else { //ray origin outside
-            if (tEnter >= tmin) h.set(tEnter, material, r); 
-            else h.set(INFINITY, NULL, r);
-        }
-    } else{ //not hit!
-#ifdef DEBUG
-        printf("NOT HIT!\n");
-#endif
-        h.set(INFINITY, NULL, r);
+    MarchingInfo mInfo;
+    this->initializeRayMarch(mInfo, r, tmin);
+    while(true){
+        paintCellRayTree(mInfo.indexI, mInfo.indexJ, mInfo.indexK);
+        //intersect each primitive in cell
+        if (!mInfo.nextCell()) break;
     }
 }
 
@@ -91,9 +66,12 @@ void Grid::getCellIndex(Vec3f &index, const Vec3f &pos){
     float off_x = pos.x() - min.x();
     float off_y = pos.y() - min.y();
     float off_z = pos.z() - min.z();
-    int i = off_x / lenCellX;
-    int j = off_y / lenCellX;
-    int k = off_z / lenCellX;
+    int i = min2(nx-1, max2(0, off_x / lenCellX));
+    int j = min2(ny-1, max2(0, off_y / lenCellX));
+    int k = min2(nz-1, max2(0, off_z / lenCellX));
+    //int i = off_x / lenCellX));
+    //int j = off_y / lenCellX));
+    //int k = off_z / lenCellX));
     index.Set(i, j, k);
 }
 
@@ -103,9 +81,10 @@ void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) {
     mi.setGridSize(nx, ny, nz);
     Vec3f rDir = r.getDirection(); rDir.Normalize();
     Vec3f rOri = r.getOrigin();
-    mi.d_tx = lenCellX / rDir.x();
-    mi.d_ty = lenCellY / rDir.y();
-    mi.d_tz = lenCellZ / rDir.z();
+    //must abs d_t!!!!
+    mi.d_tx = fabs(lenCellX / rDir.x());
+    mi.d_ty = fabs(lenCellY / rDir.y());
+    mi.d_tz = fabs(lenCellZ / rDir.z());
     mi.sign_x = rDir.x() > 0 ? Sign::positive : Sign::negative;
     mi.sign_y = rDir.y() > 0 ? Sign::positive : Sign::negative;
     mi.sign_z = rDir.z() > 0 ? Sign::positive : Sign::negative;
@@ -113,7 +92,26 @@ void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) {
     //ray - bounding box collision detection
     //init first cell
     Hit hitGrid(INFINITY, NULL);
-    this->intersect(r, hitGrid, tmin);
+    Vec3f max = boundingBox->getMax();
+    float tx1 = rDir.x() > 0 ? (min.x()-rOri.x()) / rDir.x() : (max.x()-rOri.x()) / rDir.x();
+    float tx2 = rDir.x() > 0 ? (max.x()-rOri.x()) / rDir.x() : (min.x()-rOri.x()) / rDir.x();
+    float ty1 = rDir.y() > 0 ? (min.y()-rOri.y()) / rDir.y() : (max.y()-rOri.y()) / rDir.y();
+    float ty2 = rDir.y() > 0 ? (max.y()-rOri.y()) / rDir.y() : (min.y()-rOri.y()) / rDir.y();
+    float tz1 = rDir.z() > 0 ? (min.z()-rOri.z()) / rDir.z() : (max.z()-rOri.z()) / rDir.z();
+    float tz2 = rDir.z() > 0 ? (max.z()-rOri.z()) / rDir.z() : (min.z()-rOri.z()) / rDir.z();
+    float tEnter = max2(max2(tx1, ty1), tz1);
+    float tExit = min2(min2(tx2, ty2), tz2);
+    if (tEnter < tExit && tExit >= 0){ //hit!
+        if (tEnter < 0) { //ray rOri is inside the box
+            if (tExit >= tmin) hitGrid.set(tmin, material, r); 
+            else hitGrid.set(INFINITY, NULL, r);
+        } else { //ray rOri outside
+            if (tEnter >= tmin) hitGrid.set(tEnter, material, r); 
+            else hitGrid.set(INFINITY, NULL, r);
+        }
+    } else{ //not hit!
+        hitGrid.set(INFINITY, NULL, r);
+    }
 
     Vec3f hitPos = r.pointAtParameter(hitGrid.getT());
 #ifdef DEBUG
@@ -136,15 +134,6 @@ void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) {
 
     //RayTree
     paintCellRayTree(hitIdx);
-}
-
-void Grid::rayMarchingGrid(const Ray &r, float tmin){
-    MarchingInfo mInfo;
-    this->initializeRayMarch(mInfo, r, tmin);
-    do{
-        paintCellRayTree(mInfo.indexI, mInfo.indexJ, mInfo.indexK);
-        //intersect each primitive in cell
-    } while(mInfo.nextCell());
 }
 
 // The paint routine is responsible for

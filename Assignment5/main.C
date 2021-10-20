@@ -79,7 +79,7 @@ int main(int argc, char *argv[]){
     }
     Sphere::gl_set_theta_phi(theta, phi);
     GLCanvas::scene = new SceneParser(input_file);
-    if (useGrid){
+    if (useGrid){ //init Grid
         RayTracer::grid = new Grid(GLCanvas::scene->getGroup()->getBoundingBox(), nx, ny, nz);
         Matrix *m = NULL;
         GLCanvas::scene->getGroup()->insertIntoGrid(RayTracer::grid, m);
