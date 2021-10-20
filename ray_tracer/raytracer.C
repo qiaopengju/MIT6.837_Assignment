@@ -107,7 +107,10 @@ void traceRayFunc(float x, float y){
     raytracer.traceRay(r, raytracer.getEpsilon(), 0, 1, 0, h);
 
     //ray grid marcing
-    raytracer.grid->rayMarchingGrid(r, raytracer.getEpsilon());
+    if (raytracer.grid != NULL) {
+        Hit hitGrid(INFINITY, NULL);
+        raytracer.grid->intersect(r, hitGrid, raytracer.getEpsilon());
+    }
 }
 
 RayTracer::RayTracer(SceneParser *scene, int max_bounces, float cutoff_weight, bool shadows){
