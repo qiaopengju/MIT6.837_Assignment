@@ -11,6 +11,7 @@
 #include "glCanvas.h"
 #include "rayTree.h"
 #include "matrix.h"
+#include "marchingInfo.h"
 
 int width(100), height(100), max_bounces(0), nx(0), ny(0), nz(0);
 char *input_file(NULL), *output_file(NULL), *depth_file(NULL), *normal_file(NULL);
@@ -104,6 +105,9 @@ void traceRayFunc(float x, float y){
     Hit h(INFINITY, NULL);
     Ray r = GLCanvas::scene->getCamera()->generateRay(Vec2f(x, y));
     raytracer.traceRay(r, raytracer.getEpsilon(), 0, 1, 0, h);
+
+    //ray grid marcing
+    raytracer.grid->rayMarchingGrid(r, raytracer.getEpsilon());
 }
 
 RayTracer::RayTracer(SceneParser *scene, int max_bounces, float cutoff_weight, bool shadows){
