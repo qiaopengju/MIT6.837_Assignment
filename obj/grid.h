@@ -16,6 +16,7 @@ public:
         getCellPos(pos, index);
     }
     void getCellPos(Vec3f &pos, const Vec3f &index);
+    void getCellPosMin(Vec3f &pos, const int &i, const int &j, const int &k);
     void getCellIndex(Vec3f &index, const Vec3f &pos);
     void setCellOpaque(int i, int j, int k) { opaque[i*ny*nz + j*nz +k] = true; }
     int getNx() const { return nx; }
@@ -26,9 +27,12 @@ public:
     //computes the marching increments and the information for the first cell traversed by the ray
     void initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin);
     bool rayAABBcollision(const Ray &r, const Vec3f min, const Vec3f max, Vec3f &index);
+    void rayMarchingGrid(const Ray &r, float tmin);
     // The paint routine is responsible for
     // making the OpenGL calls to draw the object to the screen.
     void paint(void);
+    void paintCellRayTree(Vec3f index);
+    void paintCellRayTree(int i, int j, int k) { paintCellRayTree(Vec3f(i, j, k)); }
 private:
     int nx, ny, nz;
     bool *opaque;
