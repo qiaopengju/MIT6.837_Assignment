@@ -2,7 +2,20 @@
 #include "marchingInfo.h"
 #include "rayTree.h"
 
+#define NMaterial 10
 Vec3f v1, v2, v3, v4, v5, v6, v7, v8;
+
+PhongMaterial materialList[NMaterial] = {
+    PhongMaterial(Vec3f(1,1,1)), 
+    PhongMaterial(Vec3f(0.7,1,1)), 
+    PhongMaterial(Vec3f(0.3,1,1)), 
+    PhongMaterial(Vec3f(0.3,0.7,1)), 
+    PhongMaterial(Vec3f(0.3,0.3,1)), 
+    PhongMaterial(Vec3f(0.3,0.3,0.7)), 
+    PhongMaterial(Vec3f(0.7,0.3,0.3)), 
+    PhongMaterial(Vec3f(0.3,0.7,0.3)), 
+    PhongMaterial(Vec3f(0.3,0.7,0.7)), 
+    PhongMaterial(Vec3f(0.7,0.7,0.3))};
 
 Grid::Grid(BoundingBox *bb, int nx, int ny, int nz){
     this->nx = nx;
@@ -40,14 +53,14 @@ Grid::~Grid(){
 bool Grid::intersect(const Ray &r, Hit &h, float tmin){
     MarchingInfo mInfo;
     this->initializeRayMarch(mInfo, r, tmin);
-    while(true){
+    for (int i = 0; true; i++){
         //intersect each primitive in cell
         int index = mInfo.indexI*ny*nz + mInfo.indexJ*nz +mInfo.indexK;
         if (opaque[index].getNumObjects() != 0){
             h.set(mInfo.tmin, material, r);
             //return true;
         }
-        paintCellRayTree(mInfo.indexI, mInfo.indexJ, mInfo.indexK, material);
+        paintCellRayTree(mInfo.indexI, mInfo.indexJ, mInfo.indexK, &materialList[i%NMaterial]);
         if (!mInfo.nextCell()) break;
     }
     return false;
@@ -265,71 +278,4 @@ void Grid::paintCellRayTree(Vec3f index, Material *m){
     c.Set(v7.x()+sx, v7.y()+sy, v7.z()+sz);
     d.Set(v3.x()+sx, v3.y()+sy, v3.z()+sz);
     RayTree::AddHitCellFace(a, b, c, d, normal, m);
-}
-
-void Grid::paintFaceRayTree(Face face, Vec3f index, Material *m){
-    index.Set((int)index.x(), (int)index.y(), (int)index.z());
-    float sx = index.x() * lenCellX;
-    float sy = index.y() * lenCellY;
-    float sz = index.z() * lenCellZ;
-    Vec3f normal, a, b, c, d;
-    switch (face){
-        //bottom
-        case Bottom:
-        Vec3f::Cross3(normal, v1-v2, v3-v2);
-        a.Set(v4.x()+sx, v4.y()+sy, v4.z()+sz);
-        b.Set(v3.x()+sx, v3.y()+sy, v3.z()+sz);
-        c.Set(v2.x()+sx, v2.y()+sy, v2.z()+sz);
-        d.Set(v1.x()+sx, v1.y()+sy, v1.z()+sz);
-        RayTree::AddEnteredFace(a, b, c, d, normal, m);
-        break;
-        //top
-        case Top:
-        Vec3f::Cross3(normal, v5-v6, v7-v6);
-        a.Set(v8.x()+sx, v8.y()+sy, v8.z()+sz);
-        b.Set(v7.x()+sx, v7.y()+sy, v7.z()+sz);
-        c.Set(v6.x()+sx, v6.y()+sy, v6.z()+sz);
-        d.Set(v5.x()+sx, v5.y()+sy, v5.z()+sz);
-        RayTree::AddEnteredFace(a, b, c, d, normal, m);
-        break;
-        //left
-        case Left:
-        Vec3f::Cross3(normal, v5-v1, v4-v1);
-        a.Set(v5.x()+sx, v5.y()+sy, v5.z()+sz);
-        b.Set(v8.x()+sx, v8.y()+sy, v8.z()+sz);
-        c.Set(v4.x()+sx, v4.y()+sy, v4.z()+sz);
-        d.Set(v1.x()+sx, v1.y()+sy, v1.z()+sz);
-        RayTree::AddEnteredFace(a, b, c, d, normal, m);
-        break;
-        //right
-        case Right:
-        Vec3f::Cross3(normal, v3-v2, v6-v2);
-        a.Set(v2.x()+sx, v2.y()+sy, v2.z()+sz);
-        b.Set(v3.x()+sx, v3.y()+sy, v3.z()+sz);
-        c.Set(v7.x()+sx, v7.y()+sy, v7.z()+sz);
-        d.Set(v6.x()+sx, v6.y()+sy, v6.z()+sz);
-        RayTree::AddEnteredFace(a, b, c, d, normal, m);
-        break;
-        //front
-        case Front:
-        Vec3f::Cross3(normal, v2-v1, v5-v1);
-        a.Set(v1.x()+sx, v1.y()+sy, v1.z()+sz);
-        b.Set(v2.x()+sx, v2.y()+sy, v2.z()+sz);
-        c.Set(v6.x()+sx, v6.y()+sy, v6.z()+sz);
-        d.Set(v5.x()+sx, v5.y()+sy, v5.z()+sz);
-        RayTree::AddEnteredFace(a, b, c, d, normal, m);
-        break;
-        //back
-        case Back:
-        Vec3f::Cross3(normal, v8-v4, v3-v4);
-        a.Set(v4.x()+sx, v4.y()+sy, v4.z()+sz);
-        b.Set(v8.x()+sx, v8.y()+sy, v8.z()+sz);
-        c.Set(v7.x()+sx, v7.y()+sy, v7.z()+sz);
-        d.Set(v3.x()+sx, v3.y()+sy, v3.z()+sz);
-        RayTree::AddEnteredFace(a, b, c, d, normal, m);
-        break;
-        default:
-        printf("Error face!\n");
-        assert(0);
-    }
 }
