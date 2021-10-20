@@ -2,6 +2,7 @@
 #define _BOUNDING_BOX_H_
 
 #include "vectors.h"
+#include "matrix.h"
 
 #include <assert.h>
 
@@ -49,6 +50,7 @@ public:
     assert (bb != NULL);
     Extend(bb->min);
     Extend(bb->max); }
+  void Transform(Matrix *m);
 
   // DEBUGGING 
   void Print() const {
