@@ -47,7 +47,12 @@ bool Transform::intersect(const Ray &r, Hit &h, float tmin){
 }
 
 void Transform::insertIntoGrid(Grid *g, Matrix *m){
-    //object->insertIntoGrid(g, m);
+    if (m){
+        Matrix t = (*m) * this->m;
+        object->insertIntoGrid(g, &t);
+    } else{
+        object->insertIntoGrid(g, &this->m);
+    }
 }
 
 void Transform::paint(){

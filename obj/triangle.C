@@ -75,8 +75,16 @@ void Triangle::insertIntoGrid(Grid *g, Matrix *m){
     Vec3f cellPos;
     Vec3f halfCellSize = g->getCellSize(); halfCellSize /= 2.f;
     //transform
+    Vec3f aT(a), bT(b), cT(c), norT(normal);
+    if (m){
+        m->Transform(aT);
+        m->Transform(bT);
+        m->Transform(cT);
+        m->TransformDirection(norT); norT.Normalize();
+        //boundingBox->Trans(m);
+    }
     //caculate axis
-    Vec3f f0 = b - a, f1 = c - b, f2 = a - c;
+    Vec3f f0 = bT - aT, f1 = cT - bT, f2 = aT - cT;
     Vec3f e0(1, 0, 0), e1(0, 1, 0), e2(0, 0, 1);
     Vec3f a00, a01, a02, a10, a11, a12, a20, a21, a22;
     Vec3f::Cross3(a00, e0, f0); a00.Normalize();
@@ -88,15 +96,15 @@ void Triangle::insertIntoGrid(Grid *g, Matrix *m){
     Vec3f::Cross3(a20, e2, f0); a20.Normalize();
     Vec3f::Cross3(a21, e2, f1); a21.Normalize();
     Vec3f::Cross3(a22, e2, f2); a22.Normalize();
-    Vec3f axis[] = {e0, e1, e2, normal,
+    Vec3f axis[] = {e0, e1, e2, norT,
         a00, a01, a02, a10, a11, a12, a20, a21, a22};
     for (int i = 0; i < nx; i++){
         for (int j  = 0; j < ny; j++){
             for (int k = 0; k < nz; k++){
                 g->getCellPos(cellPos, i, j, k);
-                Vec3f v0 = a - cellPos;
-                Vec3f v1 = b - cellPos;
-                Vec3f v2 = c - cellPos;
+                Vec3f v0 = aT - cellPos;
+                Vec3f v1 = bT - cellPos;
+                Vec3f v2 = cT - cellPos;
                 bool flag = true;
                 for (int aI = 0; aI < 13; aI++){
                     float p0 = axis[aI].Dot3(v0);
