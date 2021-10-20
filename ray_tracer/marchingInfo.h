@@ -19,19 +19,19 @@ public:
             indexI += sign_x;
             tmin = t_nextX;
             t_nextX += d_tx;
-            if (indexI < 0 || indexI > nx) return false;
+            if (indexI < 0 || indexI >= nx) return false;
             surfaceNormal.Set(-sign_x, 0, 0);
         } else if (t_minNext == t_nextY){
             indexJ += sign_y;
             tmin = t_nextY;
             t_nextY += d_ty;
-            if (indexJ < 0 || indexJ > ny) return false;
+            if (indexJ < 0 || indexJ >= ny) return false;
             surfaceNormal.Set(0, -sign_y, 0);
         } else{
             indexK += sign_z;
             tmin = t_nextZ;
             t_nextZ += d_tz;
-            if (indexK < 0 || indexK > nz) return false;
+            if (indexK < 0 || indexK >= nz) return false;
             surfaceNormal.Set(0, 0, -sign_z);
         }
         return true;
