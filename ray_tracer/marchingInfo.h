@@ -9,28 +9,32 @@ namespace Sign{
 
 class MarchingInfo{
 public:
-    MarchingInfo();
+    MarchingInfo() = default;
 
     //3DDDA
     //choose the smallest of the next t values (t_next_x, t_next_y, and t_next_z), and updates the corresponding cell index
     bool nextCell(){
-        float t_minNext = min(min(t_nextX, t_nextY), t_nextZ);
+        float t_minNext = min2(min2(t_nextX, t_nextY), t_nextZ);
         if (t_minNext == t_nextX){
             indexI += sign_x;
             tmin = t_nextX;
             t_nextX += d_tx;
             if (indexI < 0 || indexI > nx) return false;
+            surfaceNormal.Set(-sign_x, 0, 0);
         } else if (t_minNext == t_nextY){
             indexJ += sign_y;
             tmin = t_nextY;
             t_nextY += d_ty;
             if (indexJ < 0 || indexJ > ny) return false;
+            surfaceNormal.Set(0, -sign_y, 0);
         } else{
             indexK += sign_z;
             tmin = t_nextZ;
             t_nextZ += d_tz;
             if (indexK < 0 || indexK > nz) return false;
+            surfaceNormal.Set(0, 0, -sign_z);
         }
+        return true;
     }
 
     //Modify
