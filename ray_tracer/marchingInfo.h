@@ -6,6 +6,7 @@
 namespace Sign{
     enum sign{positive=1, negative=-1};
 }
+enum Face{Bottom, Top, Front, Back, Left, Right};
 
 class MarchingInfo{
 public:
