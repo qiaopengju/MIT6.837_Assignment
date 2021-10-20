@@ -10,6 +10,7 @@ public:
     ~Transform();
 
     bool intersect(const Ray &r, Hit &h, float tmin);
+    void insertIntoGrid(Grid *g, Matrix *m);
     void paint();
 private:
     Matrix m, m_inverse, m_inverse_transpose;

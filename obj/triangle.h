@@ -9,6 +9,7 @@ public:
     ~Triangle();
 
     bool intersect(const Ray &r, Hit &h, float tmin);
+    void insertIntoGrid(Grid *g, Matrix *m);
     void paint();
 private:
     Vec3f a, b, c;

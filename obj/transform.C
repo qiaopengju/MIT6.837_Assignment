@@ -46,6 +46,10 @@ bool Transform::intersect(const Ray &r, Hit &h, float tmin){
     return false;
 }
 
+void Transform::insertIntoGrid(Grid *g, Matrix *m){
+    //object->insertIntoGrid(g, m);
+}
+
 void Transform::paint(){
     glPushMatrix();
     GLfloat *glMatrix = m.glGet();
