@@ -50,7 +50,7 @@ class PhongMaterial : public Material{
 public:
   //CONSTURCTURS
   PhongMaterial(const Vec3f &diffuseColor, 
-      const Vec3f &specularColor, float exponent);
+      const Vec3f &specularColor=Vec3f(0,0,0), float exponent=0);
   PhongMaterial(const Vec3f &diffuseColor, 
       const Vec3f &specularColor, float exponent, 
       const Vec3f &reflectiveColor, const Vec3f &transparentColor, float indexOfRefraction); 
