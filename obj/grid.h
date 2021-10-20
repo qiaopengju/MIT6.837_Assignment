@@ -20,8 +20,7 @@ public:
     void getCellPosMin(Vec3f &pos, const int &i, const int &j, const int &k);
     void getCellIndex(Vec3f &index, const Vec3f &pos);
     void setCellOpaque(int i, int j, int k, Object3D* obj) { 
-        opaque[i*ny*nz + j*nz +k] = true; 
-        objOvelapList[i*ny*nz + j*nz + k].addObject(obj);
+        opaque[i*ny*nz + j*nz + k].addObject(obj);
     }
     int getNx() const { return nx; }
     int getNy() const { return ny; }
@@ -33,12 +32,12 @@ public:
     // The paint routine is responsible for
     // making the OpenGL calls to draw the object to the screen.
     void paint(void);
-    void paintCellRayTree(Vec3f index);
-    void paintCellRayTree(int i, int j, int k) { paintCellRayTree(Vec3f(i, j, k)); }
+    void paintCellRayTree(Vec3f index, Material *m);
+    void paintCellRayTree(int i, int j, int k, Material *m) { paintCellRayTree(Vec3f(i, j, k), m); }
+    void paintFaceRayTree(Face face, Vec3f index, Material *m);
 private:
     int nx, ny, nz;
-    bool *opaque;
-    Object3DVector *objOvelapList;
+    Object3DVector *opaque;
 
     float lenCellX, lenCellY, lenCellZ;
     Vec3f min; //存min方便计算位置

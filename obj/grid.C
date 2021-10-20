@@ -9,9 +9,7 @@ Grid::Grid(BoundingBox *bb, int nx, int ny, int nz){
     this->ny = ny;
     this->nz = nz;
     boundingBox = bb;
-    opaque = new bool[nx * ny * nz];
-    objOvelapList = new Object3DVector[nx * ny * nz];
-    fill(opaque, opaque + nx*ny*nz, false); //初始都透明
+    opaque = new Object3DVector[nx * ny * nz];
     material = new PhongMaterial(Vec3f(1,1,1), Vec3f(0,0,0), 0);
     //bounding Box
     boundingBox = bb;
@@ -35,7 +33,6 @@ Grid::Grid(BoundingBox *bb, int nx, int ny, int nz){
 
 Grid::~Grid(){
     delete [] opaque;
-    delete [] objOvelapList;
 }
 
 //intersect grid boudingbox and ray
@@ -44,10 +41,16 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin){
     MarchingInfo mInfo;
     this->initializeRayMarch(mInfo, r, tmin);
     while(true){
-        paintCellRayTree(mInfo.indexI, mInfo.indexJ, mInfo.indexK);
         //intersect each primitive in cell
+        int index = mInfo.indexI*ny*nz + mInfo.indexJ*nz +mInfo.indexK;
+        if (opaque[index].getNumObjects() != 0){
+            h.set(mInfo.tmin, material, r);
+            //return true;
+        }
+        paintCellRayTree(mInfo.indexI, mInfo.indexJ, mInfo.indexK, material);
         if (!mInfo.nextCell()) break;
     }
+    return false;
 }
 
 //get cell center pos, index begin from zero
@@ -91,7 +94,7 @@ void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) {
     //mi.tmin = tmin;
     //ray - bounding box collision detection
     //init first cell
-    Hit hitGrid(INFINITY, NULL);
+    float T = INFINITY;
     Vec3f max = boundingBox->getMax();
     float tx1 = rDir.x() > 0 ? (min.x()-rOri.x()) / rDir.x() : (max.x()-rOri.x()) / rDir.x();
     float tx2 = rDir.x() > 0 ? (max.x()-rOri.x()) / rDir.x() : (min.x()-rOri.x()) / rDir.x();
@@ -103,17 +106,12 @@ void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) {
     float tExit = min2(min2(tx2, ty2), tz2);
     if (tEnter < tExit && tExit >= 0){ //hit!
         if (tEnter < 0) { //ray rOri is inside the box
-            if (tExit >= tmin) hitGrid.set(tmin, material, r); 
-            else hitGrid.set(INFINITY, NULL, r);
+            if (tExit >= tmin) T = tmin; 
         } else { //ray rOri outside
-            if (tEnter >= tmin) hitGrid.set(tEnter, material, r); 
-            else hitGrid.set(INFINITY, NULL, r);
+            if (tEnter >= tmin) T = tEnter; 
         }
-    } else{ //not hit!
-        hitGrid.set(INFINITY, NULL, r);
-    }
-
-    Vec3f hitPos = r.pointAtParameter(hitGrid.getT());
+    } 
+    Vec3f hitPos = r.pointAtParameter(T);
 #ifdef DEBUG
     printf("HIT POS: (%.3f, %.3f, %.3f)\n", hitPos.x(), hitPos.y(), hitPos.z());
 #endif
@@ -128,12 +126,6 @@ void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) {
     mi.t_nextX = mi.sign_x == Sign::positive ? (nextMinPos.x()-rOri.x()) / rDir.x() : (nextMaxPos.x()-rOri.x()) / rDir.x();
     mi.t_nextY = mi.sign_y == Sign::positive ? (nextMinPos.y()-rOri.y()) / rDir.y() : (nextMaxPos.y()-rOri.y()) / rDir.y();
     mi.t_nextZ = mi.sign_z == Sign::positive ? (nextMinPos.z()-rOri.z()) / rDir.z() : (nextMaxPos.z()-rOri.z()) / rDir.z();
-    //mi.t_nextX = (nextMinPos.x()-rOri.x()) / rDir.x();
-    //mi.t_nextY = (nextMinPos.y()-rOri.y()) / rDir.y();
-    //mi.t_nextZ = (nextMinPos.z()-rOri.z()) / rDir.z();
-
-    //RayTree
-    paintCellRayTree(hitIdx);
 }
 
 // The paint routine is responsible for
@@ -142,7 +134,7 @@ void Grid::paint(void){
     //min max is unit cell size
     //material->glSetMaterial();
     Vec3f normal;
-    material->glSetMaterial();
+    Material *m;
     glBegin(GL_QUADS);
     for (int i = 0; i < nx; i++){
         for (int j = 0; j < ny; j++){
@@ -151,8 +143,32 @@ void Grid::paint(void){
                 float sy = j * lenCellY;
                 float sz = k * lenCellZ;
 
-                if (opaque[i*ny*nz + j*nz +k]){
+                switch (opaque[i*ny*nz + j*nz + k].getNumObjects()) {
+                    case 1: m = new PhongMaterial(Vec3f(1, 1, 1)); break;
+                    case 2: m = new PhongMaterial(Vec3f(1, 0, 1)); break;
+                    case 3: m = new PhongMaterial(Vec3f(0, 1, 1)); break;
+                    case 4: m = new PhongMaterial(Vec3f(1, 1, 0)); break;
+                    case 5: m = new PhongMaterial(Vec3f(0.3, 0, 0.7)); break;
+                    case 6: m = new PhongMaterial(Vec3f(0.7, 0, 0.3)); break;
+                    case 7: m = new PhongMaterial(Vec3f(0, 0.3, 0.7)); break;
+                    case 8: m = new PhongMaterial(Vec3f(0, 0.7, 0.3)); break;
+                    case 9: m = new PhongMaterial(Vec3f(0, 0.3, 0.7)); break;
+                    case 10: m = new PhongMaterial(Vec3f(0, 0.7, 0.3)); break;
+                    case 11: m = new PhongMaterial(Vec3f(0, 1, 0)); break;
+                    case 12: m = new PhongMaterial(Vec3f(0, 0, 1)); break;
+                    case 13: m = new PhongMaterial(Vec3f(0.7, 1, 0)); break;
+                    case 14: m = new PhongMaterial(Vec3f(0, 0.7, 1)); break;
+                    case 15: m = new PhongMaterial(Vec3f(0, 1, 0.7)); break;
+                    case 16: m = new PhongMaterial(Vec3f(0, 0.7, 1)); break;
+                    case 17: m = new PhongMaterial(Vec3f(0.3, 0.5, 0.7)); break;
+                    case 18: m = new PhongMaterial(Vec3f(0.7, 0.7, 1)); break;
+                    case 19: m = new PhongMaterial(Vec3f(1, 0.5, 0.7)); break;
+                    case 20: m = new PhongMaterial(Vec3f(1, 0.3, 0.3)); break;
+                    default: m = new PhongMaterial(Vec3f(1, 0, 0)); break;
+                }
+                if (opaque[i*ny*nz + j*nz +k].getNumObjects() != 0){
                     //bottom
+                    m->glSetMaterial();
                     Vec3f::Cross3(normal, v1-v2, v3-v2);
                     glNormal3f(normal.x(), normal.y(), normal.z());
                     glVertex3f(v4.x()+sx, v4.y()+sy, v4.z()+sz);
@@ -201,7 +217,7 @@ void Grid::paint(void){
     glEnd();
 }
 
-void Grid::paintCellRayTree(Vec3f index){
+void Grid::paintCellRayTree(Vec3f index, Material *m){
     index.Set((int)index.x(), (int)index.y(), (int)index.z());
     float sx = index.x() * lenCellX;
     float sy = index.y() * lenCellY;
@@ -213,40 +229,107 @@ void Grid::paintCellRayTree(Vec3f index){
     b.Set(v3.x()+sx, v3.y()+sy, v3.z()+sz);
     c.Set(v2.x()+sx, v2.y()+sy, v2.z()+sz);
     d.Set(v1.x()+sx, v1.y()+sy, v1.z()+sz);
-    RayTree::AddHitCellFace(a, b, c, d, normal, material);
+    RayTree::AddHitCellFace(a, b, c, d, normal, m);
     //top
     Vec3f::Cross3(normal, v5-v6, v7-v6);
     a.Set(v8.x()+sx, v8.y()+sy, v8.z()+sz);
     b.Set(v7.x()+sx, v7.y()+sy, v7.z()+sz);
     c.Set(v6.x()+sx, v6.y()+sy, v6.z()+sz);
     d.Set(v5.x()+sx, v5.y()+sy, v5.z()+sz);
-    RayTree::AddHitCellFace(a, b, c, d, normal, material);
+    RayTree::AddHitCellFace(a, b, c, d, normal, m);
     //left
     Vec3f::Cross3(normal, v5-v1, v4-v1);
     a.Set(v5.x()+sx, v5.y()+sy, v5.z()+sz);
     b.Set(v8.x()+sx, v8.y()+sy, v8.z()+sz);
     c.Set(v4.x()+sx, v4.y()+sy, v4.z()+sz);
     d.Set(v1.x()+sx, v1.y()+sy, v1.z()+sz);
-    RayTree::AddHitCellFace(a, b, c, d, normal, material);
+    RayTree::AddHitCellFace(a, b, c, d, normal, m);
     //right
     Vec3f::Cross3(normal, v3-v2, v6-v2);
     a.Set(v2.x()+sx, v2.y()+sy, v2.z()+sz);
     b.Set(v3.x()+sx, v3.y()+sy, v3.z()+sz);
     c.Set(v7.x()+sx, v7.y()+sy, v7.z()+sz);
     d.Set(v6.x()+sx, v6.y()+sy, v6.z()+sz);
-    RayTree::AddHitCellFace(a, b, c, d, normal, material);
+    RayTree::AddHitCellFace(a, b, c, d, normal, m);
     //front
     Vec3f::Cross3(normal, v2-v1, v5-v1);
     a.Set(v1.x()+sx, v1.y()+sy, v1.z()+sz);
     b.Set(v2.x()+sx, v2.y()+sy, v2.z()+sz);
     c.Set(v6.x()+sx, v6.y()+sy, v6.z()+sz);
     d.Set(v5.x()+sx, v5.y()+sy, v5.z()+sz);
-    RayTree::AddHitCellFace(a, b, c, d, normal, material);
+    RayTree::AddHitCellFace(a, b, c, d, normal, m);
     //back
     Vec3f::Cross3(normal, v8-v4, v3-v4);
     a.Set(v4.x()+sx, v4.y()+sy, v4.z()+sz);
     b.Set(v8.x()+sx, v8.y()+sy, v8.z()+sz);
     c.Set(v7.x()+sx, v7.y()+sy, v7.z()+sz);
     d.Set(v3.x()+sx, v3.y()+sy, v3.z()+sz);
-    RayTree::AddHitCellFace(a, b, c, d, normal, material);
+    RayTree::AddHitCellFace(a, b, c, d, normal, m);
+}
+
+void Grid::paintFaceRayTree(Face face, Vec3f index, Material *m){
+    index.Set((int)index.x(), (int)index.y(), (int)index.z());
+    float sx = index.x() * lenCellX;
+    float sy = index.y() * lenCellY;
+    float sz = index.z() * lenCellZ;
+    Vec3f normal, a, b, c, d;
+    switch (face){
+        //bottom
+        case Bottom:
+        Vec3f::Cross3(normal, v1-v2, v3-v2);
+        a.Set(v4.x()+sx, v4.y()+sy, v4.z()+sz);
+        b.Set(v3.x()+sx, v3.y()+sy, v3.z()+sz);
+        c.Set(v2.x()+sx, v2.y()+sy, v2.z()+sz);
+        d.Set(v1.x()+sx, v1.y()+sy, v1.z()+sz);
+        RayTree::AddEnteredFace(a, b, c, d, normal, m);
+        break;
+        //top
+        case Top:
+        Vec3f::Cross3(normal, v5-v6, v7-v6);
+        a.Set(v8.x()+sx, v8.y()+sy, v8.z()+sz);
+        b.Set(v7.x()+sx, v7.y()+sy, v7.z()+sz);
+        c.Set(v6.x()+sx, v6.y()+sy, v6.z()+sz);
+        d.Set(v5.x()+sx, v5.y()+sy, v5.z()+sz);
+        RayTree::AddEnteredFace(a, b, c, d, normal, m);
+        break;
+        //left
+        case Left:
+        Vec3f::Cross3(normal, v5-v1, v4-v1);
+        a.Set(v5.x()+sx, v5.y()+sy, v5.z()+sz);
+        b.Set(v8.x()+sx, v8.y()+sy, v8.z()+sz);
+        c.Set(v4.x()+sx, v4.y()+sy, v4.z()+sz);
+        d.Set(v1.x()+sx, v1.y()+sy, v1.z()+sz);
+        RayTree::AddEnteredFace(a, b, c, d, normal, m);
+        break;
+        //right
+        case Right:
+        Vec3f::Cross3(normal, v3-v2, v6-v2);
+        a.Set(v2.x()+sx, v2.y()+sy, v2.z()+sz);
+        b.Set(v3.x()+sx, v3.y()+sy, v3.z()+sz);
+        c.Set(v7.x()+sx, v7.y()+sy, v7.z()+sz);
+        d.Set(v6.x()+sx, v6.y()+sy, v6.z()+sz);
+        RayTree::AddEnteredFace(a, b, c, d, normal, m);
+        break;
+        //front
+        case Front:
+        Vec3f::Cross3(normal, v2-v1, v5-v1);
+        a.Set(v1.x()+sx, v1.y()+sy, v1.z()+sz);
+        b.Set(v2.x()+sx, v2.y()+sy, v2.z()+sz);
+        c.Set(v6.x()+sx, v6.y()+sy, v6.z()+sz);
+        d.Set(v5.x()+sx, v5.y()+sy, v5.z()+sz);
+        RayTree::AddEnteredFace(a, b, c, d, normal, m);
+        break;
+        //back
+        case Back:
+        Vec3f::Cross3(normal, v8-v4, v3-v4);
+        a.Set(v4.x()+sx, v4.y()+sy, v4.z()+sz);
+        b.Set(v8.x()+sx, v8.y()+sy, v8.z()+sz);
+        c.Set(v7.x()+sx, v7.y()+sy, v7.z()+sz);
+        d.Set(v3.x()+sx, v3.y()+sy, v3.z()+sz);
+        RayTree::AddEnteredFace(a, b, c, d, normal, m);
+        break;
+        default:
+        printf("Error face!\n");
+        assert(0);
+    }
 }
