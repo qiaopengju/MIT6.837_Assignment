@@ -129,12 +129,15 @@ void GLCanvas::display(void)
     if (visualize_grid_march == 0) {
       grid->paint();
       grid->getBoundingBox()->paint();
+      scene->getGroup()->paintAllBBox();
     } else if (visualize_grid_march == 1) {
       RayTree::paintHitCells();
       grid->getBoundingBox()->paint();
+      scene->getGroup()->paintAllBBox();
     } else {
       RayTree::paintEnteredFaces();
       grid->getBoundingBox()->paint();
+      scene->getGroup()->paintAllBBox();
     }
   } else {
 
