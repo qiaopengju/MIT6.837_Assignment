@@ -78,7 +78,7 @@ void Sphere::insertIntoGrid(Grid *g, Matrix *m){
                 Vec3f closePos = cellPos + closeX + closeY + closeZ;
 
                 if ((closePos - center).Length() < radius) {
-                    g->setCellOpaque(i, j, k);
+                    g->setCellOpaque(i, j, k, this);
                 }
             }
         }
