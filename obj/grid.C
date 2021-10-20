@@ -69,9 +69,9 @@ void Grid::getCellIndex(Vec3f &index, const Vec3f &pos){
     float off_x = pos.x() - min.x();
     float off_y = pos.y() - min.y();
     float off_z = pos.z() - min.z();
-    int i = min2(nx-1, max2(0, off_x / lenCellX));
-    int j = min2(ny-1, max2(0, off_y / lenCellX));
-    int k = min2(nz-1, max2(0, off_z / lenCellX));
+    int i = floor(min2(nx-1, max2(0, off_x / lenCellX)));
+    int j = floor(min2(ny-1, max2(0, off_y / lenCellX)));
+    int k = floor(min2(nz-1, max2(0, off_z / lenCellX)));
     //int i = off_x / lenCellX));
     //int j = off_y / lenCellX));
     //int k = off_z / lenCellX));
