@@ -81,7 +81,6 @@ void Triangle::insertIntoGrid(Grid *g, Matrix *m){
         m->Transform(bT);
         m->Transform(cT);
         m->TransformDirection(norT); norT.Normalize();
-        //boundingBox->Trans(m);
     }
     //caculate axis
     Vec3f f0 = bT - aT, f1 = cT - bT, f2 = aT - cT;
