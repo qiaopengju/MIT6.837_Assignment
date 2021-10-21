@@ -2,7 +2,7 @@
 
 Group::Group(int _numObjs) : numObjects(_numObjs) {
     objList = new Object3D*[numObjects];
-    boundingBox = NULL;
+    boundingBox = new BoundingBox(Vec3f(INFINITY, INFINITY, INFINITY), Vec3f(-INFINITY, -INFINITY, -INFINITY));
 }
 
 Group::~Group(){
@@ -13,13 +13,13 @@ void Group::addObject(int index, Object3D *obj){
     objList[index] = obj;
     //caculate bounding box
     if (obj->getBoundingBox() != NULL){ //bounding box 不考虑平面
-        if (this->boundingBox == NULL){ //第一个物体
-            Vec3f max =obj->getBoundingBox()->getMax();
-            Vec3f min =obj->getBoundingBox()->getMin();
-            boundingBox = new BoundingBox(min, max);
-        } else{ //之后加入的物体
-            boundingBox->Extend(obj->getBoundingBox());
-        }
+        //if (this->boundingBox == NULL){ //第一个物体
+            //Vec3f max =obj->getBoundingBox()->getMax();
+            //Vec3f min =obj->getBoundingBox()->getMin();
+            //boundingBox = new BoundingBox(min, max);
+        //} else{ //之后加入的物体
+        boundingBox->Extend(obj->getBoundingBox());
+        //}
     }
 }
 
