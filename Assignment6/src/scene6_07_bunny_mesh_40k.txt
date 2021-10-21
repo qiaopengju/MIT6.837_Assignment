@@ -41,7 +41,7 @@ Group {
     numObjects 2
     MaterialIndex 0
     TriangleMesh {
-        obj_file bunny_40k.obj
+        obj_file ../src/model/bunny_40k.obj
     }
     MaterialIndex 1
     Plane {
