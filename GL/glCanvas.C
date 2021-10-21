@@ -135,9 +135,10 @@ void GLCanvas::display(void)
       grid->getBoundingBox()->paint();
       scene->getGroup()->paintAllBBox();
     } else {
-      RayTree::paintEnteredFaces();
+      //RayTree::paintEnteredFaces();
       grid->getBoundingBox()->paint();
       scene->getGroup()->paintAllBBox();
+      scene->getGroup()->paint();
     }
   } else {
 
