@@ -72,8 +72,8 @@ public:
 
   void initialize(SceneParser *_scene, 
 		  void (*_renderFunction)(void), 
-		  void (*_traceRayFunction)(float, float),
-		  Grid *_grid, bool _visualize_grid);
+		  void (*_traceRayFunction)(float, float)=NULL,
+		  Grid *_grid=NULL, bool _visualize_grid=false);
 };
 
 // ====================================================================
