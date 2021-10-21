@@ -63,5 +63,29 @@ $(EXE): $(OBJS)
 
 # ===============================================================
 # run
-test:
-	./raytracer -input ../Assignment4/src/scene4_01_sphere_shadow.txt -size 200 200 -output output4_01.tga -shadows -gui -tessellation 50 25 -gouraud
+scene1_0:
+	./raytracer -input src/scene6_01_sphere.txt -output output6_01a.tga -size 200 200
+scene1_1:
+	./raytracer -input src/scene6_01_sphere.txt -output output6_01b.tga -size 200 200 -grid 10 10 10
+scene2_0:
+	./raytracer -input src/scene6_02_sphere_triangles.txt -output output6_02a.tga -size 200 200 -shadows
+scene2_1:
+	./raytracer -input src/scene6_02_sphere_triangles.txt -output output6_02b.tga -size 200 200 -grid 10 10 10 -shadows -gui -visualize_grid
+scene4:
+	./raytracer -input src/scene6_04_bunny_mesh_200.txt -output output6_04c.tga -size 200 200 -shadows
+scene5:
+	./raytracer -input src/scene6_05_bunny_mesh_1k.txt  -output output6_05.tga -size 200 200 -grid 15 15 12 -shadows
+scene6:
+	./raytracer -input src/scene6_06_bunny_mesh_5k.txt  -output output6_06.tga -size 200 200 -grid 20 20 15 -shadows
+scene7:
+	./raytracer -input src/scene6_07_bunny_mesh_40k.txt -output output6_07.tga -size 200 200 -grid 40 40 33 -shadows
+scene8:
+	./raytracer -input src/scene6_08_scale_translate.txt -size 200 200 -output output6_08c.tga -grid 15 15 15 -visualize_grid
+scene9:
+	./raytracer -input src/scene6_09_rotated_triangles.txt -size 200 200 -output output6_09c.tga -grid 15 15 9 -visualize_grid
+scene10:
+	./raytracer -input src/scene6_10_nested_transformations.txt -size 200 200 -output output6_10c.tga -grid 30 30 30 -visualize_grid
+scene11:
+	./raytracer -input src/scene6_11_mirrored_floor.txt -size 200 200 -output output6_11b.tga -shadows -bounces 1 -weight 0.01 -grid 40 10 40
+scene12:
+	./raytracer -input src/scene6_12_faceted_gem.txt -size 200 200 -output output6_12b.tga -shadows -shade_back -bounces 5 -weight 0.01 -grid 20 20 20
