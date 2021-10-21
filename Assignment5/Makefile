@@ -79,8 +79,6 @@ scene3:
 scene4:
 	./raytracer -input src/scene5_04_plane_test.txt -size 200 200 -output output5_04.tga -gui -grid 15 15 15 -visualize_grid
 scene5:
-	./raytracer -input src/scene5_05_sphere_triangles.txt -size 200 200 -gui -tessellation 30 15 -gouraud
-scene5_0:
 	./raytracer -input src/scene5_05_sphere_triangles.txt -size 200 200 -output output5_05.tga -gui -grid 20 20 10 -visualize_grid
 scene6:
 	./raytracer -input src/scene5_06_bunny_mesh_200.txt -size 200 200 -output output5_06.tga -gui -grid 10 10 7 -visualize_grid
@@ -91,15 +89,8 @@ scene8:
 scene9:
 	./raytracer -input src/scene5_09_bunny_mesh_40k.txt -size 200 200 -output output5_09.tga -gui -grid 40 40 33 -visualize_grid
 scene10:
-	./raytracer -input src/scene5_10_scale_translate.txt -size 200 200 -gui -tessellation 30 15 -gouraud
-scene10_0:
 	./raytracer -input src/scene5_10_scale_translate.txt -size 200 200 -output output5_10.tga -gui -grid 15 15 15 -visualize_grid
 scene11:
-	./raytracer -input src/scene5_11_rotated_triangles.txt -size 200 200 -gui
-scene11_0:
 	./raytracer -input src/scene5_11_rotated_triangles.txt -size 200 200 -output output5_11.tga -gui -grid 15 15 9 -visualize_grid
 scene12:
-	./raytracer -input src/scene5_12_nested_transformations.txt -size 200 200 -gui
-scene12_0:
 	./raytracer -input src/scene5_12_nested_transformations.txt -size 200 200 -output output5_12.tga -gui -grid 30 30 30 -visualize_grid
-
