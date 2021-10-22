@@ -2,6 +2,8 @@
 #include "marchingInfo.h"
 #include "rayTree.h"
 
+#include "glCanvas.h"
+
 #define NMaterial 10
 Vec3f v1, v2, v3, v4, v5, v6, v7, v8;
 
@@ -56,11 +58,16 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin){
     for (int i = 0; true; i++){
         //intersect each primitive in cell
         int index = mInfo.indexI*ny*nz + mInfo.indexJ*nz +mInfo.indexK;
-        if (opaque[index].getNumObjects() != 0){
-            h.set(mInfo.tmin, material, r);
-            //return true;
-        }
+        int numObj = opaque[index].getNumObjects();
+
         paintCellRayTree(mInfo.indexI, mInfo.indexJ, mInfo.indexK, &materialList[i%NMaterial]);
+        //intersect all objects in cell
+        if (numObj != 0){
+            for (int j = 0; j < numObj; j++){
+                opaque[index].getObject(j)->intersect(r, h, tmin);
+            }
+            if (h.getMaterial() != NULL) return true;
+        }
         if (!mInfo.nextCell()) break;
     }
     return false;
@@ -82,12 +89,12 @@ void Grid::getCellIndex(Vec3f &index, const Vec3f &pos){
     float off_x = pos.x() - min.x();
     float off_y = pos.y() - min.y();
     float off_z = pos.z() - min.z();
-    int i = floor(min2(nx-1, max2(0, off_x / lenCellX)));
-    int j = floor(min2(ny-1, max2(0, off_y / lenCellX)));
-    int k = floor(min2(nz-1, max2(0, off_z / lenCellX)));
-    //int i = off_x / lenCellX));
-    //int j = off_y / lenCellX));
-    //int k = off_z / lenCellX));
+    int i = min2(nx-1, max2(0, floor(off_x / lenCellX)));
+    int j = min2(ny-1, max2(0, floor(off_y / lenCellX)));
+    int k = min2(nz-1, max2(0, floor(off_z / lenCellX)));
+    //int i = off_x / lenCellX;
+    //int j = off_y / lenCellX;
+    //int k = off_z / lenCellX;
     index.Set(i, j, k);
 }
 
@@ -125,9 +132,6 @@ void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) {
         }
     } 
     Vec3f hitPos = r.pointAtParameter(T);
-#ifdef DEBUG
-    printf("HIT POS: (%.3f, %.3f, %.3f)\n", hitPos.x(), hitPos.y(), hitPos.z());
-#endif
     Vec3f hitIdx;   this->getCellIndex(hitIdx, hitPos);
     mi.setIndex(hitIdx);
     //caculate nextX,Y,Z

@@ -2,6 +2,7 @@
 #define MACHINGINFO_H
 
 #include "vectors.h"
+#include "raytracing_stats.h"
 
 namespace Sign{
     enum sign{positive=1, negative=-1};
@@ -15,6 +16,8 @@ public:
     //3DDDA
     //choose the smallest of the next t values (t_next_x, t_next_y, and t_next_z), and updates the corresponding cell index
     bool nextCell(){
+        RayTracingStats::IncrementNumGridCellsTraversed();
+
         float t_minNext = min2(min2(t_nextX, t_nextY), t_nextZ);
         if (t_minNext == t_nextX){
             indexI += sign_x;

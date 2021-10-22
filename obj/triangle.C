@@ -2,6 +2,7 @@
 #include "triangle.h"
 #include "grid.h"
 #include "matrix.h"
+#include "raytracing_stats.h"
 
 Triangle::Triangle(Vec3f &a, Vec3f &b, Vec3f &c, Material *m){
     this->a = a;
@@ -25,6 +26,8 @@ Triangle::~Triangle(){
 }
 
 bool Triangle::intersect(const Ray &r, Hit &h, float tmin){
+    RayTracingStats::IncrementNumIntersections();
+
     //标准化方向向量
     Vec3f dir_nor = r.getDirection();
     float dir_len = dir_nor.Length();

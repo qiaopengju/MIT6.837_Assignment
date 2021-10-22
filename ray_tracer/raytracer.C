@@ -12,6 +12,7 @@
 #include "rayTree.h"
 #include "matrix.h"
 #include "marchingInfo.h"
+#include "raytracing_stats.h"
 
 int width(100), height(100), max_bounces(0), nx(0), ny(0), nz(0);
 char *input_file(NULL), *output_file(NULL), *depth_file(NULL), *normal_file(NULL);
@@ -38,6 +39,8 @@ void render(){
         image_depth->SetAllPixels(GLCanvas::scene->getBackgroundColor());
     }
     //render
+    //Initialize raytracing stats
+    RayTracingStats::Initialize(width, height, group->getBoundingBox(), nx, ny, nz);
     //generate ray
     for (int i = 0; i < width; i++){
         for (int j = 0; j < height; j++){
@@ -63,6 +66,7 @@ void render(){
             }
         }
     }
+    RayTracingStats::PrintStatistics();
 
     //output image to file
     if (output_file != NULL){
@@ -137,13 +141,18 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
     //return if max bounce
     if (bounces > max_bounces) return Vec3f(0, 0, 0);
 
+    RayTracingStats::IncrementNumNonShadowRays();
+
     Camera* camera = scene->getCamera();
     Group* group = scene->getGroup();
     //=====================
     //intersect all objects
-    //if (!group->intersect(ray, hit, camera->getTMin())){ //光线与物体未相交 
-    if (!group->intersect(ray, hit, tmin)){ //光线与物体未相交 
-        return scene->getBackgroundColor();
+    if (grid){
+        if (!grid->intersect(ray, hit, tmin))
+            return scene->getBackgroundColor();
+    } else{
+        if (!group->intersect(ray, hit, tmin)) //光线与物体未相交 
+            return scene->getBackgroundColor();
     }
 
     assert(hit.getMaterial() != NULL);
@@ -168,16 +177,23 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
         }
         directionToLight.Normalize();
 
+        bool inShadow(false);
         Ray rayShadow(hit_pos, directionToLight);
         Hit hitShadow(distace2Light, NULL);
-        bool inShadow = group->intersectShadowRay(rayShadow, hitShadow, tmin);
-        if (inShadow && isPointLight){
-            float distance2Shadow = (rayShadow.pointAtParameter(hitShadow.getT()) - hit_pos).Length();
-            if (distance2Shadow > distace2Light) inShadow = false;
+        if (shadow){ //计算shadow
+            RayTracingStats::IncrementNumShadowRays();
+            if (grid){
+                inShadow = grid->intersect(rayShadow, hitShadow, tmin);
+            } else{
+                inShadow = group->intersectShadowRay(rayShadow, hitShadow, tmin);
+            }
+            if (inShadow && isPointLight){
+                float distance2Shadow = (rayShadow.pointAtParameter(hitShadow.getT()) - hit_pos).Length();
+                if (distance2Shadow > distace2Light) inShadow = false;
+            }
         }
         if (!shadows || !inShadow){ //如果不用显示shadow或者物体在改光线下没有被遮挡
             result += hit.getMaterial()->Shade(ray, hit, light_dir[i], light_color[i] * weight); //光线颜色乘以权重
-        } else if (distace2Light != INFINITY) { //点光源
         }
         //=====================
         // RayTree: shadow ray 

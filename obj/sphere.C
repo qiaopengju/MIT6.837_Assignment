@@ -2,6 +2,7 @@
 #include "sphere.h"
 #include "grid.h"
 #include "raytracer.h"
+#include "raytracing_stats.h"
 
 int Sphere::theta, Sphere::phi;
 
@@ -49,6 +50,8 @@ bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
 }
 
 void Sphere::insertIntoGrid(Grid *g, Matrix *m){
+    RayTracingStats::IncrementNumIntersections();
+
     if (g == NULL) return;
     int nx = g->getNx();
     int ny = g->getNy();

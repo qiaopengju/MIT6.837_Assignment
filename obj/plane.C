@@ -1,5 +1,6 @@
 #include <GL/glut.h>
 #include "plane.h"
+#include "raytracing_stats.h"
 
 #define MY_INF 1e6
 
@@ -11,6 +12,8 @@ Plane::Plane(Vec3f &_noraml, float _d, Material *_m) : normal(_noraml), d(_d){
 }
 
 bool Plane::intersect(const Ray &r, Hit &h, float tmin){
+    RayTracingStats::IncrementNumIntersections();
+
     //标准化方向向量
     Vec3f dir_nor = r.getDirection();
     float dir_len = dir_nor.Length();
