@@ -67,10 +67,12 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin){
             for (int j = 0; j < numObj; j++){
                 opaque[index].getObject(j)->intersect(r, h, tmin);
             }
-            if (h.getMaterial() != NULL) return true;
+            if (h.getMaterial() != NULL) break; //默认初试material为NULL
         }
         if (!mInfo.nextCell()) break;
     }
+    for (int i = 0; i < infObjList.getNumObjects(); i++) infObjList.getObject(i)->intersect(r, h, tmin);
+    if (h.getMaterial() != NULL) return true;
     return false;
 }
 
@@ -93,9 +95,9 @@ void Grid::getCellIndex(Vec3f &index, const Vec3f &pos){
     //int i = min2(nx-1, max2(0, floor(off_x / lenCellX)));
     //int j = min2(ny-1, max2(0, floor(off_y / lenCellY)));
     //int k = min2(nz-1, max2(0, floor(off_z / lenCellZ)));
-    int i = floor(off_x / lenCellX); if (i == nx) i--;
-    int j = floor(off_y / lenCellY); if (j == ny) j--;
-    int k = floor(off_z / lenCellZ); if (k == nz) k--;
+    int i = off_x / lenCellX; if (i == nx) i--;  
+    int j = off_y / lenCellY; if (j == ny) j--;
+    int k = off_z / lenCellZ; if (k == nz) k--;
     index.Set(i, j, k);
 }
 
