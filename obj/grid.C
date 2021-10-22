@@ -57,7 +57,8 @@ bool Grid::intersect(const Ray &r, Hit &h, float tmin){
     this->initializeRayMarch(mInfo, r, tmin);
     for (int i = 0; true; i++){
         //intersect each primitive in cell
-        int index = mInfo.indexI*ny*nz + mInfo.indexJ*nz +mInfo.indexK;
+        int index = mInfo.indexI*ny*nz + mInfo.indexJ*nz + mInfo.indexK;
+        if (index < 0 || index >= nx * ny * nz) break;
         int numObj = opaque[index].getNumObjects();
 
         paintCellRayTree(mInfo.indexI, mInfo.indexJ, mInfo.indexK, &materialList[i%NMaterial]);
