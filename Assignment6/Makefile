@@ -9,6 +9,7 @@ SRCS 	 	= main.C \
 		../matrix.C \
 		../image.C \
 		../scene_parser.C \
+		$(OBJ_DIR)/object3d.C \
 		$(OBJ_DIR)/group.C \
 		$(OBJ_DIR)/sphere.C \
 		$(OBJ_DIR)/triangle.C \
@@ -66,7 +67,7 @@ $(EXE): $(OBJS)
 scene1_0:
 	./raytracer -input src/scene6_01_sphere.txt -output output6_01a.tga -size 200 200
 scene1_1:
-	./raytracer -input src/scene6_01_sphere.txt -output output6_01b.tga -size 200 200 -grid 10 10 10
+	./raytracer -input src/scene6_01_sphere.txt -output output6_01b.tga -size 200 200 -grid 10 10 10 -gui -visualize_grid
 scene2_0:
 	./raytracer -input src/scene6_02_sphere_triangles.txt -output output6_02a.tga -size 200 200 -shadows
 scene2_1:
@@ -78,7 +79,7 @@ scene5:
 scene6:
 	./raytracer -input src/scene6_06_bunny_mesh_5k.txt  -output output6_06.tga -size 200 200 -grid 20 20 15 -shadows
 scene7:
-	./raytracer -input src/scene6_07_bunny_mesh_40k.txt -output output6_07.tga -size 200 200 -grid 40 40 33 -shadows
+	./raytracer -input src/scene6_07_bunny_mesh_40k.txt -output output6_07.tga -size 200 200 -grid 40 40 33 -shadows -gui -visualize_grid
 scene8:
 	./raytracer -input src/scene6_08_scale_translate.txt -size 200 200 -output output6_08c.tga -grid 15 15 15 -visualize_grid
 scene9:

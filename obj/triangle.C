@@ -68,65 +68,69 @@ bool Triangle::intersect(const Ray &r, Hit &h, float tmin){
     return true;
 }
 
-//Separating Axis Theorem
 void Triangle::insertIntoGrid(Grid *g, Matrix *m){
-    //caculate 13 axis
-    if (g == NULL) return;
-    int nx = g->getNx();
-    int ny = g->getNy();
-    int nz = g->getNz();
-    Vec3f cellPos;
-    Vec3f halfCellSize = g->getCellSize(); halfCellSize /= 2.f;
-    //transform
-    Vec3f aT(a), bT(b), cT(c), norT(normal);
-    if (m){
-        m->Transform(aT);
-        m->Transform(bT);
-        m->Transform(cT);
-        m->TransformDirection(norT); norT.Normalize();
-    }
-    //caculate axis
-    Vec3f f0 = bT - aT, f1 = cT - bT, f2 = aT - cT;
-    Vec3f e0(1, 0, 0), e1(0, 1, 0), e2(0, 0, 1);
-    Vec3f a00, a01, a02, a10, a11, a12, a20, a21, a22;
-    Vec3f::Cross3(a00, e0, f0); a00.Normalize();
-    Vec3f::Cross3(a01, e0, f1); a01.Normalize();
-    Vec3f::Cross3(a02, e0, f2); a02.Normalize();
-    Vec3f::Cross3(a10, e1, f0); a10.Normalize();
-    Vec3f::Cross3(a11, e1, f1); a11.Normalize();
-    Vec3f::Cross3(a12, e1, f2); a12.Normalize();
-    Vec3f::Cross3(a20, e2, f0); a20.Normalize();
-    Vec3f::Cross3(a21, e2, f1); a21.Normalize();
-    Vec3f::Cross3(a22, e2, f2); a22.Normalize();
-    Vec3f axis[] = {e0, e1, e2, norT,
-        a00, a01, a02, a10, a11, a12, a20, a21, a22};
-    for (int i = 0; i < nx; i++){
-        for (int j  = 0; j < ny; j++){
-            for (int k = 0; k < nz; k++){
-                g->getCellPos(cellPos, i, j, k);
-                Vec3f v0 = aT - cellPos;
-                Vec3f v1 = bT - cellPos;
-                Vec3f v2 = cT - cellPos;
-                bool flag = true;
-                for (int aI = 0; aI < 13; aI++){
-                    float p0 = axis[aI].Dot3(v0);
-                    float p1 = axis[aI].Dot3(v1);
-                    float p2 = axis[aI].Dot3(v2);
-                    float r = halfCellSize.x() * abs(axis[aI].x()) +
-                        halfCellSize.y() * abs(axis[aI].y()) +
-                        halfCellSize.z() * abs(axis[aI].z());
-                    if (min2(min2(p0, p1), p2) > r || max2(max2(p0, p1), p2) < -r) { //有一个轴分离了
-                        //printf("Sparate Axis %d, P0: %.3f, P1 %.3f, P2: %.3f r:%.3f\n", aI, p0, p1, p2, r);
-                        flag = false;
-                        break;
-                    }
-                }
-                if (flag) 
-                    g->setCellOpaque(i, j, k, this);
-            }
-        }
-    }
+    this->Object3D::insertIntoGrid(g, m);
 }
+
+//Separating Axis Theorem
+// void Triangle::insertIntoGrid(Grid *g, Matrix *m){
+//     //caculate 13 axis
+//     if (g == NULL) return;
+//     int nx = g->getNx();
+//     int ny = g->getNy();
+//     int nz = g->getNz();
+//     Vec3f cellPos;
+//     Vec3f halfCellSize = g->getCellSize(); halfCellSize /= 2.f;
+//     //transform
+//     Vec3f aT(a), bT(b), cT(c), norT(normal);
+//     if (m){
+//         m->Transform(aT);
+//         m->Transform(bT);
+//         m->Transform(cT);
+//         m->TransformDirection(norT); norT.Normalize();
+//     }
+//     //caculate axis
+//     Vec3f f0 = bT - aT, f1 = cT - bT, f2 = aT - cT;
+//     Vec3f e0(1, 0, 0), e1(0, 1, 0), e2(0, 0, 1);
+//     Vec3f a00, a01, a02, a10, a11, a12, a20, a21, a22;
+//     Vec3f::Cross3(a00, e0, f0); a00.Normalize();
+//     Vec3f::Cross3(a01, e0, f1); a01.Normalize();
+//     Vec3f::Cross3(a02, e0, f2); a02.Normalize();
+//     Vec3f::Cross3(a10, e1, f0); a10.Normalize();
+//     Vec3f::Cross3(a11, e1, f1); a11.Normalize();
+//     Vec3f::Cross3(a12, e1, f2); a12.Normalize();
+//     Vec3f::Cross3(a20, e2, f0); a20.Normalize();
+//     Vec3f::Cross3(a21, e2, f1); a21.Normalize();
+//     Vec3f::Cross3(a22, e2, f2); a22.Normalize();
+//     Vec3f axis[] = {e0, e1, e2, norT,
+//         a00, a01, a02, a10, a11, a12, a20, a21, a22};
+//     for (int i = 0; i < nx; i++){
+//         for (int j  = 0; j < ny; j++){
+//             for (int k = 0; k < nz; k++){
+//                 g->getCellPos(cellPos, i, j, k);
+//                 Vec3f v0 = aT - cellPos;
+//                 Vec3f v1 = bT - cellPos;
+//                 Vec3f v2 = cT - cellPos;
+//                 bool flag = true;
+//                 for (int aI = 0; aI < 13; aI++){
+//                     float p0 = axis[aI].Dot3(v0);
+//                     float p1 = axis[aI].Dot3(v1);
+//                     float p2 = axis[aI].Dot3(v2);
+//                     float r = halfCellSize.x() * abs(axis[aI].x()) +
+//                         halfCellSize.y() * abs(axis[aI].y()) +
+//                         halfCellSize.z() * abs(axis[aI].z());
+//                     if (min2(min2(p0, p1), p2) > r || max2(max2(p0, p1), p2) < -r) { //有一个轴分离了
+//                         //printf("Sparate Axis %d, P0: %.3f, P1 %.3f, P2: %.3f r:%.3f\n", aI, p0, p1, p2, r);
+//                         flag = false;
+//                         break;
+//                     }
+//                 }
+//                 if (flag) 
+//                     g->setCellOpaque(i, j, k, this);
+//             }
+//         }
+//     }
+// }
 
 void Triangle::paint(){
     material->glSetMaterial();

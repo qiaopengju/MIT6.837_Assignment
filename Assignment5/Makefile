@@ -9,6 +9,7 @@ SRCS 	 	= main.C \
 		../matrix.C \
 		../image.C \
 		../scene_parser.C \
+		$(OBJ_DIR)/object3d.C \
 		$(OBJ_DIR)/group.C \
 		$(OBJ_DIR)/sphere.C \
 		$(OBJ_DIR)/triangle.C \
