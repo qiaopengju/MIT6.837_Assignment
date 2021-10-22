@@ -8,13 +8,15 @@
 #include "hit.h"
 #include "material.h"
 #include "boundingbox.h"
+#include "object3dvector.h"
 
 class Grid;
+class Transform;
 
 class Object3D{
 public:
     Object3D() = default;
-    virtual ~Object3D(){}
+    virtual ~Object3D(){ for (int i = 0; i < gridTransform.getNumObjects(); i++) delete gridTransform.getObject(i); }
     virtual bool intersect(const Ray &r, Hit &h, float tmin) = 0;
     virtual void insertIntoGrid(Grid *g, Matrix *m);
     // The paint routine is responsible for
@@ -25,6 +27,9 @@ public:
     BoundingBox* getBoundingBox() const { return boundingBox; }
     //MODIFY
     void setBoundingBox(const BoundingBox &bb) { boundingBox->Set(bb.getMin(), bb.getMax()); }
+    int pushTransformPrimitive(const Transform &trans);
+
+    static Object3DVector gridTransform;
 protected:
     Material *material;
     BoundingBox *boundingBox;

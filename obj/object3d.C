@@ -1,5 +1,8 @@
 #include "object3d.h"
+#include "transform.h"
 #include "grid.h"
+
+Object3DVector Object3D::gridTransform;
 
 void Object3D::insertIntoGrid(Grid *g, Matrix *m) {
     if (g == NULL) return;
@@ -14,10 +17,21 @@ void Object3D::insertIntoGrid(Grid *g, Matrix *m) {
         for (int j = 0; j < ny; j++){
             for (int k = 0; k < nz; k++){
                 if (i >= minIdx.x() && i <= maxIdx.x() &&
-                    j >= minIdx.y() && j <= maxIdx.y() && 
-                    k >= minIdx.z() && k <= maxIdx.z())
-                g->setCellOpaque(i, j, k, this);
+                        j >= minIdx.y() && j <= maxIdx.y() && 
+                        k >= minIdx.z() && k <= maxIdx.z())
+                    if (m){
+                        Transform tansTemp(*m, this);
+                        int idx = pushTransformPrimitive(tansTemp);
+                        g->setCellOpaque(i, j, k, Object3D::gridTransform.getObject(idx));
+                    }
+                    else g->setCellOpaque(i, j, k, this);
             }
         }
     }
+}
+
+int Object3D::pushTransformPrimitive(const Transform &trans){
+    Transform *newTrans = new Transform(trans);
+    gridTransform.addObject(newTrans);
+    return gridTransform.getNumObjects() - 1;
 }
