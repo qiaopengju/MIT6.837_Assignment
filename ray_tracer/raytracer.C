@@ -147,21 +147,17 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
     Group* group = scene->getGroup();
     //=====================
     //intersect all objects
-    if (grid){
-        if (!grid->intersect(ray, hit, tmin))
-            return scene->getBackgroundColor();
-    } else{
-        if (!group->intersect(ray, hit, tmin)) //光线与物体未相交 
-            return scene->getBackgroundColor();
-    }
+    bool hitFlag;
+    if (grid) hitFlag = grid->intersect(ray, hit, tmin);
+    else hitFlag = group->intersect(ray, hit, tmin);
+    //=====================
+    // RayTree: main segment
+    if (bounces == 0) RayTree::SetMainSegment(ray, 0, hit.getT());
+    if (!hitFlag) return scene->getBackgroundColor();
 
     assert(hit.getMaterial() != NULL);
     Vec3f result = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor();
     Vec3f hit_pos = ray.pointAtParameter(hit.getT());
-    //=====================
-    // RayTree: main segment
-    //if (bounces == 0) RayTree::SetMainSegment(ray, 0, hit.getT());
-    if (bounces == 0) RayTree::SetMainSegment(ray, 0, INFINITY);
     //=====================
     //cast shadow ray
     //=====================
@@ -187,6 +183,9 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
             } else{
                 inShadow = group->intersectShadowRay(rayShadow, hitShadow, tmin);
             }
+            //=====================
+            // RayTree: shadow ray 
+            RayTree::AddShadowSegment(rayShadow, 0, hitShadow.getT());
             if (inShadow && isPointLight){
                 float distance2Shadow = (rayShadow.pointAtParameter(hitShadow.getT()) - hit_pos).Length();
                 if (distance2Shadow > distace2Light) inShadow = false;
@@ -195,9 +194,6 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
         if (!shadows || !inShadow){ //如果不用显示shadow或者物体在改光线下没有被遮挡
             result += hit.getMaterial()->Shade(ray, hit, light_dir[i], light_color[i] * weight); //光线颜色乘以权重
         }
-        //=====================
-        // RayTree: shadow ray 
-        RayTree::AddShadowSegment(rayShadow, 0, hitShadow.getT());
     }
 
     //=====================
