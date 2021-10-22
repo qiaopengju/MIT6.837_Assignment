@@ -90,11 +90,8 @@ void Grid::getCellIndex(Vec3f &index, const Vec3f &pos){
     float off_y = pos.y() - min.y();
     float off_z = pos.z() - min.z();
     int i = min2(nx-1, max2(0, floor(off_x / lenCellX)));
-    int j = min2(ny-1, max2(0, floor(off_y / lenCellX)));
-    int k = min2(nz-1, max2(0, floor(off_z / lenCellX)));
-    //int i = off_x / lenCellX;
-    //int j = off_y / lenCellX;
-    //int k = off_z / lenCellX;
+    int j = min2(ny-1, max2(0, floor(off_y / lenCellY)));
+    int k = min2(nz-1, max2(0, floor(off_z / lenCellZ)));
     index.Set(i, j, k);
 }
 
@@ -116,16 +113,19 @@ void Grid::initializeRayMarch(MarchingInfo &mi, const Ray &r, float tmin) {
     //init first cell
     float T = INFINITY;
     Vec3f max = boundingBox->getMax();
-    float tx1 = rDir.x() > 0 ? (min.x()-rOri.x()) / rDir.x() : (max.x()-rOri.x()) / rDir.x();
-    float tx2 = rDir.x() > 0 ? (max.x()-rOri.x()) / rDir.x() : (min.x()-rOri.x()) / rDir.x();
-    float ty1 = rDir.y() > 0 ? (min.y()-rOri.y()) / rDir.y() : (max.y()-rOri.y()) / rDir.y();
-    float ty2 = rDir.y() > 0 ? (max.y()-rOri.y()) / rDir.y() : (min.y()-rOri.y()) / rDir.y();
-    float tz1 = rDir.z() > 0 ? (min.z()-rOri.z()) / rDir.z() : (max.z()-rOri.z()) / rDir.z();
-    float tz2 = rDir.z() > 0 ? (max.z()-rOri.z()) / rDir.z() : (min.z()-rOri.z()) / rDir.z();
+    float tx1 = (min.x()-rOri.x()) / rDir.x();
+    float tx2 = (max.x()-rOri.x()) / rDir.x();
+    float ty1 = (min.y()-rOri.y()) / rDir.y();
+    float ty2 = (max.y()-rOri.y()) / rDir.y();
+    float tz1 = (min.z()-rOri.z()) / rDir.z();
+    float tz2 = (max.z()-rOri.z()) / rDir.z();
+    if (tx1 > tx2) swap(tx1, tx2);
+    if (ty1 > ty2) swap(ty1, ty2);
+    if (tz1 > tz2) swap(tz1, tz2);
     float tEnter = max2(max2(tx1, ty1), tz1);
     float tExit = min2(min2(tx2, ty2), tz2);
     if (tEnter < tExit && tExit >= 0){ //hit!
-        if (tEnter < 0) { //ray rOri is inside the box
+        if (tEnter < tmin) { //ray rOri is inside the box
             if (tExit >= tmin) T = tmin; 
         } else { //ray rOri outside
             if (tEnter >= tmin) T = tEnter; 
