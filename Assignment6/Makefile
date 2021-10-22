@@ -72,6 +72,10 @@ scene2_0:
 	./raytracer -input src/scene6_02_sphere_triangles.txt -output output6_02a.tga -size 200 200 -shadows
 scene2_1:
 	./raytracer -input src/scene6_02_sphere_triangles.txt -output output6_02b.tga -size 200 200 -grid 10 10 10 -shadows -gui -visualize_grid
+scene3_0:
+	./raytracer -input src/scene6_03_sphere_plane.txt -output output6_03c.tga -size 200 200 -shadows
+scene3_1:
+	./raytracer -input src/scene6_03_sphere_plane.txt -output output6_03d.tga -size 200 200 -grid 10 10 10 -shadows -visualize_grid -gui
 scene4:
 	./raytracer -input src/scene6_04_bunny_mesh_200.txt -output output6_04c.tga -size 200 200 -shadows
 scene5:
