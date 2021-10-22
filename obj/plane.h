@@ -10,6 +10,7 @@ public:
     Plane(Vec3f &_noraml, float _d, Material *_m);
     ~Plane() { };
     bool intersect(const Ray &r, Hit &h, float tmin);
+    void insertIntoGrid(Grid *g, Matrix *m);
     void paint();
 private:
     Vec3f normal;

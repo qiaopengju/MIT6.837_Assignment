@@ -22,6 +22,7 @@ public:
     void setCellOpaque(int i, int j, int k, Object3D* obj) { 
         opaque[i*ny*nz + j*nz + k].addObject(obj);
     }
+    void addInfPrimitive(Object3D *obj){ infObjList.addObject(obj); }
     int getNx() const { return nx; }
     int getNy() const { return ny; }
     int getNz() const { return nz; }
@@ -38,6 +39,7 @@ public:
 private:
     int nx, ny, nz;
     Object3DVector *opaque;
+    Object3DVector infObjList; //store infinite primitives
 
     float lenCellX, lenCellY, lenCellZ;
     Vec3f min; //存min方便计算位置

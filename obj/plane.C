@@ -1,6 +1,7 @@
 #include <GL/glut.h>
 #include "plane.h"
 #include "raytracing_stats.h"
+#include "grid.h"
 
 #define MY_INF 1e6
 
@@ -27,6 +28,10 @@ bool Plane::intersect(const Ray &r, Hit &h, float tmin){
     if (h.getMaterial() != NULL && h.getT() < t/dir_len) return true;
     h.set(t/dir_len, material, normal, r);
     return true;
+}
+
+void Plane::insertIntoGrid(Grid *g, Matrix *m){
+    g->addInfPrimitive(this);
 }
 
 void Plane::paint(){
