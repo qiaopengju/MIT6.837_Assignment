@@ -9,15 +9,15 @@ Vec3f v1, v2, v3, v4, v5, v6, v7, v8;
 
 PhongMaterial materialList[NMaterial] = {
     PhongMaterial(Vec3f(1, 1, 1)),
-    PhongMaterial(Vec3f(1, 0, 1)),
-    PhongMaterial(Vec3f(0, 1, 1)),
-    PhongMaterial(Vec3f(1, 1, 0)),
-    PhongMaterial(Vec3f(0.3, 0, 0.7)),
-    PhongMaterial(Vec3f(0.7, 0, 0.3)),
-    PhongMaterial(Vec3f(0, 0.3, 0.7)),
-    PhongMaterial(Vec3f(0, 0.7, 0.3)),
-    PhongMaterial(Vec3f(0, 0.3, 0.7)),
-    PhongMaterial(Vec3f(0, 0.7, 0.3))};
+    PhongMaterial(Vec3f(0.8, 0, 1)),
+    PhongMaterial(Vec3f(0.5, 0, 1)),
+    PhongMaterial(Vec3f(0.3, 0, 1)),
+    PhongMaterial(Vec3f(0, 0, 1)),
+    PhongMaterial(Vec3f(0, 0.3, 0.5)),
+    PhongMaterial(Vec3f(0, 0.7, 0.7)),
+    PhongMaterial(Vec3f(0.7, 0.7, 0.0)),
+    PhongMaterial(Vec3f(1, 0.7, 0.0)),
+    PhongMaterial(Vec3f(1, 0.5, 0.0))};
 
 Grid::Grid(BoundingBox *bb, int nx, int ny, int nz){
     this->nx = nx;
