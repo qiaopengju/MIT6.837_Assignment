@@ -90,9 +90,12 @@ void Grid::getCellIndex(Vec3f &index, const Vec3f &pos){
     float off_x = pos.x() - min.x();
     float off_y = pos.y() - min.y();
     float off_z = pos.z() - min.z();
-    int i = min2(nx-1, max2(0, floor(off_x / lenCellX)));
-    int j = min2(ny-1, max2(0, floor(off_y / lenCellY)));
-    int k = min2(nz-1, max2(0, floor(off_z / lenCellZ)));
+    //int i = min2(nx-1, max2(0, floor(off_x / lenCellX)));
+    //int j = min2(ny-1, max2(0, floor(off_y / lenCellY)));
+    //int k = min2(nz-1, max2(0, floor(off_z / lenCellZ)));
+    int i = floor(off_x / lenCellX); if (i == nx) i--;
+    int j = floor(off_y / lenCellY); if (j == ny) j--;
+    int k = floor(off_z / lenCellZ); if (k == nz) k--;
     index.Set(i, j, k);
 }
 
@@ -236,6 +239,7 @@ void Grid::paint(void){
 }
 
 void Grid::paintCellRayTree(Vec3f index, Material *m){
+    if (index.x() < 0 || index.x() >= nx || index.y() < 0 || index.y() >= ny || index.z() < 0 || index.z() >= nz) return;
     index.Set((int)index.x(), (int)index.y(), (int)index.z());
     float sx = index.x() * lenCellX;
     float sy = index.y() * lenCellY;
