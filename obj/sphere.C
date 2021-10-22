@@ -20,7 +20,6 @@ Sphere::~Sphere(){
 }
 
 bool Sphere::intersect(const Ray &r, Hit &h, float tmin){
-    printf("intersect sphere\n");
     //标准化方向向量
     Vec3f dir_nor = r.getDirection();
     float dir_len = dir_nor.Length();

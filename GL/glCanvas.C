@@ -139,6 +139,7 @@ void GLCanvas::display(void)
       grid->getBoundingBox()->paint();
       scene->getGroup()->paintAllBBox();
       scene->getGroup()->paint();
+      RayTree::paintHitCells();
     }
   } else {
 
