@@ -118,7 +118,7 @@ Group {
 	XRotate 20
 	YRotate -20
 	TriangleMesh {
-            obj_file cube.obj
+            obj_file ../src/model/cube.obj
         }
     }
 
@@ -128,7 +128,7 @@ Group {
 	XRotate 20
 	YRotate -20
 	TriangleMesh {
-            obj_file cube.obj
+            obj_file ../src/model/cube.obj
         }
     }
 
@@ -138,7 +138,7 @@ Group {
 	XRotate 20
 	YRotate -20
 	TriangleMesh {
-            obj_file cube.obj
+            obj_file ../src/model/cube.obj
         }
     }
 
@@ -148,7 +148,7 @@ Group {
 	XRotate 20
 	YRotate -20
 	TriangleMesh {
-            obj_file cube.obj
+            obj_file ../src/model/cube.obj
         }
     }
 }

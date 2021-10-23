@@ -94,3 +94,15 @@ scene11:
 	./raytracer -input src/scene6_11_mirrored_floor.txt -size 200 200 -output output6_11b.tga -shadows -bounces 1 -weight 0.01 -grid 40 10 40 -gui
 scene12:
 	./raytracer -input src/scene6_12_faceted_gem.txt -size 200 200 -output output6_12b.tga -shadows -shade_back -bounces 5 -weight 0.01 -grid 20 20 20
+scene13:
+	./raytracer -input src/scene6_13_checkerboard.txt -size 200 200 -output output6_13.tga -shadows 
+scene14:
+	./raytracer -input src/scene6_14_glass_sphere.txt -size 200 200 -output output6_14.tga -shadows -shade_back -bounces 5 -weight 0.01 -grid 20 20 20
+scene15:
+	./raytracer -input src/scene6_15_marble_cubes.txt -size 300 300 -output output6_15.tga 
+scene16:
+	./raytracer -input src/scene6_16_wood_cubes.txt -size 300 300 -output output6_16.tga
+scene17:
+	./raytracer -input src/scene6_17_marble_vase.txt -size 300 300 -output output6_17a.tga -grid 15 30 15 -bounces 1 -shadows -gui -visualize_grid
+scene18:
+	./raytracer -input src/scene6_18_6.837_logo.txt -size 400 200 -output output6_18a.tga -shadows -shade_back -bounces 5 -weight 0.01 -grid 80 30 3 -gui -visualize_grid
