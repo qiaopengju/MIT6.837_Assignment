@@ -48,7 +48,7 @@ void RayTracingStats::PrintStatistics()  {
   float intersections_per_ray = num_intersections / float(num_rays);
   float traversed_per_ray = num_grid_cells_traversed / float(num_rays);
 
-  printf ("********************************************\n");
+  printf ("\n********************************************\n");
   printf ("RAY TRACING STATISTICS\n");
   printf ("  total time                 %ld:%02d:%02d\n",hours,min,secs);
   printf ("  num pixels                 %d (%dx%d)\n", width*height,width,height);
