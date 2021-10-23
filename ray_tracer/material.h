@@ -67,4 +67,12 @@ protected:
   Vec3f specularColor, reflectiveColor, transparentColor;
   float exponent, indexOfRefraction;
 };
+
+// ====================================================================
+// CheckerBoard Material
+// ====================================================================
+class CheckerBoard : public Material{
+  CheckerBoard(Matrix *m, Material *mat1, Material *mat2);
+};
+
 #endif
