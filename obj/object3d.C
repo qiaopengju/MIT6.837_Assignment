@@ -4,6 +4,12 @@
 
 Object3DVector Object3D::gridTransform;
 
+Object3D::~Object3D(){
+    // for (int i = 0; i < gridTransform.getNumObjects(); i++){
+    //     delete gridTransform.getObject(i);
+    // }
+}
+
 void Object3D::insertIntoGrid(Grid *g, Matrix *m) {
     if (g == NULL) return;
     int nx = g->getNx();
@@ -31,7 +37,7 @@ void Object3D::insertIntoGrid(Grid *g, Matrix *m) {
 }
 
 int Object3D::pushTransformPrimitive(const Transform &trans){
-    Transform *newTrans = new Transform(trans);
-    gridTransform.addObject(newTrans);
+    //Transform *newTrans = new Transform(trans);
+    gridTransform.addObject(new Transform(trans));
     return gridTransform.getNumObjects() - 1;
 }
