@@ -16,7 +16,7 @@ class Transform;
 class Object3D{
 public:
     Object3D() = default;
-    virtual ~Object3D(){ for (int i = 0; i < gridTransform.getNumObjects(); i++) delete gridTransform.getObject(i); }
+    virtual ~Object3D();
     virtual bool intersect(const Ray &r, Hit &h, float tmin) = 0;
     virtual void insertIntoGrid(Grid *g, Matrix *m);
     // The paint routine is responsible for
