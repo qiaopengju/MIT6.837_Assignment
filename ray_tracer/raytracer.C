@@ -139,7 +139,7 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
         float indexOfRefraction, Hit &hit) const{
     //=====================
     //return if max bounce
-    if (bounces > max_bounces) return Vec3f(0, 0, 0);
+    if (bounces > max_bounces || weight <= cutoff_weight) return Vec3f(0, 0, 0);
 
     RayTracingStats::IncrementNumNonShadowRays();
 
@@ -153,14 +153,14 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
     //=====================
     // RayTree: main segment
     if (bounces == 0) RayTree::SetMainSegment(ray, 0, hit.getT());
-    if (!hitFlag) return scene->getBackgroundColor();
+    if (!hitFlag) return Vec3f(0, 0, 0);
 
+    //calculate result color
     assert(hit.getMaterial() != NULL);
     Vec3f result = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor();
     Vec3f hit_pos = ray.pointAtParameter(hit.getT());
     //=====================
     //cast shadow ray
-    //=====================
     for (int i = 0; i < scene->getNumLights(); i++){ //for every light
         float distace2Light = scene->getLight(i)->distace2Light(hit_pos);
         scene->getLight(i)->getIllumination(hit_pos, light_dir[i], light_color[i], distace2Light);
@@ -192,25 +192,24 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
             }
         }
         if (!shadows || !inShadow){ //如果不用显示shadow或者物体在改光线下没有被遮挡
-            result += hit.getMaterial()->Shade(ray, hit, light_dir[i], light_color[i] * weight); //光线颜色乘以权重
+            result += hit.getMaterial()->Shade(ray, hit, light_dir[i], light_color[i]);
         }
     }
 
     //=====================
-    //mirror
-    //=====================
+    //reflect
     if (bounces <= max_bounces && hit.getMaterial()->getReflectiveColor() != Vec3f(0,0,0)){
         Vec3f reflect = mirrorDirection(hit.getNormal(), ray.getDirection());
         Ray rR(hit_pos, reflect);
         Hit hR(INFINITY, NULL);
-        result += (traceRay(rR, tmin, bounces+1, weight*(1-cutoff_weight), indexOfRefraction, hR) * hit.getMaterial()->getReflectiveColor());
+        float reWeight = hit.getMaterial()->getReflectiveColor().Length();
+        result += (traceRay(rR, tmin, bounces+1, weight * reWeight, indexOfRefraction, hR) * hit.getMaterial()->getReflectiveColor());
         //=====================
         // RayTree: reflect ray 
         RayTree::AddReflectedSegment(rR, 0, hR.getT());
     }
     //=====================
-    //transparent
-    //=====================
+    //refract
     if (bounces <= max_bounces && hit.getMaterial()->getTransparentColor() != Vec3f(0,0,0)){
         Vec3f refract;
         float index_i, index_t;
@@ -225,14 +224,16 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
         Hit hR(INFINITY, NULL);
         if (shouldTransparent){ //应该折射
             Ray rR(hit_pos, refract);
-            result += (traceRay(rR, tmin, bounces+1, weight*(1-cutoff_weight), hit.getMaterial()->getIndexOfRefraction(), hR) * hit.getMaterial()->getTransparentColor());
+            float trWeight = hit.getMaterial()->getTransparentColor().Length();
+            result += (traceRay(rR, tmin, bounces+1, weight * trWeight, hit.getMaterial()->getIndexOfRefraction(), hR) * hit.getMaterial()->getTransparentColor());
             //=====================
             // RayTree: refract ray 
             RayTree::AddTransmittedSegment(rR, 0, hR.getT());
         } else{ //inner reflect 内全反射
             Vec3f reflect = mirrorDirection(-1*hit.getNormal(), ray.getDirection());
             Ray rR(hit_pos, reflect);
-            result += (traceRay(rR, tmin, bounces+1, weight*(1-cutoff_weight), indexOfRefraction, hR) * hit.getMaterial()->getReflectiveColor());
+            float reWeight = hit.getMaterial()->getReflectiveColor().Length();
+            //result += (traceRay(rR, tmin, bounces+1, weight * reWeight, indexOfRefraction, hR) * hit.getMaterial()->getReflectiveColor());
             //=====================
             // RayTree: inner reflect ray 
             RayTree::AddReflectedSegment(rR, 0, hR.getT());
