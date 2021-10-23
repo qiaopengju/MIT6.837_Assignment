@@ -197,21 +197,9 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
     }
 
     //=====================
-    //mirror
-    //=====================
-    if (bounces <= max_bounces && hit.getMaterial()->getReflectiveColor() != Vec3f(0,0,0)){
-        Vec3f reflect = mirrorDirection(hit.getNormal(), ray.getDirection());
-        Ray rR(hit_pos, reflect);
-        Hit hR(INFINITY, NULL);
-        float reWeight = hit.getMaterial()->getReflectiveColor().Length();
-        result += (traceRay(rR, tmin, bounces+1, weight*reWeight, indexOfRefraction, hR) * hit.getMaterial()->getReflectiveColor());
-        //=====================
-        // RayTree: reflect ray 
-        RayTree::AddReflectedSegment(rR, 0, hR.getT());
-    }
-    //=====================
     //transparent
     //=====================
+    bool shouldTransparent(false);
     if (bounces <= max_bounces && hit.getMaterial()->getTransparentColor() != Vec3f(0,0,0)){
         Vec3f refract;
         float index_i, index_t;
@@ -222,7 +210,7 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
             index_i = hit.getMaterial()->getIndexOfRefraction();
             index_t = 1;
         }
-        bool shouldTransparent = transmittedDirection(hit.getNormal(), ray.getDirection(), index_i, index_t, refract);
+        shouldTransparent = transmittedDirection(hit.getNormal(), ray.getDirection(), index_i, index_t, refract);
         Hit hR(INFINITY, NULL);
         if (shouldTransparent){ //应该折射
             Ray rR(hit_pos, refract);
@@ -240,6 +228,21 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
             // // RayTree: inner reflect ray 
             // RayTree::AddReflectedSegment(rR, 0, hR.getT());
         }
+    }
+    //=====================
+    //mirror
+    //=====================
+    if (bounces <= max_bounces && hit.getMaterial()->getReflectiveColor() != Vec3f(0,0,0)){
+        Vec3f refNormal(hit.getNormal());
+        if (hit.getMaterial()->getTransparentColor().Length() != 0 && !shouldTransparent) refNormal.Negate(); //inner reflect
+        Vec3f reflect = mirrorDirection(refNormal, ray.getDirection());
+        Ray rR(hit_pos, reflect);
+        Hit hR(INFINITY, NULL);
+        float reWeight = hit.getMaterial()->getReflectiveColor().Length();
+        result += (traceRay(rR, tmin, bounces+1, weight*reWeight, indexOfRefraction, hR) * hit.getMaterial()->getReflectiveColor());
+        //=====================
+        // RayTree: reflect ray 
+        RayTree::AddReflectedSegment(rR, 0, hR.getT());
     }
     return result;
 }
