@@ -15,7 +15,7 @@ SRCS 	 	= main.C \
 		$(OBJ_DIR)/triangle.C \
 		$(OBJ_DIR)/plane.C \
 		$(OBJ_DIR)/transform.C \
-		$(OBJ_DIR)/grid.C \
+		$(RAY_TRACER_DIR)/grid.C \
 		$(RAY_TRACER_DIR)/raytracer.C \
 		$(RAY_TRACER_DIR)/material.C \
 		$(RAY_TRACER_DIR)/light.C \
