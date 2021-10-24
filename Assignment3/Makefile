@@ -22,6 +22,7 @@ SRCS 	 	= main.C \
 		$(RAY_TRACER_DIR)/camera.C \
 		$(RAY_TRACER_DIR)/boundingbox.C \
 		$(RAY_TRACER_DIR)/raytracing_stats.C \
+		$(RAY_TRACER_DIR)/texture/perlin_noise.C \
 		../GL/glCanvas.C \
 		../GL/rayTree.C \
 
