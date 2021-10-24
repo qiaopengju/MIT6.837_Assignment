@@ -86,4 +86,57 @@ private:
   Matrix *matrix;
 };
 
+// ====================================================================
+// CheckerBoard Material
+// ====================================================================
+class Noise: public Material{
+public:
+  Noise(Matrix *m, Material *mat1, Material *mat2, int octaves);
+  void glSetMaterial() const;
+  Vec3f Shade (const Ray &ray, const Hit &hit, 
+      const Vec3f &dirToLight, const Vec3f &lightColor) const;
+  Vec3f getSpecularColor() const { return mat1->getSpecularColor(); };
+  Vec3f getReflectiveColor() const { return mat1->getReflectiveColor(); };
+  Vec3f getTransparentColor() const { return mat1->getTransparentColor(); };
+  float getIndexOfRefraction() const { return mat1->getIndexOfRefraction(); };
+private:
+  Material *mat1, *mat2;
+  Matrix *matrix;
+  int octaves;
+};
+
+
+class Marble: public Material{
+public:
+  Marble(Matrix *m, Material *mat1, Material *mat2, int octaves, float frequency, float amplitude);
+  void glSetMaterial() const;
+  Vec3f Shade (const Ray &ray, const Hit &hit, 
+      const Vec3f &dirToLight, const Vec3f &lightColor) const;
+  Vec3f getSpecularColor() const { return mat1->getSpecularColor(); };
+  Vec3f getReflectiveColor() const { return mat1->getReflectiveColor(); };
+  Vec3f getTransparentColor() const { return mat1->getTransparentColor(); };
+  float getIndexOfRefraction() const { return mat1->getIndexOfRefraction(); };
+private:
+  Material *mat1, *mat2;
+  Matrix *matrix;
+  int octaves;
+  float frequency, amplitude;
+};
+
+class Wood: public Material{
+public:
+  Wood(Matrix *m, Material *mat1, Material *mat2, int octaves, float frequency, float amplitude);
+  void glSetMaterial() const;
+  Vec3f Shade (const Ray &ray, const Hit &hit, 
+      const Vec3f &dirToLight, const Vec3f &lightColor) const;
+  Vec3f getSpecularColor() const { return mat1->getSpecularColor(); };
+  Vec3f getReflectiveColor() const { return mat1->getReflectiveColor(); };
+  Vec3f getTransparentColor() const { return mat1->getTransparentColor(); };
+  float getIndexOfRefraction() const { return mat1->getIndexOfRefraction(); };
+private:
+  Material *mat1, *mat2;
+  Matrix *matrix;
+  int octaves;
+  float frequency, amplitude;
+};
 #endif

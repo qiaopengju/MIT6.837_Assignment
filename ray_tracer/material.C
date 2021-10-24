@@ -108,10 +108,43 @@ Vec3f PhongMaterial::Shade (const Ray &ray, const Hit &hit,
   return diffuse_color + specular_color;
 }
 
+CheckerBoard::CheckerBoard(Matrix *m, Material *mat1, Material *mat2){
+}
+
 void CheckerBoard::glSetMaterial() const{
   mat1->glSetMaterial();
 }
 
 Vec3f CheckerBoard::Shade(const Ray &ray, const Hit &hit, 
+    const Vec3f &dirToLight, const Vec3f &lightColor) const{
+}
+
+Noise::Noise(Matrix *m, Material *mat1, Material *mat2, int octaves){
+}
+
+void Noise::glSetMaterial() const{
+}
+
+Vec3f Noise::Shade(const Ray &ray, const Hit &hit, 
+    const Vec3f &dirToLight, const Vec3f &lightColor) const{
+}
+
+Marble::Marble(Matrix *m, Material *mat1, Material *mat2, int octaves, float frequency, float amplitude){
+}
+
+void Marble::glSetMaterial() const{
+}
+
+Vec3f Marble::Shade(const Ray &ray, const Hit &hit, 
+    const Vec3f &dirToLight, const Vec3f &lightColor) const{
+}
+
+Wood::Wood(Matrix *m, Material *mat1, Material *mat2, int octaves, float frequency, float amplitude){
+}
+
+void Wood::glSetMaterial() const{
+}
+
+Vec3f Wood::Shade(const Ray &ray, const Hit &hit, 
     const Vec3f &dirToLight, const Vec3f &lightColor) const{
 }
