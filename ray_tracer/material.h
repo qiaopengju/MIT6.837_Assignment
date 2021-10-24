@@ -24,13 +24,13 @@ public:
   Material(const Vec3f &d_color) { diffuseColor = d_color; }
   ~Material() {}
 
-  // ACCESSORS
-  virtual Vec3f getDiffuseColor() const { return diffuseColor; }
   // SHADE
   virtual Vec3f Shade (const Ray &ray, const Hit &hit, 
       const Vec3f &dirToLight, const Vec3f &lightColor) const = 0;
   // GL Set Material
   virtual void glSetMaterial() const {};
+  // ACCESSORS
+  virtual Vec3f getDiffuseColor() const { return diffuseColor; }
   virtual Vec3f getSpecularColor() const = 0;
   virtual Vec3f getReflectiveColor() const = 0;
   virtual Vec3f getTransparentColor() const = 0;
@@ -72,7 +72,18 @@ protected:
 // CheckerBoard Material
 // ====================================================================
 class CheckerBoard : public Material{
+public:
   CheckerBoard(Matrix *m, Material *mat1, Material *mat2);
+  void glSetMaterial() const;
+  Vec3f Shade (const Ray &ray, const Hit &hit, 
+      const Vec3f &dirToLight, const Vec3f &lightColor) const;
+  Vec3f getSpecularColor() const { };
+  Vec3f getReflectiveColor() const { };
+  Vec3f getTransparentColor() const { };
+  float getIndexOfRefraction() const { };
+private:
+  Material *mat1, *mat2;
+  Matrix *matrix;
 };
 
 #endif

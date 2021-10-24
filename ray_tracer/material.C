@@ -88,8 +88,9 @@ Vec3f PhongMaterial::Shade (const Ray &ray, const Hit &hit,
   //norRayDir.Normalize();
 
   //caculate diffuse color
+  if (shade_back && dirToLight.Dot3(norNormal) < 0) norNormal = -1 * norNormal;
   float diffuse = dirToLight.Dot3(norNormal);
-  if (shade_back) diffuse = abs(diffuse);
+  //if (shade_back) diffuse = abs(diffuse);
   if (diffuse < 0) diffuse = 0; //点积为负，光在物体背面
   Vec3f diffuse_color = diffuse * getDiffuseColor() * lightColor;
   
@@ -97,11 +98,19 @@ Vec3f PhongMaterial::Shade (const Ray &ray, const Hit &hit,
   Vec3f half_v = dirToLight - ray.getDirection(); //半程向量
   half_v.Normalize(); //一定要标准化半程向量
   float specular = half_v.Dot3(norNormal);
-  if (dirToLight.Dot3(norNormal) < 0) specular *= diffuse; //背面不应该有高光
-  //specular *= diffuse;  //背面不应该有高光反射 & 柔化阴影边缘
+  //if (dirToLight.Dot3(norNormal) < 0) specular *= diffuse; //背面不应该有高光
+  specular *= diffuse;  //背面不应该有高光反射 & 柔化阴影边缘
 
   specular = powf(specular, exponent);
   Vec3f specular_color = specular * getSpecularColor() * lightColor;
 
   return diffuse_color + specular_color;
+}
+
+void CheckerBoard::glSetMaterial() const{
+  mat1->glSetMaterial();
+}
+
+Vec3f CheckerBoard::Shade(const Ray &ray, const Hit &hit, 
+    const Vec3f &dirToLight, const Vec3f &lightColor) const{
 }
