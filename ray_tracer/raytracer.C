@@ -152,7 +152,7 @@ Vec3f RayTracer::traceRay(const Ray &ray, float tmin, int bounces, float weight,
     if (!hitFlag) return scene->getBackgroundColor();
 
     //assert(hit.getMaterial() != NULL);
-    Vec3f result = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor();
+    Vec3f result = scene->getAmbientLight() * hit.getMaterial()->getDiffuseColor(hit.getIntersectionPoint());
     Vec3f hit_pos = ray.pointAtParameter(hit.getT());
     //cast shadow ray
     for (int i = 0; i < scene->getNumLights(); i++){ //for every light

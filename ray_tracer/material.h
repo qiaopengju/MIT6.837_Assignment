@@ -31,6 +31,7 @@ public:
   virtual void glSetMaterial() const {};
   // ACCESSORS
   virtual Vec3f getDiffuseColor() const { return diffuseColor; }
+  virtual Vec3f getDiffuseColor(Vec3f wordPos) const { return diffuseColor; }
   virtual Vec3f getSpecularColor() const = 0;
   virtual Vec3f getReflectiveColor() const = 0;
   virtual Vec3f getTransparentColor() const = 0;
@@ -59,6 +60,7 @@ public:
   Vec3f getReflectiveColor() const { return reflectiveColor; }
   Vec3f getTransparentColor() const { return transparentColor; }
   float getIndexOfRefraction() const { return indexOfRefraction; }
+  float getExponent() const { return exponent; }
 
   void glSetMaterial() const;
   Vec3f Shade (const Ray &ray, const Hit &hit, 
@@ -99,6 +101,7 @@ public:
   Vec3f getReflectiveColor() const { return mat1->getReflectiveColor(); };
   Vec3f getTransparentColor() const { return mat1->getTransparentColor(); };
   float getIndexOfRefraction() const { return mat1->getIndexOfRefraction(); };
+  Vec3f getDiffuseColor(Vec3f wordPos) const;
 private:
   Material *mat1, *mat2;
   Matrix *matrix;
@@ -116,6 +119,7 @@ public:
   Vec3f getReflectiveColor() const { return mat1->getReflectiveColor(); };
   Vec3f getTransparentColor() const { return mat1->getTransparentColor(); };
   float getIndexOfRefraction() const { return mat1->getIndexOfRefraction(); };
+  Vec3f getDiffuseColor(Vec3f wordPos) const;
 private:
   Material *mat1, *mat2;
   Matrix *matrix;
@@ -133,6 +137,7 @@ public:
   Vec3f getReflectiveColor() const { return mat1->getReflectiveColor(); };
   Vec3f getTransparentColor() const { return mat1->getTransparentColor(); };
   float getIndexOfRefraction() const { return mat1->getIndexOfRefraction(); };
+  Vec3f getDiffuseColor(Vec3f wordPos) const;
 private:
   Material *mat1, *mat2;
   Matrix *matrix;
