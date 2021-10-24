@@ -3,6 +3,7 @@
 #include "grid.h"
 #include "matrix.h"
 #include "raytracing_stats.h"
+#include "transform.h"
 
 Triangle::Triangle(Vec3f &a, Vec3f &b, Vec3f &c, Material *m){
     this->a = a;
@@ -125,8 +126,13 @@ void Triangle::insertIntoGrid(Grid *g, Matrix *m){
 //                         break;
 //                     }
 //                 }
-//                 if (flag) 
-//                     g->setCellOpaque(i, j, k, this);
+//                 if (flag) {
+//                     if (m){
+//                         int idx = this->Object3D::pushTransformPrimitive(m, this);
+//                         g->setCellOpaque(i, j, k, Object3D::gridTransform.getObject(idx));
+//                     }
+//                     else g->setCellOpaque(i, j, k, this);
+//                 }
 //             }
 //         }
 //     }

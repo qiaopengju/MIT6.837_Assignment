@@ -24,8 +24,7 @@ void Object3D::insertIntoGrid(Grid *g, Matrix *m) {
                         j >= minIdx.y() && j <= maxIdx.y() && 
                         k >= minIdx.z() && k <= maxIdx.z())
                     if (m){
-                        Transform tansTemp(*m, this);
-                        int idx = pushTransformPrimitive(tansTemp);
+                        int idx = pushTransformPrimitive(m, this);
                         g->setCellOpaque(i, j, k, Object3D::gridTransform.getObject(idx));
                     }
                     else g->setCellOpaque(i, j, k, this);
@@ -34,8 +33,8 @@ void Object3D::insertIntoGrid(Grid *g, Matrix *m) {
     }
 }
 
-int Object3D::pushTransformPrimitive(const Transform &trans){
-    Transform *newTrans = new Transform(trans);
+int Object3D::pushTransformPrimitive(Matrix *m, Object3D *obj){
+    Transform *newTrans = new Transform(*m, obj);
     gridTransform.addObject(newTrans);
     return gridTransform.getNumObjects() - 1;
 }

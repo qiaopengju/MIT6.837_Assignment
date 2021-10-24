@@ -27,7 +27,7 @@ public:
     BoundingBox* getBoundingBox() const { return boundingBox; }
     //MODIFY
     void setBoundingBox(const BoundingBox &bb) { boundingBox->Set(bb.getMin(), bb.getMax()); }
-    int pushTransformPrimitive(const Transform &trans);
+    int pushTransformPrimitive(Matrix *m, Object3D *obj);
 
     static Object3DVector gridTransform;
 protected:
