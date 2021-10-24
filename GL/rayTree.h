@@ -2,6 +2,7 @@
 #define _RAY_TREE_H
 
 #include "ray.h"
+#define GL_SILENCE_DEPRECATION
 #include <GL/glut.h>
 
 #include "material.h"

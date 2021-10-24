@@ -1,6 +1,7 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#define GL_SILENCE_DEPRECATION
 #include <GL/glut.h>
 #include "ray.h"
 #include "vectors.h"

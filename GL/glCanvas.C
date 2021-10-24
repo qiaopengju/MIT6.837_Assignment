@@ -9,6 +9,7 @@
 #include "grid.h"
 
 // Included files for OpenGL Rendering
+#define GL_SILENCE_DEPRECATION
 #include <GL/glut.h>
 
 // ========================================================

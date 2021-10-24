@@ -1,5 +1,6 @@
-#include "boundingbox.h"
+#define GL_SILENCE_DEPRECATION
 #include <GL/glut.h>
+#include "boundingbox.h"
 
 // ====================================================================
 // ====================================================================

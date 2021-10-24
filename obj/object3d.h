@@ -1,8 +1,7 @@
-#define GL_SILENCE_DEPRECATION
-
 #ifndef OBJECT3D_H
 #define OBJECT3D_H
 
+#define GL_SILENCE_DEPRECATION
 #include <GL/glut.h>
 #include "ray.h"
 #include "hit.h"

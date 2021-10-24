@@ -1,3 +1,4 @@
+#define GL_SILENCE_DEPRECATION
 #include <GL/glut.h>
 #include "triangle.h"
 #include "grid.h"

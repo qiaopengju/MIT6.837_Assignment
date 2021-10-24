@@ -1,5 +1,4 @@
 #include "rayTree.h"
-#include <GL/glut.h>
 
 // ====================================================================
 // Initialize the static variables

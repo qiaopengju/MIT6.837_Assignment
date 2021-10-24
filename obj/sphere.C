@@ -1,3 +1,4 @@
+#define GL_SILENCE_DEPRECATION
 #include <GL/glut.h>
 #include "sphere.h"
 #include "grid.h"
