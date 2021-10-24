@@ -3,6 +3,7 @@
 #include "material.h"
 #include "glCanvas.h"  
 #include "raytracer.h"
+#define odd(x) (x % 2 == 1)
 
 PhongMaterial::PhongMaterial(const Vec3f &diffuseColor, 
     const Vec3f &specularColor, float exponent){
@@ -109,6 +110,9 @@ Vec3f PhongMaterial::Shade (const Ray &ray, const Hit &hit,
 }
 
 CheckerBoard::CheckerBoard(Matrix *m, Material *mat1, Material *mat2){
+  matrix = m;
+  this->mat1 = mat1;
+  this->mat2 = mat2;
 }
 
 void CheckerBoard::glSetMaterial() const{
@@ -117,9 +121,34 @@ void CheckerBoard::glSetMaterial() const{
 
 Vec3f CheckerBoard::Shade(const Ray &ray, const Hit &hit, 
     const Vec3f &dirToLight, const Vec3f &lightColor) const{
+  Vec3f hitPos = hit.getIntersectionPoint();
+  matrix->Transform(hitPos);
+  hitPos.Set(floor(hitPos.x()), floor(hitPos.y()), floor(hitPos.z()));
+  hitPos.Set(abs(hitPos.x()), abs(hitPos.y()), abs(hitPos.z()));
+  if (odd((int)hitPos.y())){
+    if (odd((int)hitPos.z())){
+      if (odd((int)hitPos.x())) return mat1->Shade(ray, hit, dirToLight, lightColor);
+      else return mat2->Shade(ray, hit, dirToLight, lightColor);
+    } else {
+      if (!odd((int)hitPos.x())) return mat1->Shade(ray, hit, dirToLight, lightColor);
+      else return mat2->Shade(ray, hit, dirToLight, lightColor);
+    }
+  } else{
+    if (odd((int)hitPos.z())){
+      if (!odd((int)hitPos.x())) return mat1->Shade(ray, hit, dirToLight, lightColor);
+      else return mat2->Shade(ray, hit, dirToLight, lightColor);
+    } else {
+      if (odd((int)hitPos.x())) return mat1->Shade(ray, hit, dirToLight, lightColor);
+      else return mat2->Shade(ray, hit, dirToLight, lightColor);
+    }
+  }
 }
 
 Noise::Noise(Matrix *m, Material *mat1, Material *mat2, int octaves){
+  matrix = m;
+  this->mat1 = mat1;
+  this->mat2 = mat2;
+  this->octaves = octaves;
 }
 
 void Noise::glSetMaterial() const{
@@ -130,6 +159,12 @@ Vec3f Noise::Shade(const Ray &ray, const Hit &hit,
 }
 
 Marble::Marble(Matrix *m, Material *mat1, Material *mat2, int octaves, float frequency, float amplitude){
+  matrix = m;
+  this->mat1 = mat1;
+  this->mat2 = mat2;
+  this->octaves = octaves;
+  this->frequency = frequency;
+  this->amplitude = amplitude;
 }
 
 void Marble::glSetMaterial() const{
@@ -140,6 +175,12 @@ Vec3f Marble::Shade(const Ray &ray, const Hit &hit,
 }
 
 Wood::Wood(Matrix *m, Material *mat1, Material *mat2, int octaves, float frequency, float amplitude){
+  matrix = m;
+  this->mat1 = mat1;
+  this->mat2 = mat2;
+  this->octaves = octaves;
+  this->frequency = frequency;
+  this->amplitude = amplitude;
 }
 
 void Wood::glSetMaterial() const{
