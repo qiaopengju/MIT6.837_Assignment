@@ -77,10 +77,10 @@ public:
   void glSetMaterial() const;
   Vec3f Shade (const Ray &ray, const Hit &hit, 
       const Vec3f &dirToLight, const Vec3f &lightColor) const;
-  Vec3f getSpecularColor() const { };
-  Vec3f getReflectiveColor() const { };
-  Vec3f getTransparentColor() const { };
-  float getIndexOfRefraction() const { };
+  Vec3f getSpecularColor() const { return mat1->getSpecularColor(); };
+  Vec3f getReflectiveColor() const { return mat1->getReflectiveColor(); };
+  Vec3f getTransparentColor() const { return mat1->getTransparentColor(); };
+  float getIndexOfRefraction() const { return mat1->getIndexOfRefraction(); };
 private:
   Material *mat1, *mat2;
   Matrix *matrix;
