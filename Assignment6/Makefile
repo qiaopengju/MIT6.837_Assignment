@@ -106,4 +106,4 @@ scene16:
 scene17:
 	./raytracer -input src/scene6_17_marble_vase.txt -size 300 300 -output output6_17a.tga -grid 15 30 15 -bounces 1 -shadows -gui -visualize_grid
 scene18:
-	./raytracer -input src/scene6_18_6.837_logo.txt -size 400 200 -output output6_18a.tga -shadows -shade_back -bounces 5 -weight 0.01 -grid 80 30 3 -gui -visualize_grid
+	./raytracer -input src/scene6_18_6.837_logo.txt -size 400 200 -output output6_18a.tga -shadows -shade_back -bounces 5 -weight 0.01 -grid 80 30 3 -gui -visualize_grid 
