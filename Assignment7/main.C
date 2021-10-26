@@ -12,6 +12,7 @@
 #include "sphere.h"
 #include "light.h"
 #include "glCanvas.h"
+#include "sample/sampler.h"
 
 GLCanvas glCanvas;
 
@@ -72,6 +73,23 @@ int main(int argc, char *argv[]){
             nz = atoi(argv[i]);
         } else if (!strcmp(argv[i], "-visualize_grid")){
             visualize_grid = true;
+        } else if (!strcmp(argv[i], "-random_samples")){
+            random_samples = true;
+            i++; assert(i < argc);
+            Sampler::numSamples = atoi(argv[i]);
+        } else if (!strcmp(argv[i], "-uniform_samples")){
+            uniform_samplers = true;
+            i++; assert(i < argc);
+            Sampler::numSamples = atoi(argv[i]);
+        } else if (!strcmp(argv[i], "-jittered_samples")){
+            jittered_samplers = true;
+            i++; assert(i < argc);
+            Sampler::numSamples = atoi(argv[i]);
+        } else if (!strcmp(argv[i], "-render_samples")){
+            i++; assert(i < argc);
+            samples_file = argv[i];
+            i++; assert(i < argc);
+            sample_zoom = atoi(argv[i]);
         } else {
             printf ("whoops error with command line argument %d: '%s'\n",i,argv[i]);
             assert(0);
