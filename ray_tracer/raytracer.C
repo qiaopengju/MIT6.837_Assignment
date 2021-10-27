@@ -13,12 +13,19 @@
 #include "matrix.h"
 #include "marchingInfo.h"
 #include "raytracing_stats.h"
+#include "sample/sampler.h"
+#include "sample/filter.h"
 
-int width(100), height(100), max_bounces(0), nx(0), ny(0), nz(0);
-char *input_file(NULL), *output_file(NULL), *depth_file(NULL), *normal_file(NULL);
+int width(100), height(100), max_bounces(0), nx(0), ny(0), nz(0), sample_zoom(0), filter_zoom(0);
+char *input_file(NULL), *output_file(NULL), *depth_file(NULL), *normal_file(NULL), *samples_file(NULL), *filter_file(NULL);
 bool shade_back(false), gl_preview(false), gouraud(false), shadow(false), visualize_grid(false);
+bool box_filter(false), tent_filter(false), gaussian_filter(false);
+bool random_samples(false), uniform_samplers(false), jittered_samplers(false);
 float depth_min(0), depth_max(1), cutoff_weight(0);
+float gaussian_sigma(0), filter_radius(0);
 
+//static value
+int Sampler::numSamples{1};
 Grid* RayTracer::grid;
 
 void render(){
@@ -26,6 +33,19 @@ void render(){
     Camera* camera = GLCanvas::scene->getCamera();
     Group* group = GLCanvas::scene->getGroup();
     Image *image, *image_depth, *image_normal;
+    //sampler
+    Sampler *sampler;
+    if (random_samples) sampler = new RandomSampler(width, height);
+    else if (uniform_samplers) sampler = new UniformSampler(width, height);
+    else if (jittered_samplers) sampler = new JitteredSampler(width, height);
+    else sampler = new UniformSampler(width, height);
+    //filter
+    Filter *filter;
+    if (box_filter) filter = new BoxFilter(filter_radius);
+    else if (tent_filter) filter = new TentFilter(filter_radius);
+    else if (gaussian_filter) filter = new GaussianFilter(gaussian_sigma);
+    else filter = nullptr;
+
     if (output_file != NULL) {
         image = new Image(width, height);
         image->SetAllPixels(GLCanvas::scene->getBackgroundColor());
@@ -42,8 +62,22 @@ void render(){
     //Initialize raytracing stats
     RayTracingStats::Initialize(width, height, group->getBoundingBox(), nx, ny, nz);
     //generate ray
+    Vec2f pixel_size = Vec2f(1.f / width, 1.f / height);
     for (int i = 0; i < width; i++){
         for (int j = 0; j < height; j++){
+            if (sampler) { //sampler
+                sampler->updateSampleOffset();
+                for (int s = 0; s < sampler->numSamples; s++){
+                    Vec2f s_pos = sampler->getsamplePosition(s);
+                    float off_x = pixel_size.x() * s_pos.x();
+                    float off_y = pixel_size.y() * s_pos.y();
+                    Ray r = camera->generateRay(Vec2f((float)i/width + off_x, (float)j/height + off_y));
+                    Hit h(INFINITY, NULL);
+                    Vec3f color = raytracer.traceRay(r, raytracer.getEpsilon(), 0, 1, 1, h);
+                    if (color != GLCanvas::scene->getBackgroundColor())
+                        sampler->getFilm()->setSample(i, j, s, s_pos, color);
+                }
+            }
             Ray r = camera->generateRay(Vec2f((float)i/width, (float)j/height));
             Hit h(INFINITY, NULL);
             if (output_file != NULL) 
@@ -102,6 +136,10 @@ void render(){
         }
         delete normal_file;
     }
+    if (samples_file) sampler->getFilm()->renderSamples(samples_file, sample_zoom);
+    if (filter_file && filter) sampler->getFilm()->renderFilter(filter_file, filter_zoom, filter);
+    if (sampler) delete sampler;
+    if (filter) delete filter;
 }
 
 void traceRayFunc(float x, float y){
