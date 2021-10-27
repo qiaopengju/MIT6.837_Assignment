@@ -39,12 +39,14 @@ void render(){
     else if (uniform_samplers) sampler = new UniformSampler(width, height);
     else if (jittered_samplers) sampler = new JitteredSampler(width, height);
     else sampler = new UniformSampler(width, height);
-    //filter
+    //filter 默认boxfilter
+    Filter::height = height;
+    Filter::width = width;
     Filter *filter;
     if (box_filter) filter = new BoxFilter(filter_radius);
     else if (tent_filter) filter = new TentFilter(filter_radius);
     else if (gaussian_filter) filter = new GaussianFilter(gaussian_sigma);
-    else filter = nullptr;
+    else filter = new BoxFilter(filter_radius);
 
     if (output_file != NULL) {
         image = new Image(width, height);
@@ -65,24 +67,23 @@ void render(){
     Vec2f pixel_size = Vec2f(1.f / width, 1.f / height);
     for (int i = 0; i < width; i++){
         for (int j = 0; j < height; j++){
+            Ray r;
+            Hit h;
             if (sampler) { //sampler
                 sampler->updateSampleOffset();
                 for (int s = 0; s < sampler->numSamples; s++){
                     Vec2f s_pos = sampler->getsamplePosition(s);
                     float off_x = pixel_size.x() * s_pos.x();
                     float off_y = pixel_size.y() * s_pos.y();
-                    Ray r = camera->generateRay(Vec2f((float)i/width + off_x, (float)j/height + off_y));
-                    Hit h(INFINITY, NULL);
+                    r = camera->generateRay(Vec2f((float)i/width + off_x, (float)j/height + off_y));
+                    h.set(INFINITY, NULL, r);
                     Vec3f color = raytracer.traceRay(r, raytracer.getEpsilon(), 0, 1, 1, h);
-                    if (color != GLCanvas::scene->getBackgroundColor())
-                        sampler->getFilm()->setSample(i, j, s, s_pos, color);
+                    // if (color != GLCanvas::scene->getBackgroundColor())
+                    sampler->getFilm()->setSample(i, j, s, s_pos, color);
                 }
             }
-            Ray r = camera->generateRay(Vec2f((float)i/width, (float)j/height));
-            Hit h(INFINITY, NULL);
-            if (output_file != NULL) 
-                image->SetPixel(i, j, raytracer.traceRay(r, raytracer.getEpsilon(), 0, 1, 1, h));
-            if (h.getMaterial() != NULL){             //光线与物体相交
+            if (output_file) image->SetPixel(i, j, filter->getColor(i, j, sampler->getFilm()));
+            if (h.getMaterial()){             //光线与物体相交
                 if (depth_file != NULL){ //render depth
                     float t = h.getT();
                     if (t >= depth_min && t <= depth_max){
@@ -90,12 +91,9 @@ void render(){
                         image_depth->SetPixel(i, j, Vec3f(t, t, t));
                     }
                 }
-                if (normal_file != NULL){ //render normal
+                if (normal_file){ //render normal
                     Vec3f normal = h.getNormal();
-                    float r = abs(normal.r()); 
-                    float g = abs(normal.g()); 
-                    float b = abs(normal.b()); 
-                    image_normal->SetPixel(i, j, Vec3f(r, g, b));
+                    image_normal->SetPixel(i, j, Vec3f(abs(normal.r()), abs(normal.g()), abs(normal.b())));
                 }
             }
         }
