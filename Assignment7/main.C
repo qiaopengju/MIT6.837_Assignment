@@ -13,6 +13,7 @@
 #include "light.h"
 #include "glCanvas.h"
 #include "sample/sampler.h"
+#include "filter.h"
 
 GLCanvas glCanvas;
 
@@ -90,6 +91,23 @@ int main(int argc, char *argv[]){
             samples_file = argv[i];
             i++; assert(i < argc);
             sample_zoom = atoi(argv[i]);
+        } else if (!strcmp(argv[i], "-box_filter")){
+            i++; assert(i < argc);
+            box_filter = true;
+            filter_radius = atof(argv[i]);
+        } else if (!strcmp(argv[i], "-tent_filter")){
+            i++; assert(i < argc);
+            tent_filter = true;
+            filter_radius = atof(argv[i]);
+        } else if (!strcmp(argv[i], "-gaussian_filter")){
+            i++; assert(i < argc);
+            gaussian_filter = true;
+            gaussian_sigma = atof(argv[i]);
+        } else if (!strcmp(argv[i], "-render_filter")){
+            i++; assert(i < argc);
+            filter_file = argv[i];
+            i++; assert(i < argc);
+            filter_zoom = atoi(argv[i]);
         } else {
             printf ("whoops error with command line argument %d: '%s'\n",i,argv[i]);
             assert(0);
