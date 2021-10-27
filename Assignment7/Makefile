@@ -113,22 +113,24 @@ scene2_9:
 # ===============filter result
 scene3:
 	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output output7_01_low_res.tga
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -render_samples samples7_01a_low_res.tga 15 -random_samples 9 
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -render_samples samples7_01b_low_res.tga 15 -uniform_samples 9
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -render_samples samples7_01c_low_res.tga 15 -jittered_samples 9
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -render_samples low_res_random_samples7_01a.tga 15 -random_samples 9 
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -render_samples low_res_uniform_samples7_01b.tga 15 -uniform_samples 9
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -render_samples low_res_jittered_samples7_01c.tga 15 -jittered_samples 9
 scene3_1:
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -render_filter box_filter/filter7_01a_low_res.tga 15 -box_filter 0.5
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output box_filter/output7_01a_low_res.tga -random_samples 9 -box_filter 0.5
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output box_filter/output7_01d_low_res.tga -uniform_samples 9 -box_filter 0.5
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output box_filter/output7_01g_low_res.tga -jittered_samples 9 -box_filter 0.5
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -render_filter box_filter7_01a_low_res.tga 15 -box_filter 0.5
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output box_rand_output7_01a_low_res.tga -random_samples 9 -box_filter 0.5
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output box_unif_output7_01d_low_res.tga -uniform_samples 9 -box_filter 0.5
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output box_jitt_output7_01g_low_res.tga -jittered_samples 9 -box_filter 0.5
 scene3_2:
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -render_filter tent_filter_filter7_01b_low_res.tga 15 -tent_filter 1.5
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output tent_filter/output7_01b_low_res.tga -random_samples 9 -tent_filter 1.5
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output tent_filter/output7_01e_low_res.tga -uniform_samples 9 -tent_filter 1.5
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output tent_filter/output7_01h_low_res.tga -jittered_samples 9 -tent_filter 1.5
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -render_filter tent_filter7_01b_low_res.tga 15 -tent_filter 1.5
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output tent_rand_output7_01b_low_res.tga -random_samples 9 -tent_filter 1.5
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output tent_unif_output7_01e_low_res.tga -uniform_samples 9 -tent_filter 1.5
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output tent_jitt_output7_01h_low_res.tga -jittered_samples 9 -tent_filter 1.5
 scene3_3:
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -render_filter gaussian_filter/filter7_01c_low_res.tga 15 -gaussian_filter 1.0
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output gaussian_filter/output7_01c_low_res.tga -random_samples 9 -gaussian_filter 1.0
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output gaussian_filter/output7_01f_low_res.tga -uniform_samples 9 -gaussian_filter 1.0
-	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output gaussian_filter/output7_01i_low_res.tga -jittered_samples 9 -gaussian_filter 1.0
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -render_filter gaussian_filter7_01c_low_res.tga 15 -gaussian_filter 1.0
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output gaussian_rand_output7_01c_low_res.tga -random_samples 9 -gaussian_filter 1.0
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output gaussian_unif_output7_01f_low_res.tga -uniform_samples 9 -gaussian_filter 1.0
+	./raytracer -input src/scene7_01_sphere_triangle.txt -size 12 12 -output gaussian_jitt_output7_01i_low_res.tga -jittered_samples 9 -gaussian_filter 1.0
+test:
+	./raytracer -input ../Assignment4/src/scene4_04_reflective_sphere.txt -size 200 200 -output test.tga -shadows -bounces 3 -weight 0.01 -jittered_samples 9 -tent_filter 2
 # ===============
