@@ -2,16 +2,29 @@
 #include "film.h"
 #include "sampler.h"
 
+int Filter::width, Filter::height;
+
 Vec3f Filter::getColor(int i, int j, Film *film){
-    float weight{0}, r{0};
+    float weight{0};
     Vec3f result;
-    do {
-        for (int i = -1; i <= 1; i++){ //遍历8个方向
-            for (int j = -1; j <= 1; j++){
+    for (int r = 0; r <= getSupportRadius(); r++){
+        for (int x = -1; x <= 1; x++){
+            for (int y = -1; y <= 1; y++){
+                int ix = x*r + i;
+                int iy = y*r + j;
+                if (ix < 0 || ix >= width || iy < 0 || iy >= height) continue;
+                for (int s = 0; s < Sampler::numSamples; s++){
+                    Sample tmpS = film->getSample(ix, iy, s);
+                    Vec2f pos = tmpS.getPosition();
+                    float w = getWeight(x*r + pos.x() - 0.5, y*r + pos.x() - 0.5);
+                    result += tmpS.getColor() * w;
+                    weight += w;
+                }
             }
         }
-        r++;
-    } while (r <= getSupportRadius());
+    }
+    result /= weight;
+    return result;
 }
 
 float BoxFilter::getWeight(float x, float y){

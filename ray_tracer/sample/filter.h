@@ -18,6 +18,8 @@ public:
     //returns the weight for point (x + pixel center, y + pixel center
     virtual float getWeight(float x, float y) = 0;
     virtual int getSupportRadius() = 0;
+
+    static int width, height;
 };
 
 class BoxFilter : public Filter{
@@ -46,5 +48,4 @@ public:
 private:
     float sigma;
 };
-
 #endif
