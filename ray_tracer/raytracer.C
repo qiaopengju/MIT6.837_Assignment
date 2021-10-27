@@ -48,15 +48,16 @@ void render(){
     else if (gaussian_filter) filter = new GaussianFilter(gaussian_sigma);
     else filter = new BoxFilter(filter_radius);
 
-    if (output_file != NULL) {
+    //initialize image background color
+    if (output_file) {
         image = new Image(width, height);
         image->SetAllPixels(GLCanvas::scene->getBackgroundColor());
     }
-    if (depth_file != NULL) {
+    if (depth_file) {
         image_depth = new Image(width, height);
         image_depth->SetAllPixels(GLCanvas::scene->getBackgroundColor());
     }
-    if (normal_file != NULL){
+    if (normal_file){
         image_normal = new Image(width, height);
         image_depth->SetAllPixels(GLCanvas::scene->getBackgroundColor());
     }
