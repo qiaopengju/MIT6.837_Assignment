@@ -110,7 +110,7 @@ void render(){
         Image::SaveImage(depth_file, image_depth);
         delete image_depth;
     }
-    if (normal_file != NULL){
+    if (normal_file){
         Image::SaveImage(normal_file, image_normal);
         delete image_normal;
     }
