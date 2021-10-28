@@ -8,6 +8,19 @@
 // ====================================================================
 // some helper functions for save & load
 
+void Image::SaveImage(char *filename, const Image *image){
+    if (filename){
+        char *ext = &filename[strlen(filename) - 4];
+        if (!strcmp(ext, ".ppm")) image->SavePPM(filename);
+        else if (!strcmp(ext, ".tga")) {
+            image->SaveTGA(filename);
+        } else {
+            printf("error output image format\n");
+            assert(0);
+        }
+    }
+}
+
 unsigned char ReadByte(FILE *file) {  
   unsigned char b;
   int success = fread((void*)&b,sizeof(unsigned char),1,file);

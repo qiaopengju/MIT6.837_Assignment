@@ -42,6 +42,7 @@ public:
 
   // ===========
   // LOAD & SAVE
+  static void SaveImage(char *filename, const Image *img);
   static Image* LoadPPM(const char *filename);
   void SavePPM(const char *filename) const; 
   static Image* LoadTGA(const char *filename);

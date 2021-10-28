@@ -102,38 +102,17 @@ void render(){
     RayTracingStats::PrintStatistics();
 
     //output image to file
-    if (output_file != NULL){
-        char *ext = &output_file[strlen(output_file) - 4];
-        if (!strcmp(ext, ".ppm")) image->SavePPM(output_file);
-        else if (!strcmp(ext, ".tga")) {
-            image->SaveTGA(output_file);
-        } else {
-            printf("error output image format\n");
-            assert(0);
-        }
+    if (output_file){
+        Image::SaveImage(output_file, image);
         delete image;
     }
-    if (depth_file != NULL){
-        char *ext_depth = &depth_file[strlen(depth_file) - 4];
-        if (!strcmp(ext_depth, ".ppm")) image_depth->SavePPM(depth_file);
-        else if (!strcmp(ext_depth, ".tga")) image_depth->SaveTGA(depth_file);
-        else {
-            printf("error depth image format\n");
-            delete depth_file;
-            assert(0);
-        }
-        delete depth_file;
+    if (depth_file){
+        Image::SaveImage(depth_file, image_depth);
+        delete image_depth;
     }
     if (normal_file != NULL){
-        char *ext_normal = &normal_file[strlen(normal_file) - 4];
-        if (!strcmp(ext_normal, ".ppm")) image_normal->SavePPM(normal_file);
-        else if (!strcmp(ext_normal, ".tga")) image_normal->SaveTGA(normal_file);
-        else {
-            printf("error normal image format\n");
-            delete normal_file;
-            assert(0);
-        }
-        delete normal_file;
+        Image::SaveImage(normal_file, image_normal);
+        delete image_normal;
     }
     if (samples_file) sampler->getFilm()->renderSamples(samples_file, sample_zoom);
     if (filter_file && filter) sampler->getFilm()->renderFilter(filter_file, filter_zoom, filter);
