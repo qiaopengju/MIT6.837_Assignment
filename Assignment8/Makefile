@@ -15,7 +15,8 @@ SRCS 	 	= main.cpp \
 #        mesa_v501 locker.  Type "add mesa_v501" to access these files.
 
 LIBS = -framework OpenGL -framework GLUT
-INCLUDE 	= -I/mit/mesa_v501/Mesa-5.0.1/include/ -I../
+FLAG 	= -I/mit/mesa_v501/Mesa-5.0.1/include/ -I../
+INCLUDE = spline.h surface.h curve.h
 CC		= clang++
 EXE	  	= curve_editor
 OBJS =  $(SRCS:.C=.o)
@@ -28,7 +29,7 @@ OBJS =  $(SRCS:.C=.o)
 all: depend $(EXE)
 
 depend:
-	$(CC) $(INCLUDE) -E -M $(SRCS) > Makefile.depend
+	$(CC) $(FLAG) -E -M $(SRCS) > Makefile.depend
 
 clean: 
 	-rm -f *~ *bak *.o  core.* Makefile.depend $(EXE) 
@@ -37,10 +38,10 @@ clean:
 # compilation rules
 
 $(EXE): $(OBJS)
-	$(CC) $(INCLUDE) -o $@ $(OBJS) $(LIBS)
+	$(CC) $(FLAG) -o $@ $(OBJS) $(LIBS)
 
-.C.o:
-	$(CC) $(INCLUDE) $< -c -o $@
+.C.o: $(INCLUDE)
+	$(CC) $(FLAG) $< -c -o $@
 
 # ===============================================================
 
