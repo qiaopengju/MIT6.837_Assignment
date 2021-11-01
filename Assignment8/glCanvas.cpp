@@ -12,8 +12,8 @@
 // STATIC VARIABLES
 ArgParser* GLCanvas::args = NULL;
 SplineParser* GLCanvas::splines = NULL;
-int GLCanvas::width = 300;
-int GLCanvas::height = 300;
+int GLCanvas::width = 800;
+int GLCanvas::height = 800;
 float GLCanvas::size = 10;
 Spline* GLCanvas::selected_spline;
 int GLCanvas::selected_control_point;
