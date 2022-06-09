@@ -1,5 +1,3 @@
-
-
 # MIT 6.837
 
 <img src="src/6.837.png">
